@@ -11,7 +11,7 @@ from .enrutador import enrutador
 from . import controladores  # noqa: F401  (al importarlo se registran todas las rutas)
 
 _TIPOS_ESTATICOS = {
-    ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
     ".svg": "image/svg+xml", ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
     ".gif": "image/gif", ".webp": "image/webp", ".ico": "image/x-icon", ".txt": "text/plain; charset=utf-8",
 }
@@ -19,11 +19,11 @@ _RE_SUBIDA = re.compile(r"^[0-9a-f]{32}\.(png|jpg|gif|webp)$")
 
 _CABECERAS_SEGURIDAD = [
     ("X-Content-Type-Options", "nosniff"),
-    ("X-Frame-Options", "DENY"),
+    ("X-Frame-Options", "SAMEORIGIN"),   # el chat se muestra en un marco del mismo sitio
     ("Referrer-Policy", "same-origin"),
     ("Content-Security-Policy",
-     "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; "
-     "frame-ancestors 'none'"),
+     "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'none'; "
+     "frame-src 'self'; frame-ancestors 'self'"),   # sin JavaScript: ningún script puede ejecutarse
 ]
 
 
@@ -120,8 +120,6 @@ class Manejador(BaseHTTPRequestHandler):
         if p is None:
             return Respuesta.html(f"<h1>Error {estado}</h1>", estado)
         try:
-            if p.es_ajax:
-                return Respuesta.json({"error": mensaje}, estado)
             return vistas.error(p, estado, mensaje)
         except Exception:
             traceback.print_exc()

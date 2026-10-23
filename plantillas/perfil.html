@@ -1,27 +1,36 @@
 {% extends "base.html" %}
 {% block titulo %}{{ persona.nombre }}{% endblock %}
 {% block contenido %}
-<section class="tarjeta perfil">
+<section class="panel perfil">
   <span class="avatar avatar-grande" style="background:{{ persona.nombre | color }}">{{ persona.nombre | iniciales }}</span>
   <div>
+    <p class="antetitulo">{% if persona.rol_global == 'admin' %}Administración{% else %}Estudiante{% endif %}</p>
     <h1>{{ persona.nombre }}</h1>
-    <p class="tenue">CIF {{ persona.cif }}{% if persona.carrera %} · {{ persona.carrera }}{% endif %} · miembro desde {{ persona.creado_en | fecha_corta }}</p>
-    {% if persona.rol_global == 'admin' %}<span class="etiqueta">Administración</span>{% endif %}
+    <p class="tenue">CIF {{ persona.cif }}{% if persona.carrera %} · {{ persona.carrera }}{% endif %} · Registrado desde {{ persona.creado_en | fecha_corta }}</p>
   </div>
 </section>
-<section class="tarjeta">
-  <h2>Clubes</h2>
-  {% for c in clubes_persona %}
-    <div class="fila-simple"><a href="/clubes/{{ c.slug }}">{{ c.nombre }}</a><span class="etiqueta">{{ c.rol }}</span></div>
-  {% else %}<p class="tenue">No pertenece a ningún club todavía.</p>{% endfor %}
+<section class="panel">
+  <div class="panel-cabecera"><h2>Clubes</h2></div>
+  {% if clubes_persona %}
+  <div class="tabla-envoltorio"><table class="tabla">
+    <thead><tr><th>Club</th><th>Rol</th></tr></thead>
+    <tbody>{% for c in clubes_persona %}
+      <tr><td><a href="/clubes/{{ c.slug }}">{{ c.nombre }}</a></td>
+        <td><span class="etiqueta {% if c.rol != 'miembro' %}etiqueta-marca{% endif %}">{% if c.rol == 'lider' %}Líder{% elif c.rol == 'capitan' %}Capitán{% else %}Miembro{% endif %}</span></td></tr>
+    {% endfor %}</tbody>
+  </table></div>
+  {% else %}<p class="vacio-corto">No pertenece a ningún club todavía.</p>{% endif %}
 </section>
 {% if es_yo and solicitudes %}
-<section class="tarjeta"><h2>Mis solicitudes de club</h2>
-  {% for s in solicitudes %}<div class="fila-simple"><b>{{ s.nombre }}</b><span class="etiqueta etiqueta-{{ s.estado }}">{{ s.estado }}</span></div>{% endfor %}
+<section class="panel">
+  <div class="panel-cabecera"><h2>Mis solicitudes de club</h2></div>
+  <ul class="lista-simple">{% for s in solicitudes %}<li><strong>{{ s.nombre }}</strong><span><span class="etiqueta etiqueta-{{ s.estado }}">{{ s.estado }}</span></span></li>{% endfor %}</ul>
 </section>
 {% endif %}
-<h2 class="titulo-seccion">Publicaciones recientes</h2>
-{% set mensaje_vacio = "Todavía no ha publicado nada." %}
+<h2>Publicaciones recientes</h2>
+{% set vacio_titulo = "Sin publicaciones" %}
+{% set vacio_texto = "Todavía no ha publicado nada." %}
+{% set vacio_url = None %}
 {% set pagina = 1 %}
 {% set hay_mas = False %}
 {% include "parciales/lista_publicaciones.html" %}

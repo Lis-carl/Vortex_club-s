@@ -13,19 +13,17 @@ def conectar():
     return con
 
 
-def inicializar(con_demo=True):
-    """Crea la base de datos si no existe y la llena con datos iniciales la primera vez."""
+def inicializar():
+    """Crea la base de datos si no existe y carga los datos iniciales la primera vez."""
     config.RUTA_BD.parent.mkdir(parents=True, exist_ok=True)
     config.DIR_SUBIDAS.mkdir(parents=True, exist_ok=True)
     bd = conectar()
     try:
         bd.execute("PRAGMA journal_mode = WAL")
         bd.executescript(config.RUTA_ESQUEMA.read_text(encoding="utf-8"))
-        from . import semilla
         if bd.execute("SELECT COUNT(*) AS n FROM categorias").fetchone().n == 0:
+            from . import semilla
             semilla.datos_base(bd)
-            if con_demo:
-                semilla.datos_demo(bd)
             bd.commit()
     finally:
         bd.close()

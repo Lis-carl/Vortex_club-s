@@ -6,7 +6,6 @@ from ..acceso import (requiere_sesion, club_o_404, contexto_club, exigir_miembro
                       destino_seguro)
 from ..enrutador import ruta
 from ..nucleo import ErrorHttp, Respuesta
-from ..plantillas import motor
 from ..repositorios import clubes, foro
 from ..vistas import render
 from .inicio import marcar_permisos
@@ -21,12 +20,6 @@ def _publicacion_o_404(p, id):
 
 def _puede_moderar(p, club_id, autor_id):
     return autor_id == p.usuario.id or es_admin(p) or es_responsable(clubes.membresia(p.bd, p.usuario.id, club_id))
-
-
-def _respuesta_parcial(p, plantilla, **contexto):
-    """Fragmento HTML para actualizar votos o reacciones sin recargar la página."""
-    contexto.update(csrf=p.token_csrf(), ruta_completa=destino_seguro(p.formulario.get("siguiente")))
-    return motor.renderizar(plantilla, contexto)
 
 
 @ruta("GET", "/clubes/<slug>")
@@ -112,11 +105,7 @@ def votar_publicacion(p, id):
     valor = p.formulario.get("valor")
     if valor not in ("1", "-1"):
         raise ErrorHttp(400, "Voto no válido.")
-    puntaje, mi_voto = foro.votar(p.bd, "publicacion", p.usuario.id, id, int(valor))
-    if p.es_ajax:
-        html = _respuesta_parcial(p, "parciales/votos.html", v_url=f"/publicaciones/{id}/votar",
-                                  v_id=f"votos-p-{id}", v_puntaje=puntaje, v_mio=mi_voto)
-        return Respuesta.json({"puntaje": puntaje, "mi_voto": mi_voto, "html": html})
+    foro.votar(p.bd, "publicacion", p.usuario.id, id, int(valor))
     return Respuesta.redirigir(destino_seguro(p.formulario.get("siguiente"), f"/publicaciones/{id}"))
 
 
@@ -129,11 +118,7 @@ def votar_comentario(p, id):
     valor = p.formulario.get("valor")
     if valor not in ("1", "-1"):
         raise ErrorHttp(400, "Voto no válido.")
-    puntaje, mi_voto = foro.votar(p.bd, "comentario", p.usuario.id, id, int(valor))
-    if p.es_ajax:
-        html = _respuesta_parcial(p, "parciales/votos.html", v_url=f"/comentarios/{id}/votar",
-                                  v_id=f"votos-c-{id}", v_puntaje=puntaje, v_mio=mi_voto)
-        return Respuesta.json({"puntaje": puntaje, "mi_voto": mi_voto, "html": html})
+    foro.votar(p.bd, "comentario", p.usuario.id, id, int(valor))
     return Respuesta.redirigir(destino_seguro(p.formulario.get("siguiente"), f"/publicaciones/{comentario.publicacion_id}"))
 
 
@@ -145,11 +130,6 @@ def reaccionar(p, id):
     if tipo not in foro.TIPOS_REACCION:
         raise ErrorHttp(400, "Reacción no válida.")
     foro.alternar_reaccion(p.bd, p.usuario.id, id, tipo)
-    pub = foro.publicacion(p.bd, id, p.usuario.id)
-    if p.es_ajax:
-        html = _respuesta_parcial(p, "parciales/reacciones.html", pub=pub)
-        return Respuesta.json({"conteos": {r.tipo: r.n for r in pub.reacciones},
-                               "mias": [r.tipo for r in pub.reacciones if r.mia], "html": html})
     return Respuesta.redirigir(destino_seguro(p.formulario.get("siguiente"), f"/publicaciones/{id}"))
 
 

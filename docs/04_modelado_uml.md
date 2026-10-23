@@ -38,6 +38,7 @@ flowchart LR
         CU19(["CU-19 Publicar anuncio general"])
         CU20(["CU-20 Gestionar cuentas"])
         CU21(["CU-21 Subir imagen"])
+        CU22(["CU-22 Asignar líder de club"])
     end
 
     V --- CU01
@@ -60,6 +61,7 @@ flowchart LR
     A --- CU18
     A --- CU19
     A --- CU20
+    A --- CU22
 
     C -. "es un" .-> E
     L -. "es un" .-> C
@@ -137,22 +139,22 @@ precondiciones, postcondiciones, suposiciones, garantías, requerimientos cubier
 |-------|---------|
 | **ID / Prioridad** | CU-10 / Media |
 | **Actor principal** | Estudiante |
-| **Descripción** | El estudiante vota (+1/−1) o alterna una reacción emoji en una publicación. |
-| **Evento activador** | Pulsa una flecha de voto o un emoji. |
+| **Descripción** | El estudiante vota (+1/−1) o alterna una de las seis reacciones de una publicación. |
+| **Evento activador** | Pulsa una flecha de voto, o «Reaccionar» y una reacción. |
 | **Precondiciones** | Sesión iniciada; la publicación existe y no está eliminada. |
 
 | Pasos | Información |
 |-------|------------|
-| 1. El estudiante pulsa ▲, ▼ o un emoji. | Tipo, ID publicación |
-| 2. El navegador envía la acción en segundo plano (fetch) con el token CSRF. | JSON |
-| 3. El sistema inserta, cambia o elimina el voto/reacción. | D8 |
-| 4. El sistema devuelve el puntaje o los conteos actualizados. | JSON |
-| 5. La página actualiza los números sin recargar. | — |
+| 1. El estudiante pulsa ▲, ▼ o una reacción. | Tipo, ID publicación |
+| 2. El navegador envía un formulario `POST` normal con el token CSRF y la página de origen. | Formulario |
+| 3. El sistema inserta, cambia o elimina el voto o la reacción. | D8 |
+| 4. El sistema redirige a la misma página, anclada en la publicación (`#pub-ID`). | Redirección 303 |
+| 5. La página se vuelve a generar con Python mostrando los conteos actualizados. | HTML |
 
 | Campo | Detalle |
 |-------|---------|
 | **Postcondiciones** | Hay como máximo un voto y una reacción de cada tipo por usuario y publicación. |
-| **Garantía mínima** | Sin JavaScript, el formulario se envía normalmente y la página se recarga. |
+| **Garantía mínima** | Funciona en cualquier navegador: no usa JavaScript. |
 | **Requerimientos cubiertos** | RF-17, RF-18, RN-05, RN-06 |
 
 ### CU-12 Proponer evento
@@ -306,52 +308,53 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     actor U as Estudiante
-    participant JS as app.js
+    participant N as Navegador
     participant S as Servidor
     participant F as controladores.foro
     participant Rp as repositorios.foro
     participant BD as SQLite
 
-    U->>JS: Clic en ❤️
-    JS->>S: POST /publicaciones/42/reaccion (tipo=❤️, csrf) [fetch]
+    U->>N: Pulsa «Reaccionar» y elige ❤️
+    N->>S: POST /publicaciones/42/reaccion (tipo, csrf, siguiente)
     S->>F: reaccionar(peticion, id=42)
-    F->>Rp: alternar_reaccion(usuario, 42, "❤️")
+    F->>Rp: alternar_reaccion(usuario, 42, tipo)
     Rp->>BD: SELECT reacción existente
     alt ya existe
         Rp->>BD: DELETE
     else no existe
         Rp->>BD: INSERT
     end
-    Rp->>BD: SELECT tipo, COUNT(*) GROUP BY tipo
-    Rp-->>F: conteos
-    F-->>S: JSON {"❤️": 3, "👍": 5, ...}
-    S-->>JS: 200 application/json
-    JS-->>U: Actualiza los contadores
+    F-->>S: Respuesta 303 hacia la página de origen + ancla de la publicación
+    S-->>N: 303 See Other
+    N->>S: GET de la página de origen
+    S-->>N: 200 HTML con los conteos nuevos (generado con Python)
+    N-->>U: Muestra la misma publicación actualizada
 ```
 
-### Chat del club (consulta periódica)
+### Chat del club (marco con recarga automática, sin JavaScript)
 
 ```mermaid
 sequenceDiagram
     actor U as Miembro
-    participant JS as app.js
+    participant N as Navegador
     participant S as Servidor
     participant Ch as controladores.chat
     participant BD as SQLite
 
-    loop cada 3 segundos
-        JS->>S: GET /clubes/robotica/chat/mensajes?desde=120
+    U->>N: Abre la pestaña Chat
+    N->>S: GET /clubes/club-de-cine/chat
+    S-->>N: Página con un marco (iframe) de mensajes y el formulario
+    loop cada 5 segundos (meta refresh dentro del marco)
+        N->>S: GET /clubes/club-de-cine/chat/mensajes
         S->>Ch: mensajes(peticion)
-        Ch->>BD: SELECT ... WHERE club_id = ? AND id > 120
-        BD-->>Ch: mensajes nuevos
-        Ch-->>JS: JSON [ ... ]
-        JS-->>U: Agrega mensajes a la conversación
+        Ch->>BD: SELECT últimos 60 mensajes del club
+        Ch-->>N: HTML del marco
     end
-    U->>JS: Escribe y pulsa Enviar
-    JS->>S: POST /clubes/robotica/chat (contenido, csrf)
+    U->>N: Escribe y pulsa Enviar
+    N->>S: POST /clubes/club-de-cine/chat (contenido, csrf)
     S->>Ch: enviar(peticion)
     Ch->>BD: INSERT INTO mensajes_chat
-    Ch-->>JS: JSON {ok: true}
+    Ch-->>N: 303 hacia /clubes/club-de-cine/chat
 ```
 
 ## 4.5 Diagrama de clases
@@ -474,14 +477,12 @@ classDiagram
         +dict cookies
         +Fila usuario
         +Fila sesion
-        +bool es_ajax
     }
     class Respuesta {
         +int estado
         +list cabeceras
         +bytes cuerpo
         +html(texto)$
-        +json(datos)$
         +redirigir(url)$
     }
     class Enrutador {

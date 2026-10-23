@@ -1,23 +1,17 @@
 {% extends "base.html" %}
-{% block titulo %}Chat de {{ club.nombre }}{% endblock %}
+{% block titulo %}Chat · {{ club.nombre }}{% endblock %}
 {% block contenido %}
 {% include "parciales/club_cabecera.html" %}
-<section class="tarjeta chat" id="chat" data-url="/clubes/{{ club.slug }}/chat" data-ultimo="{{ ultimo_id }}">
-  <div class="mensajes" id="mensajes" aria-live="polite">
-    {% for m in mensajes %}
-    <div class="mensaje {% if m.autor_id == usuario.id %}mio{% endif %}">
-      <small><b>{{ m.autor_nombre }}</b> · {{ m.creado_en | hora }}</small>
-      <p>{{ m.contenido }}</p>
-    </div>
-    {% else %}
-    <p class="tenue sin-mensajes" id="sin-mensajes">Aún no hay mensajes. ¡Saluda al club!</p>
-    {% endfor %}
-  </div>
-  <form method="post" action="/clubes/{{ club.slug }}/chat" class="chat-formulario" data-chat-form>
+<section class="panel">
+  <div class="panel-cabecera"><h2>Chat del club</h2><span class="tenue">Solo miembros</span></div>
+  <iframe class="chat-marco" src="/clubes/{{ club.slug }}/chat/mensajes" title="Mensajes del chat de {{ club.nombre }}"></iframe>
+  <form method="post" action="/clubes/{{ club.slug }}/chat" class="chat-formulario">
     <input type="hidden" name="csrf" value="{{ csrf }}">
-    <input type="text" name="contenido" placeholder="Escribe un mensaje..." maxlength="1000" autocomplete="off" required aria-label="Mensaje">
+    <label for="mensaje" class="oculto">Mensaje</label>
+    <input id="mensaje" type="text" name="contenido" placeholder="Escribe un mensaje" maxlength="1000" autocomplete="off" required autofocus>
     <button class="boton boton-primario">Enviar</button>
   </form>
+  <p class="chat-nota">Los mensajes nuevos aparecen automáticamente cada 5 segundos.</p>
 </section>
 {% endblock %}
 {% block lateral %}{% include "parciales/club_lateral.html" %}{% endblock %}

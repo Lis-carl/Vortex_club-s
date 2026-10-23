@@ -1,0 +1,16 @@
+<section class="panel">
+  <div class="panel-cabecera"><h2>{{ formulario_titulo }}</h2></div>
+  <form method="post" action="{{ formulario_accion }}" class="panel-cuerpo formulario" novalidate>
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <div class="campo {% if errores.titulo %}con-error{% endif %}"><label for="titulo">Título</label>
+      <input id="titulo" name="titulo" value="{{ valores.titulo }}" maxlength="150" required>
+      {% if errores.titulo %}<p class="error-campo">{{ errores.titulo }}</p>{% endif %}</div>
+    <div class="campo {% if errores.contenido %}con-error{% endif %}"><label for="contenido">Contenido</label>
+      <textarea id="contenido" name="contenido" rows="4" maxlength="5000" required>{{ valores.contenido }}</textarea>
+      {% if errores.contenido %}<p class="error-campo">{{ errores.contenido }}</p>{% endif %}</div>
+    <div class="barra-herramientas">
+      <label class="casilla"><input type="checkbox" name="fijado" value="1"> Fijar al inicio de la lista</label>
+      <button class="boton boton-primario">Publicar anuncio</button>
+    </div>
+  </form>
+</section>

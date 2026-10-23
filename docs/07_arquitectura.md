@@ -8,7 +8,7 @@
 
 ```mermaid
 flowchart TB
-    NAV["Navegador<br/>HTML + CSS + JS propio"]
+    NAV["Navegador<br/>solo HTML + CSS<br/>(sin JavaScript)"]
     subgraph PY["Proceso Python (python app.py)"]
         SRV["servidor.py<br/>ThreadingHTTPServer + Manejador<br/>Peticion / Respuesta / archivos estáticos"]
         ENR["enrutador.py<br/>patrones /clubes/&lt;slug&gt;"]
@@ -49,7 +49,6 @@ Es un patrón **Modelo-Vista-Controlador** sencillo:
 | `urllib.parse` | Rutas, parámetros y formularios `application/x-www-form-urlencoded` |
 | `email.parser` | Lectura de formularios `multipart/form-data` (subida de imágenes) |
 | `html` | Escapado de texto (prevención de XSS) |
-| `json` | Respuestas para votos, reacciones y chat |
 | `re`, `datetime`, `os`, `pathlib`, `mimetypes`, `threading`, `unicodedata` | Utilidades |
 | `unittest` | Pruebas automáticas |
 
@@ -74,7 +73,7 @@ Vortex_club/
 │   ├── repositorios/       ← usuarios, clubes, anuncios, foro, chat, eventos (todo el SQL)
 │   └── controladores/      ← cuentas, inicio, clubes, foro, chat, eventos, admin
 ├── plantillas/             ← HTML (base, páginas y parciales/)
-├── estatico/               ← css/estilo.css, js/app.js, img/logo.svg
+├── estatico/               ← css/estilo.css, img/logo.svg (monograma VC), img/logo-blanco.svg
 ├── sql/esquema.sql         ← definición de la base de datos
 ├── datos/                  ← vortex.db (se crea sola, no se sube a GitHub)
 ├── subidas/                ← imágenes de publicaciones (no se suben a GitHub)
@@ -92,7 +91,7 @@ Vortex_club/
 4. En peticiones `POST` se valida el token CSRF; si falla → 403.
 5. El `Enrutador` encuentra la función del controlador y los parámetros (`slug`, `id`).
 6. El controlador verifica permisos, usa los repositorios y devuelve una `Respuesta`
-   (HTML renderizado, JSON o redirección 303).
+   (HTML renderizado o redirección 303).
 7. Cualquier excepción no controlada se registra en consola y se muestra una página 500 amigable.
 
 ### Cookies que usa la aplicación
@@ -103,7 +102,23 @@ Vortex_club/
 | `csrf_anon` | Token CSRF para formularios de visitantes (acceso y registro) | 30 días |
 | `aviso` | Mensaje de una sola lectura («Te uniste al club») | 60 segundos |
 
-## 7.5 Motor de plantillas propio
+## 7.5 Interfaz sin JavaScript
+
+Por requisito del proyecto el navegador no ejecuta ningún código: todo lo genera Python en el
+servidor. Así se resuelve cada parte interactiva:
+
+| Necesidad | Solución solo con HTML/CSS + Python |
+|-----------|-------------------------------------|
+| Votar y reaccionar | Formulario `POST` por botón; el servidor guarda el cambio y redirige (303) a la misma página con el ancla `#pub-ID`, de modo que el usuario vuelve a la publicación que estaba viendo |
+| Menú de reacciones, menú de usuario, «Responder» | Elementos nativos `<details>`/`<summary>`, que se abren y cierran sin código |
+| Confirmar acciones destructivas | `<details class="confirmar">`: al pulsar «Eliminar» se despliega la pregunta y el botón definitivo |
+| Chat que se actualiza solo | La página del chat incrusta un marco (`<iframe>`) con los mensajes; ese marco trae `<meta http-equiv="refresh" content="5">` y se vuelve a pedir cada 5 segundos. Con `flex-direction: column-reverse` los mensajes más nuevos quedan abajo y visibles |
+| Validación inmediata | Atributos HTML (`required`, `maxlength`, `type="email"`, `min`/`max`); la validación definitiva siempre es la del servidor |
+
+Para permitir el marco del chat la cabecera `X-Frame-Options` es `SAMEORIGIN` y la política de
+contenido incluye `frame-ancestors 'self'` (solo el propio sitio puede enmarcar sus páginas).
+
+## 7.6 Motor de plantillas propio
 
 Sintaxis soportada (inspirada en Jinja, pero mínima):
 
@@ -120,7 +135,7 @@ El texto se divide con una expresión regular en fragmentos, se construye un ár
 guarda en caché. Las expresiones se evalúan con un entorno restringido (sin funciones
 integradas de Python), sobre los datos que entrega el controlador.
 
-## 7.6 Rutas
+## 7.7 Rutas
 
 | Método | Ruta | Controlador | Acceso |
 |--------|------|-------------|--------|
@@ -145,7 +160,7 @@ integradas de Python), sobre los datos que entrega el controlador.
 | GET/POST | `/clubes/<slug>/eventos/proponer` | eventos.proponer | Miembro |
 | POST | `/propuestas/<id>/revisar` | eventos.revisar | Responsable |
 | GET | `/clubes/<slug>/chat` | chat.sala | Miembro |
-| GET | `/clubes/<slug>/chat/mensajes` | chat.mensajes (JSON) | Miembro |
+| GET | `/clubes/<slug>/chat/mensajes` | chat.mensajes (HTML del marco, se recarga cada 5 s) | Miembro |
 | POST | `/clubes/<slug>/chat` | chat.enviar | Miembro |
 | GET/POST | `/clubes/<slug>/publicar` | foro.publicar | Miembro |
 | GET | `/publicaciones/<id>` | foro.hilo | Sesión |
@@ -159,14 +174,16 @@ integradas de Python), sobre los datos que entrega el controlador.
 | POST | `/admin/solicitudes/<id>` | admin.resolver_solicitud | Admin |
 | POST | `/admin/usuarios/<id>` | admin.cambiar_estado_usuario | Admin |
 | POST | `/admin/clubes/<id>` | admin.cambiar_estado_club | Admin |
+| POST | `/admin/clubes/<id>/lider` | admin.asignar_lider | Admin |
 
-## 7.7 Seguridad
+## 7.8 Seguridad
 
 | Amenaza | Medida |
 |---------|--------|
 | Robo de contraseñas | PBKDF2-HMAC-SHA256, sal de 16 bytes, 200 000 iteraciones; comparación con `hmac.compare_digest` |
 | Secuestro de sesión | Token de 32 bytes (`secrets.token_urlsafe`), cookie `HttpOnly; SameSite=Lax`, expiración de 7 días, borrado al salir |
-| CSRF | Token por sesión en cada formulario `POST` y en la cabecera `X-CSRF` de las peticiones `fetch` |
+| CSRF | Token por sesión en el campo oculto `csrf` de cada formulario `POST` |
+| Ejecución de scripts | No hay JavaScript; además la cabecera `Content-Security-Policy` usa `script-src 'none'`, así ningún script inyectado podría ejecutarse |
 | XSS | El motor de plantillas escapa todo por defecto; los textos de usuario nunca se marcan como `seguro` |
 | Inyección SQL | Siempre consultas con `?` (parámetros), nunca concatenación |
 | Recorrido de carpetas | Las rutas estáticas se resuelven y se verifica que queden dentro de su carpeta |

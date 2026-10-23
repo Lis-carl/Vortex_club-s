@@ -1,32 +1,40 @@
-<article class="tarjeta publicacion" id="pub-{{ pub.id }}">
-  <div class="meta">
-    <span class="avatar-mini" style="background:{{ pub.club_nombre | color }}">{{ pub.club_nombre | iniciales }}</span>
-    <a class="club-enlace" href="/clubes/{{ pub.club_slug }}">c/{{ pub.club_slug }}</a>
-    <span class="punto">•</span>
-    <a href="/perfil/{{ pub.autor_cif }}">{{ pub.autor_nombre }}</a>
-    <span class="punto">•</span>
-    <time class="tenue">{{ pub.creado_en | rel }}</time>
-  </div>
-  <h2 class="titulo-pub">{% if completa %}{{ pub.titulo }}{% else %}<a href="/publicaciones/{{ pub.id }}">{{ pub.titulo }}</a>{% endif %}</h2>
-  {% if pub.imagen %}<img class="imagen-pub" src="/subidas/{{ pub.imagen }}" alt="Imagen de la publicación: {{ pub.titulo }}" loading="lazy">{% endif %}
-  {% if completa %}
-    {% if pub.contenido %}<div class="cuerpo">{{ pub.contenido | saltos }}</div>{% endif %}
-  {% elif pub.contenido %}
-    <p class="extracto">{{ pub.contenido | extracto }}</p>
-  {% endif %}
-  <div class="acciones">
+<article class="publicacion" id="pub-{{ pub.id }}">
+  <div class="pub-votos">
     {% set v_url = "/publicaciones/" + str(pub.id) + "/votar" %}
     {% set v_id = "votos-p-" + str(pub.id) %}
     {% set v_puntaje = pub.puntaje %}
     {% set v_mio = pub.mi_voto %}
+    {% set v_ancla = "pub-" + str(pub.id) %}
+    {% set v_modo = "vertical" %}
     {% include "parciales/votos.html" %}
-    <a class="chip chip-enlace" href="/publicaciones/{{ pub.id }}#comentarios">💬 {{ pub.n_comentarios }}</a>
-    {% include "parciales/reacciones.html" %}
-    {% if pub.puede_eliminar %}
-    <form method="post" action="/publicaciones/{{ pub.id }}/eliminar" data-confirmar="¿Eliminar esta publicación?">
-      <input type="hidden" name="csrf" value="{{ csrf }}">
-      <button class="enlace enlace-peligro" title="Eliminar publicación">🗑 Eliminar</button>
-    </form>
+  </div>
+  <div class="pub-cuerpo">
+    <p class="pub-meta">
+      <a class="pub-club" href="/clubes/{{ pub.club_slug }}">{{ pub.club_nombre }}</a>
+      <span class="separador">·</span>
+      <span>Publicado por <a href="/perfil/{{ pub.autor_cif }}">{{ pub.autor_nombre }}</a></span>
+      <span class="separador">·</span>
+      <time>{{ pub.creado_en | rel }}</time>
+    </p>
+    <h2 class="pub-titulo">{% if completa %}{{ pub.titulo }}{% else %}<a href="/publicaciones/{{ pub.id }}">{{ pub.titulo }}</a>{% endif %}</h2>
+    {% if pub.imagen %}<img class="pub-imagen" src="/subidas/{{ pub.imagen }}" alt="Imagen de la publicación: {{ pub.titulo }}" loading="lazy">{% endif %}
+    {% if completa %}
+      {% if pub.contenido %}<div class="pub-texto">{{ pub.contenido | saltos }}</div>{% endif %}
+    {% elif pub.contenido %}
+      <p class="pub-extracto">{{ pub.contenido | extracto }}</p>
     {% endif %}
+    <div class="pub-acciones">
+      <a class="accion" href="/publicaciones/{{ pub.id }}#comentarios">{{ pub.n_comentarios }} comentario{% if pub.n_comentarios != 1 %}s{% endif %}</a>
+      {% include "parciales/reacciones.html" %}
+      {% if pub.puede_eliminar %}
+        {% set c_url = "/publicaciones/" + str(pub.id) + "/eliminar" %}
+        {% set c_etiqueta = "Eliminar" %}
+        {% set c_pregunta = "¿Eliminar esta publicación? Esta acción no se puede deshacer." %}
+        {% set c_boton = "Sí, eliminar" %}
+        {% set c_nombre = None %}
+        {% set c_siguiente = None %}
+        {% include "parciales/confirmar.html" %}
+      {% endif %}
+    </div>
   </div>
 </article>

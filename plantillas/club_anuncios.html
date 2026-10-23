@@ -1,28 +1,20 @@
 {% extends "base.html" %}
-{% block titulo %}Anuncios de {{ club.nombre }}{% endblock %}
+{% block titulo %}Anuncios · {{ club.nombre }}{% endblock %}
 {% block contenido %}
 {% include "parciales/club_cabecera.html" %}
 {% if es_responsable %}
-<section class="tarjeta">
-  <h2>Publicar un anuncio del club</h2>
-  <form method="post" action="/clubes/{{ club.slug }}/anuncios" class="formulario" novalidate>
-    <input type="hidden" name="csrf" value="{{ csrf }}">
-    <div class="campo"><label for="titulo">Título</label>
-      <input id="titulo" name="titulo" value="{{ valores.titulo }}" maxlength="150" required>
-      {% if errores.titulo %}<p class="error-campo">{{ errores.titulo }}</p>{% endif %}</div>
-    <div class="campo"><label for="contenido">Contenido</label>
-      <textarea id="contenido" name="contenido" rows="4" maxlength="5000" required>{{ valores.contenido }}</textarea>
-      {% if errores.contenido %}<p class="error-campo">{{ errores.contenido }}</p>{% endif %}</div>
-    <label class="casilla"><input type="checkbox" name="fijado" value="1"> Fijar arriba</label>
-    <button class="boton boton-primario">Publicar anuncio</button>
-  </form>
-</section>
+  {% set formulario_titulo = "Publicar anuncio del club" %}
+  {% set formulario_accion = "/clubes/" + club.slug + "/anuncios" %}
+  {% include "parciales/formulario_anuncio.html" %}
 {% endif %}
-{% set puede_eliminar_anuncios = es_responsable %}
-{% for a in anuncios %}
-  {% include "parciales/anuncio.html" %}
-{% else %}
-  <section class="tarjeta vacio"><p class="emoji-grande">📢</p><p>Este club aún no ha publicado anuncios.</p></section>
-{% endfor %}
+<section class="panel">
+  <div class="panel-cabecera"><h2>Anuncios del club</h2></div>
+  {% set puede_eliminar_anuncios = es_responsable %}
+  {% for a in anuncios %}
+    {% include "parciales/anuncio.html" %}
+  {% else %}
+    <div class="vacio"><h3>Sin anuncios</h3><p>El club todavía no ha publicado anuncios.</p></div>
+  {% endfor %}
+</section>
 {% endblock %}
 {% block lateral %}{% include "parciales/club_lateral.html" %}{% endblock %}

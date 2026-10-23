@@ -1,5 +1,4 @@
 """Objetos básicos compartidos: Fila, ErrorHttp, Peticion y Respuesta."""
-import json
 import secrets
 from urllib.parse import quote
 
@@ -42,11 +41,6 @@ class Respuesta:
         return cls(texto.encode("utf-8"), estado)
 
     @classmethod
-    def json(cls, datos, estado=200):
-        return cls(json.dumps(datos, ensure_ascii=False).encode("utf-8"), estado,
-                   "application/json; charset=utf-8")
-
-    @classmethod
     def redirigir(cls, url, estado=303):
         r = cls(b"", estado)
         r.cabeceras.append(("Location", url))
@@ -82,10 +76,6 @@ class Peticion:
         self.bd = None
         self.aviso = None        # Fila(nivel, texto) leído de la cookie "aviso"
         self.csrf_nuevo = None   # token CSRF anónimo generado en esta petición
-
-    @property
-    def es_ajax(self):
-        return self.encabezados.get("x-requested-with") == "fetch"
 
     @property
     def ruta_completa(self):

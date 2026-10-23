@@ -1,0 +1,17 @@
+{# Confirmación de una acción destructiva sin JavaScript.
+   Variables: c_url, c_etiqueta, c_pregunta, c_boton y opcionalmente c_nombre/c_valor (botón) y c_siguiente. #}
+<details class="confirmar">
+  <summary class="accion accion-peligro">{{ c_etiqueta }}</summary>
+  <div class="confirmar-caja">
+    <p>{{ c_pregunta }}</p>
+    <form method="post" action="{{ c_url }}">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      {% if c_siguiente %}<input type="hidden" name="siguiente" value="{{ c_siguiente }}">{% endif %}
+      {% if c_nombre %}
+        <button class="boton boton-peligro boton-pequeno" name="{{ c_nombre }}" value="{{ c_valor }}">{{ c_boton }}</button>
+      {% else %}
+        <button class="boton boton-peligro boton-pequeno">{{ c_boton }}</button>
+      {% endif %}
+    </form>
+  </div>
+</details>

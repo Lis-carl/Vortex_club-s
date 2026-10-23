@@ -33,7 +33,7 @@ flowchart LR
     RES -- "anuncio del club, decisión de ingreso,<br/>decisión sobre propuesta, cambio de rol" --> SYS
     SYS -- "solicitudes de ingreso pendientes,<br/>propuestas pendientes" --> RES
 
-    ADM -- "anuncio general, decisión sobre club,<br/>estado de cuenta" --> SYS
+    ADM -- "anuncio general, decisión sobre club,<br/>asignación de líder, estado de cuenta" --> SYS
     SYS -- "solicitudes de club pendientes,<br/>estadísticas, lista de usuarios" --> ADM
 ```
 
@@ -87,6 +87,7 @@ flowchart TB
     D5 -- "pendientes, integrantes" --> P3
     P3 -- "pendientes" --> RES
     RES -- "decisión, cambio de rol" --> P3
+    ADM -- "asignación de líder (CIF)" --> P3
     P3 -- "integrantes" --> EST
 
     RES -- "anuncio del club" --> P4
@@ -129,13 +130,15 @@ flowchart TB
 flowchart TB
     EST[Estudiante]
     RES[Responsable del club]
+    ADM[Administrador]
+    D1[("D1 Usuarios")]
     D3[("D3 Clubes")]
     D5[("D5 Membresías")]
 
     P31("3.1<br/>Validar solicitud<br/>de ingreso")
     P32("3.2<br/>Registrar<br/>membresía")
     P33("3.3<br/>Resolver solicitud<br/>pendiente")
-    P34("3.4<br/>Cambiar rol<br/>o expulsar")
+    P34("3.4<br/>Cambiar rol, asignar<br/>líder o expulsar")
     P35("3.5<br/>Listar<br/>integrantes")
 
     EST -- "solicitud de ingreso" --> P31
@@ -148,6 +151,8 @@ flowchart TB
     RES -- "aceptar / rechazar" --> P33
     P33 -- "membresía actualizada" --> D5
     RES -- "nuevo rol / expulsión" --> P34
+    ADM -- "CIF del nuevo líder" --> P34
+    D1 -- "cuenta activa" --> P34
     P34 -- "rol actualizado" --> D5
     D5 -- "integrantes por rol" --> P35
     P35 -- "líder, capitanes, miembros" --> EST

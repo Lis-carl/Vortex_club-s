@@ -1,16 +1,16 @@
-"""Chat por club (consulta periódica desde el navegador)."""
+"""Chat por club, sin JavaScript.
+
+La página del chat incrusta un marco (iframe) con los mensajes; ese marco se recarga solo cada
+5 segundos con <meta http-equiv="refresh">, así los mensajes nuevos aparecen sin escribir código
+en el navegador. Enviar un mensaje es un formulario POST normal.
+"""
 from .. import formularios as frm
 from ..acceso import requiere_sesion, club_o_404, contexto_club, exigir_miembro
 from ..enrutador import ruta
 from ..nucleo import Respuesta
+from ..plantillas import motor
 from ..repositorios import chat
-from ..utilidades import hora
 from ..vistas import render
-
-
-def _a_json(mensaje, usuario_id):
-    return {"id": mensaje.id, "autor": mensaje.autor_nombre, "cif": mensaje.autor_cif,
-            "contenido": mensaje.contenido, "hora": hora(mensaje.creado_en), "mio": mensaje.autor_id == usuario_id}
 
 
 @ruta("GET", "/clubes/<slug>/chat")
@@ -18,18 +18,17 @@ def _a_json(mensaje, usuario_id):
 def sala(p, slug):
     club = club_o_404(p, slug)
     exigir_miembro(p, club)
-    mensajes = chat.ultimos(p.bd, club.id)
-    return render(p, "club_chat.html", mensajes=mensajes, ultimo_id=mensajes[-1].id if mensajes else 0,
-                  **contexto_club(p, club, "chat"))
+    return render(p, "club_chat.html", **contexto_club(p, club, "chat"))
 
 
 @ruta("GET", "/clubes/<slug>/chat/mensajes")
 @requiere_sesion
 def mensajes(p, slug):
+    """Contenido del marco: últimos mensajes, del más nuevo al más antiguo."""
     club = club_o_404(p, slug)
     exigir_miembro(p, club)
-    desde = int(p.consulta["desde"]) if (p.consulta.get("desde") or "").isdigit() else 0
-    return Respuesta.json([_a_json(m, p.usuario.id) for m in chat.desde(p.bd, club.id, desde)])
+    lista = list(reversed(chat.ultimos(p.bd, club.id)))
+    return Respuesta.html(motor.renderizar("chat_marco.html", {"mensajes": lista, "usuario": p.usuario}))
 
 
 @ruta("POST", "/clubes/<slug>/chat")
@@ -39,11 +38,8 @@ def enviar(p, slug):
     exigir_miembro(p, club)
     errores = frm.Errores()
     contenido = frm.texto(p.formulario, errores, "contenido", "El mensaje", 1, 1000)
+    volver = Respuesta.redirigir(f"/clubes/{slug}/chat")
     if errores:
-        if p.es_ajax:
-            return Respuesta.json({"ok": False, "error": errores["contenido"]}, 400)
-        return Respuesta.redirigir(f"/clubes/{slug}/chat").con_aviso("error", errores["contenido"])
+        return volver.con_aviso("error", errores["contenido"])
     chat.enviar(p.bd, club.id, p.usuario.id, contenido)
-    if p.es_ajax:
-        return Respuesta.json({"ok": True})
-    return Respuesta.redirigir(f"/clubes/{slug}/chat")
+    return volver

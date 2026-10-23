@@ -1,64 +1,78 @@
 {% extends "base.html" %}
-{% block titulo %}Miembros de {{ club.nombre }}{% endblock %}
+{% block titulo %}Miembros · {{ club.nombre }}{% endblock %}
 {% block contenido %}
 {% include "parciales/club_cabecera.html" %}
 
 {% if pendientes %}
-<section class="tarjeta">
-  <h2>Solicitudes de ingreso</h2>
-  {% for m in pendientes %}
-  <div class="fila-persona">
-    <span class="avatar" style="background:{{ m.nombre | color }}">{{ m.nombre | iniciales }}</span>
-    <div class="persona-texto"><a href="/perfil/{{ m.cif }}">{{ m.nombre }}</a><span class="tenue">{{ m.carrera }}</span></div>
-    <form method="post" action="/clubes/{{ club.slug }}/miembros/{{ m.membresia_id }}" class="fila-botones">
-      <input type="hidden" name="csrf" value="{{ csrf }}">
-      <button class="boton boton-primario" name="accion" value="aceptar">Aceptar</button>
-      <button class="boton boton-claro" name="accion" value="rechazar">Rechazar</button>
-    </form>
-  </div>
-  {% endfor %}
+<section class="panel">
+  <div class="panel-cabecera"><h2>Solicitudes de ingreso ({{ len(pendientes) }})</h2></div>
+  <div class="tabla-envoltorio"><table class="tabla">
+    <thead><tr><th>Estudiante</th><th>Carrera</th><th>Solicitud</th><th></th></tr></thead>
+    <tbody>
+    {% for m in pendientes %}
+      <tr>
+        <td><div class="celda-persona"><span class="avatar" style="background:{{ m.nombre | color }}">{{ m.nombre | iniciales }}</span>
+          <div><a href="/perfil/{{ m.cif }}">{{ m.nombre }}</a><span class="tenue">CIF {{ m.cif }}</span></div></div></td>
+        <td>{{ m.carrera }}</td>
+        <td>{{ m.unido_en | fecha_corta }}</td>
+        <td class="celda-acciones">
+          <form method="post" action="/clubes/{{ club.slug }}/miembros/{{ m.membresia_id }}">
+            <input type="hidden" name="csrf" value="{{ csrf }}">
+            <button class="boton boton-primario boton-pequeno" name="accion" value="aceptar">Aceptar</button>
+            <button class="boton boton-secundario boton-pequeno" name="accion" value="rechazar">Rechazar</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
 </section>
 {% endif %}
 
-<section class="tarjeta">
-  <h2>👑 Líder</h2>
-  {% for m in lideres %}
-  <div class="fila-persona"><span class="avatar" style="background:{{ m.nombre | color }}">{{ m.nombre | iniciales }}</span>
-    <div class="persona-texto"><a href="/perfil/{{ m.cif }}">{{ m.nombre }}</a><span class="tenue">{{ m.carrera }}</span></div></div>
-  {% endfor %}
-</section>
-
-<section class="tarjeta">
-  <h2>⭐ Capitanes</h2>
-  {% for m in capitanes %}
-  <div class="fila-persona"><span class="avatar" style="background:{{ m.nombre | color }}">{{ m.nombre | iniciales }}</span>
-    <div class="persona-texto"><a href="/perfil/{{ m.cif }}">{{ m.nombre }}</a><span class="tenue">{{ m.carrera }}</span></div>
-    {% if es_lider %}
-    <form method="post" action="/clubes/{{ club.slug }}/miembros/{{ m.membresia_id }}" class="fila-botones">
-      <input type="hidden" name="csrf" value="{{ csrf }}">
-      <button class="boton boton-claro" name="accion" value="quitar_capitan">Quitar capitán</button>
-      <button class="boton boton-claro" name="accion" value="transferir" data-confirmar-boton="¿Transferir el liderazgo a {{ m.nombre }}? Tú pasarás a ser capitán.">Transferir liderazgo</button>
-    </form>
-    {% endif %}
-  </div>
-  {% else %}<p class="tenue">Todavía no hay capitanes.</p>{% endfor %}
-</section>
-
-<section class="tarjeta">
-  <h2>Miembros ({{ len(simples) }})</h2>
-  {% for m in simples %}
-  <div class="fila-persona"><span class="avatar" style="background:{{ m.nombre | color }}">{{ m.nombre | iniciales }}</span>
-    <div class="persona-texto"><a href="/perfil/{{ m.cif }}">{{ m.nombre }}</a><span class="tenue">{{ m.carrera }} · desde {{ m.unido_en | fecha_corta }}</span></div>
-    {% if es_lider %}
-    <form method="post" action="/clubes/{{ club.slug }}/miembros/{{ m.membresia_id }}" class="fila-botones">
-      <input type="hidden" name="csrf" value="{{ csrf }}">
-      <button class="boton boton-claro" name="accion" value="hacer_capitan">Nombrar capitán</button>
-      <button class="boton boton-claro" name="accion" value="transferir" data-confirmar-boton="¿Transferir el liderazgo a {{ m.nombre }}? Tú pasarás a ser capitán.">Transferir liderazgo</button>
-      <button class="boton boton-peligro" name="accion" value="expulsar" data-confirmar-boton="¿Expulsar a {{ m.nombre }} del club?">Expulsar</button>
-    </form>
-    {% endif %}
-  </div>
-  {% else %}<p class="tenue">Aún no hay miembros.</p>{% endfor %}
+<section class="panel">
+  <div class="panel-cabecera"><h2>Integrantes ({{ len(lideres) + len(capitanes) + len(simples) }})</h2></div>
+  {% if not lideres %}<p class="vacio-corto">Este club todavía no tiene líder asignado. La administración de la plataforma es quien lo asigna.</p>{% endif %}
+  {% if lideres or capitanes or simples %}
+  <div class="tabla-envoltorio"><table class="tabla">
+    <thead><tr><th>Integrante</th><th>Carrera</th><th>Rol</th>{% if es_lider %}<th></th>{% endif %}</tr></thead>
+    <tbody>
+    {% for grupo in [lideres, capitanes, simples] %}{% for m in grupo %}
+      <tr>
+        <td><div class="celda-persona"><span class="avatar" style="background:{{ m.nombre | color }}">{{ m.nombre | iniciales }}</span>
+          <div><a href="/perfil/{{ m.cif }}">{{ m.nombre }}</a><span class="tenue">Desde {{ m.unido_en | fecha_corta }}</span></div></div></td>
+        <td>{{ m.carrera }}</td>
+        <td><span class="etiqueta {% if m.rol != 'miembro' %}etiqueta-marca{% endif %}">{% if m.rol == 'lider' %}Líder{% elif m.rol == 'capitan' %}Capitán{% else %}Miembro{% endif %}</span></td>
+        {% if es_lider %}
+        <td class="celda-acciones">
+          {% if m.rol != 'lider' %}
+            <form method="post" action="/clubes/{{ club.slug }}/miembros/{{ m.membresia_id }}">
+              <input type="hidden" name="csrf" value="{{ csrf }}">
+              {% if m.rol == 'miembro' %}<button class="accion" name="accion" value="hacer_capitan">Nombrar capitán</button>
+              {% else %}<button class="accion" name="accion" value="quitar_capitan">Quitar capitán</button>{% endif %}
+            </form>
+            {% set c_url = "/clubes/" + club.slug + "/miembros/" + str(m.membresia_id) %}
+            {% set c_nombre = "accion" %}
+            {% set c_siguiente = None %}
+            {% set c_etiqueta = "Transferir liderazgo" %}
+            {% set c_pregunta = "¿Transferir el liderazgo a " + m.nombre + "? Tú pasarás a ser capitán." %}
+            {% set c_boton = "Sí, transferir" %}
+            {% set c_valor = "transferir" %}
+            {% include "parciales/confirmar.html" %}
+            {% set c_etiqueta = "Expulsar" %}
+            {% set c_pregunta = "¿Expulsar a " + m.nombre + " del club?" %}
+            {% set c_boton = "Sí, expulsar" %}
+            {% set c_valor = "expulsar" %}
+            {% include "parciales/confirmar.html" %}
+          {% endif %}
+        </td>
+        {% endif %}
+      </tr>
+    {% endfor %}{% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}
+    <div class="vacio"><h3>Sin integrantes</h3><p>Nadie se ha unido a este club todavía.</p></div>
+  {% endif %}
 </section>
 {% endblock %}
 {% block lateral %}{% include "parciales/club_lateral.html" %}{% endblock %}

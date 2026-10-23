@@ -1,33 +1,32 @@
 {% extends "base.html" %}
 {% block titulo %}Crear cuenta{% endblock %}
 {% block acceso %}
-<section class="tarjeta-acceso">
-  <img class="logo-grande" src="/estatico/img/logo.svg" alt="Vortex Club" width="64" height="64">
-  <h1>Crear cuenta</h1>
-  <p class="texto-intro">Usa tu CIF universitario. Todos los campos son obligatorios.</p>
-  <form method="post" action="/registro" class="formulario-acceso" novalidate>
-    <input type="hidden" name="csrf" value="{{ csrf }}">
-    <div class="campo"><label for="cif">CIF</label>
-      <input id="cif" type="text" name="cif" value="{{ valores.cif }}" inputmode="numeric" maxlength="8" required>
-      {% if errores.cif %}<p class="error-campo">{{ errores.cif }}</p>{% endif %}</div>
-    <div class="campo"><label for="nombre">Nombre completo</label>
-      <input id="nombre" type="text" name="nombre" value="{{ valores.nombre }}" maxlength="80" required>
-      {% if errores.nombre %}<p class="error-campo">{{ errores.nombre }}</p>{% endif %}</div>
-    <div class="campo"><label for="correo">Correo electrónico</label>
-      <input id="correo" type="email" name="correo" value="{{ valores.correo }}" maxlength="120" required>
-      {% if errores.correo %}<p class="error-campo">{{ errores.correo }}</p>{% endif %}</div>
-    <div class="campo"><label for="carrera">Carrera</label>
-      <input id="carrera" type="text" name="carrera" value="{{ valores.carrera }}" list="lista-carreras" maxlength="80">
-      <datalist id="lista-carreras">{% for c in carreras %}<option value="{{ c }}">{% endfor %}</datalist>
-      {% if errores.carrera %}<p class="error-campo">{{ errores.carrera }}</p>{% endif %}</div>
-    <div class="campo"><label for="contrasena">Contraseña (mínimo 6 caracteres)</label>
+<h2>Crear cuenta</h2>
+<p class="tenue">Todos los campos son obligatorios, salvo la carrera.</p>
+<form method="post" action="/registro" class="formulario" novalidate>
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <div class="campo {% if errores.cif %}con-error{% endif %}"><label for="cif">CIF</label>
+    <input id="cif" type="text" name="cif" value="{{ valores.cif }}" inputmode="numeric" maxlength="8" required>
+    {% if errores.cif %}<p class="error-campo">{{ errores.cif }}</p>{% endif %}</div>
+  <div class="campo {% if errores.nombre %}con-error{% endif %}"><label for="nombre">Nombre completo</label>
+    <input id="nombre" type="text" name="nombre" value="{{ valores.nombre }}" maxlength="80" autocomplete="name" required>
+    {% if errores.nombre %}<p class="error-campo">{{ errores.nombre }}</p>{% endif %}</div>
+  <div class="campo {% if errores.correo %}con-error{% endif %}"><label for="correo">Correo electrónico</label>
+    <input id="correo" type="email" name="correo" value="{{ valores.correo }}" maxlength="120" autocomplete="email" required>
+    {% if errores.correo %}<p class="error-campo">{{ errores.correo }}</p>{% endif %}</div>
+  <div class="campo {% if errores.carrera %}con-error{% endif %}"><label for="carrera">Carrera</label>
+    <input id="carrera" type="text" name="carrera" value="{{ valores.carrera }}" list="lista-carreras" maxlength="80">
+    <datalist id="lista-carreras">{% for c in carreras %}<option value="{{ c }}">{% endfor %}</datalist>
+    {% if errores.carrera %}<p class="error-campo">{{ errores.carrera }}</p>{% endif %}</div>
+  <div class="dos-columnas">
+    <div class="campo {% if errores.contrasena %}con-error{% endif %}"><label for="contrasena">Contraseña</label>
       <input id="contrasena" type="password" name="contrasena" autocomplete="new-password" required>
-      {% if errores.contrasena %}<p class="error-campo">{{ errores.contrasena }}</p>{% endif %}</div>
-    <div class="campo"><label for="confirmar">Confirmar contraseña</label>
+      {% if errores.contrasena %}<p class="error-campo">{{ errores.contrasena }}</p>{% else %}<p class="ayuda-campo">Mínimo 6 caracteres.</p>{% endif %}</div>
+    <div class="campo {% if errores.confirmar %}con-error{% endif %}"><label for="confirmar">Confirmar</label>
       <input id="confirmar" type="password" name="confirmar" autocomplete="new-password" required>
       {% if errores.confirmar %}<p class="error-campo">{{ errores.confirmar }}</p>{% endif %}</div>
-    <button class="boton boton-primario boton-ancho">Crear cuenta</button>
-  </form>
-  <p class="pie-acceso">¿Ya tienes cuenta? <a href="/acceder">Inicia sesión</a></p>
-</section>
+  </div>
+  <button class="boton boton-primario boton-ancho">Crear cuenta</button>
+</form>
+<div class="acceso-ayuda"><p><strong>¿Ya tienes cuenta?</strong> <a href="/acceder">Inicia sesión</a>.</p></div>
 {% endblock %}

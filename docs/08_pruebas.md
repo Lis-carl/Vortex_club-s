@@ -9,6 +9,7 @@
 |-------|---------------|-------------|---------|
 | Unidad | Motor de plantillas, enrutador, hash de contraseñas, límite de intentos, lectura de formularios, validación de imágenes, utilidades | `unittest` | [`pruebas/test_unidades.py`](../pruebas/test_unidades.py) |
 | Integración | Servidor real en un hilo + base SQLite temporal + cliente HTTP con cookies que recorre cada caso de uso | `unittest` + `urllib` | [`pruebas/test_integracion.py`](../pruebas/test_integracion.py) |
+| Datos de prueba | Usuarios y clubes ficticios que **solo** se cargan en la base temporal de las pruebas | — | [`pruebas/datos_prueba.py`](../pruebas/datos_prueba.py) |
 | Aceptación | Recorrido manual del manual de usuario en el navegador (escritorio y celular) | Navegador | [`manual_usuario.md`](manual_usuario.md) |
 
 Todo se ejecuta sin instalar nada (solo biblioteca estándar):
@@ -17,18 +18,20 @@ Todo se ejecuta sin instalar nada (solo biblioteca estándar):
 python -m unittest discover -s pruebas -t .
 ```
 
-Cada clase de integración crea su propia base de datos temporal (con datos de ejemplo), por lo que
-las pruebas **nunca tocan** `datos/vortex.db`. Se baja PBKDF2 a 1 000 iteraciones **solo** en las
+Cada clase de integración crea su propia base de datos temporal, por lo que las pruebas **nunca
+tocan** `datos/vortex.db`. La clase `PruebasInstalacionLimpia` usa la base exactamente como la crea
+la aplicación (vacía, con los 14 clubes oficiales); las demás le agregan los datos ficticios de
+`pruebas/datos_prueba.py` para poder ejercitar roles, foros y eventos. Se baja PBKDF2 a 1 000 iteraciones **solo** en las
 pruebas (`VORTEX_ITERACIONES`) para que corran en segundos.
 
 ## 8.2 Resultado de la última ejecución
 
 ```text
-Ran 55 tests in ~11 s
+Ran 58 tests in ~8 s
 OK
 ```
 
-22 pruebas de unidad y 33 de integración.
+22 pruebas de unidad y 36 de integración.
 
 ## 8.3 Matriz de trazabilidad (requerimiento → prueba)
 
@@ -50,18 +53,21 @@ OK
 | RF-14 Fijar y eliminar anuncios | `test_anuncios_generales_y_de_club` |
 | RF-15 Publicar en el foro | `test_publicar_con_imagen_y_validaciones` |
 | RF-16 Comentarios anidados | `test_comentarios_anidados_votos_y_eliminar` |
-| RF-17 Votos | `test_votos_ajax`, `test_comentarios_anidados_votos_y_eliminar` |
+| RF-17 Votos | `test_votos`, `test_comentarios_anidados_votos_y_eliminar` |
 | RF-18 Reacciones | `test_reacciones` |
 | RF-19 Orden Nuevos / Populares | `test_feed_inicio` |
 | RF-20 Eliminar contenido (autor / responsable) | `test_moderacion_de_publicaciones`, `test_comentarios_anidados_votos_y_eliminar` |
 | RF-21 Feed de inicio | `test_feed_inicio` |
-| RF-22 / RF-23 Chat | `PruebasChatYEventos.test_chat` |
+| RF-22 / RF-23 Chat (marco con recarga automática) | `PruebasChatYEventos.test_chat` |
 | RF-24 Proponer evento | `test_proponer_evento_validaciones` |
 | RF-25 Aprobar o rechazar | `test_flujo_de_propuesta_y_aprobacion`, `test_rechazar_propuesta`, `test_no_se_aprueba_evento_pasado` |
 | RF-26 Estado de mis propuestas | `test_flujo_de_propuesta_y_aprobacion`, `test_rechazar_propuesta` |
 | RF-27 Próximos eventos | `test_flujo_de_propuesta_y_aprobacion` |
-| RF-28 / RF-29 / RF-30 Panel de administración | `PruebasAdmin.test_panel_y_cuentas`, `test_sesion_se_invalida_al_desactivar`, `test_desactivar_club` |
-| RNF-01, RNF-02, RNF-03 Solo biblioteca estándar y SQLite | Las pruebas corren sin dependencias; revisión de imports (`grep -R "^import\|^from" vortex`) |
+| RF-28 / RF-29 / RF-30 Panel de administración | `PruebasAdmin.test_panel_y_cuentas` (incluye las estadísticas), `test_sesion_se_invalida_al_desactivar`, `test_desactivar_club` |
+| RF-31 Asignar líder | `PruebasInstalacionLimpia.test_administracion_asigna_lider` |
+| Datos iniciales (sección 2.7) | `PruebasInstalacionLimpia.test_a_base_vacia_con_los_clubes_oficiales` |
+| RNF-01, RNF-02 Solo biblioteca estándar y SQLite | Las pruebas corren sin dependencias; revisión de imports (`grep -R "^import\|^from" vortex`) |
+| RNF-03 Sin JavaScript | `PruebasInstalacionLimpia.test_sin_javascript`: ninguna página contiene `<script` ni atributos `on…=`, no existe `app.js` y la cabecera CSP trae `script-src 'none'` |
 | RNF-06 Contraseñas con PBKDF2 | `PruebasSeguridad.test_hash_y_verificacion`, `test_registro` (no se guarda en claro) |
 | RNF-07 CSRF | `PruebasAcceso.test_csrf_obligatorio` |
 | RNF-08 XSS e inyección SQL | `test_xss_se_escapa`, `test_inyeccion_sql_en_busqueda`, `PruebasPlantillas.test_variable_se_escapa` |
@@ -92,21 +98,23 @@ OK
 
 | # | Pasos | Resultado esperado |
 |---|-------|--------------------|
-| A1 | Abrir `/acceder` en el celular (375 px) | La tarjeta se ve completa, sin desplazamiento horizontal |
-| A2 | Iniciar sesión como `26010001` | Se ve el feed con las publicaciones de Robótica y Voluntariado |
-| A3 | Pulsar 👍 en una publicación | El contador cambia sin recargar la página; pulsar otra vez lo quita |
-| A4 | Abrir el chat de Robótica en dos navegadores con distintos usuarios | El mensaje enviado en uno aparece en el otro en menos de 4 segundos |
-| A5 | Cambiar el sistema operativo a modo oscuro | La interfaz se oscurece automáticamente |
+| A1 | Abrir `/acceder` en escritorio y en celular (375 px) | Panel de marca + formulario; en celular se apilan sin desplazamiento horizontal |
+| A2 | Iniciar sesión y abrir el inicio | Publicaciones de mis clubes o el estado vacío «Aún no perteneces a ningún club» |
+| A3 | Pulsar «Reaccionar» y elegir una reacción | La página vuelve a la misma publicación con el contador actualizado y la reacción resaltada |
+| A4 | Abrir el chat de un club en dos navegadores con distintos usuarios | El mensaje enviado en uno aparece en el otro en 5 segundos o menos |
+| A5 | Revisar títulos, menús y botones | No hay emojis decorativos; solo texto y el monograma VC |
 | A6 | Navegar solo con el teclado (Tab/Enter) | Todos los botones y enlaces son alcanzables con foco visible |
+| A7 | Abrir el panel de administración | Estadísticas, solicitudes, tabla de clubes con «Asignar líder» y tabla de usuarios |
 
-Estado: **A2, A3 y A5 se ejecutaron** durante el desarrollo (navegador de escritorio, modo oscuro) y
-**A1 se ejecutó con el feed de inicio** en 375 px. **A4 y A6 quedan pendientes** para la revisión
-final del equipo antes de la entrega.
+Estado: durante la revisión del rediseño se ejecutaron **A1, A2, A3, A5 y A7**, y el envío de
+mensajes del chat con un solo navegador. **A4 (dos navegadores) y A6 (teclado) quedan pendientes**
+para la revisión final del equipo.
 
 ## 8.6 Limitaciones conocidas
 
-- La consulta periódica del chat (cada 3 s) no es tiempo real puro: se eligió por simplicidad y
-  porque `http.server` de la biblioteca estándar no ofrece WebSockets.
+- El chat se actualiza recargando su marco cada 5 segundos (no es tiempo real puro): es la forma
+  de lograrlo sin JavaScript. Si el usuario desplaza el marco hacia mensajes antiguos, la recarga lo
+  devuelve al final.
 - SQLite admite una sola escritura a la vez; para el tamaño de un piloto universitario es suficiente.
 - No hay recuperación de contraseña por correo (fuera de alcance de la versión 1).
 - No hay cifrado HTTPS en el servidor propio: para producción se recomienda ponerlo detrás de un

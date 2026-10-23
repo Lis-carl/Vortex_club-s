@@ -13,9 +13,3 @@ def ultimos(bd, club_id, cantidad=60):
            WHERE m.club_id = ? ORDER BY m.id DESC LIMIT ?""", (club_id, cantidad)).fetchall()
     return list(reversed(filas))
 
-
-def desde(bd, club_id, ultimo_id, limite=100):
-    return bd.execute(
-        """SELECT m.id, m.contenido, m.creado_en, m.autor_id, u.nombre AS autor_nombre, u.cif AS autor_cif
-           FROM mensajes_chat m JOIN usuarios u ON u.id = m.autor_id
-           WHERE m.club_id = ? AND m.id > ? ORDER BY m.id LIMIT ?""", (club_id, ultimo_id, limite)).fetchall()

@@ -20,4 +20,3 @@ LIMITE_IMAGEN = 2 * 1024 * 1024    # bytes por imagen subida
 # Contraseña inicial del administrador (se puede cambiar con VORTEX_ADMIN_CLAVE antes del primer arranque).
 ADMIN_CIF = "00000001"
 ADMIN_CLAVE = os.environ.get("VORTEX_ADMIN_CLAVE") or "admin123"
-CLAVE_DEMO = "demo1234"

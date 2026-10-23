@@ -1,31 +1,24 @@
 {% extends "base.html" %}
-{% block titulo %}Acceder{% endblock %}
+{% block titulo %}Iniciar sesión{% endblock %}
 {% block acceso %}
-<section class="tarjeta-acceso">
-  <img class="logo-grande" src="/estatico/img/logo.svg" alt="Vortex Club" width="86" height="86">
-  <h1>Vortex Club</h1>
-  <p class="subtitulo">Clubes estudiantiles</p>
-  <p class="texto-intro">Bienvenido/a. Inicia sesión con tu CIF para ver tus clubes, anuncios y eventos.</p>
-  {% if error %}<p class="error-formulario" role="alert">{{ error }}</p>{% endif %}
-  <form method="post" action="/acceder" class="formulario-acceso">
-    <input type="hidden" name="csrf" value="{{ csrf }}">
-    <input type="hidden" name="siguiente" value="{{ siguiente }}">
-    <label class="campo-icono"><span class="icono" aria-hidden="true">👤</span>
-      <input type="text" name="cif" value="{{ cif }}" placeholder="CIF (8 dígitos)" inputmode="numeric" maxlength="8"
-             autocomplete="username" required autofocus aria-label="CIF">
-    </label>
-    <label class="campo-icono"><span class="icono" aria-hidden="true">🔑</span>
-      <input type="password" name="contrasena" placeholder="Contraseña" autocomplete="current-password" required aria-label="Contraseña">
-      <button type="button" class="ojo" data-ver-contrasena title="Mostrar u ocultar contraseña" aria-label="Mostrar u ocultar contraseña">👁</button>
-    </label>
-    <button class="boton boton-primario boton-ancho">Acceder</button>
-  </form>
-  <div class="recuadro-ayuda">
-    <h2>¿No tienes cuenta?</h2>
-    <ul>
-      <li><a href="/registro">Regístrate con tu CIF</a> para unirte a los clubes.</li>
-      <li>Si olvidaste tu contraseña, pide ayuda en Vida Estudiantil.</li>
-    </ul>
+<h2>Iniciar sesión</h2>
+<p class="tenue">Ingresa con tu CIF y tu contraseña.</p>
+<form method="post" action="/acceder" class="formulario">
+  <input type="hidden" name="csrf" value="{{ csrf }}">
+  <input type="hidden" name="siguiente" value="{{ siguiente }}">
+  {% if error %}<p class="alerta-formulario" role="alert">{{ error }}</p>{% endif %}
+  <div class="campo">
+    <label for="cif">CIF</label>
+    <input id="cif" type="text" name="cif" value="{{ cif }}" inputmode="numeric" maxlength="8" autocomplete="username" required autofocus>
   </div>
-</section>
+  <div class="campo">
+    <label for="contrasena">Contraseña</label>
+    <input id="contrasena" type="password" name="contrasena" autocomplete="current-password" required>
+  </div>
+  <button class="boton boton-primario boton-ancho">Acceder</button>
+</form>
+<div class="acceso-ayuda">
+  <p><strong>¿No tienes cuenta?</strong> <a href="/registro">Crea una cuenta</a> con tu CIF universitario.</p>
+  <p><strong>¿Olvidaste tu contraseña?</strong> Solicita el restablecimiento a la administración de la plataforma.</p>
+</div>
 {% endblock %}

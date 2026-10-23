@@ -89,7 +89,9 @@ def cambiar_estado(bd, club_id, estado):
 def todos(bd):
     return bd.execute(
         """SELECT c.id, c.nombre, c.slug, c.estado,
-             (SELECT COUNT(*) FROM membresias m WHERE m.club_id = c.id AND m.estado = 'activa') AS n_miembros
+             (SELECT COUNT(*) FROM membresias m WHERE m.club_id = c.id AND m.estado = 'activa') AS n_miembros,
+             (SELECT u.nombre FROM membresias m JOIN usuarios u ON u.id = m.usuario_id
+                WHERE m.club_id = c.id AND m.rol = 'lider') AS lider_nombre
            FROM clubes c ORDER BY c.nombre""").fetchall()
 
 
@@ -146,6 +148,22 @@ def quitar(bd, membresia_id):
 
 def cambiar_rol(bd, membresia_id, rol):
     bd.execute("UPDATE membresias SET rol = ? WHERE id = ?", (rol, membresia_id))
+
+
+def asignar_lider(bd, club_id, usuario_id):
+    """La administración asigna el líder. El líder anterior (si lo hay) pasa a miembro."""
+    actual = bd.execute("SELECT id, usuario_id FROM membresias WHERE club_id = ? AND rol = 'lider'",
+                        (club_id,)).fetchone()
+    if actual and actual.usuario_id == usuario_id:
+        return
+    if actual:
+        bd.execute("UPDATE membresias SET rol = 'miembro' WHERE id = ?", (actual.id,))
+    existente = membresia(bd, usuario_id, club_id)
+    if existente:
+        bd.execute("UPDATE membresias SET rol = 'lider', estado = 'activa' WHERE id = ?", (existente.id,))
+    else:
+        bd.execute("INSERT INTO membresias (usuario_id, club_id, rol, estado) VALUES (?, ?, 'lider', 'activa')",
+                   (usuario_id, club_id))
 
 
 def transferir_liderazgo(bd, club_id, membresia_nueva_id):

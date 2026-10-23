@@ -1,3 +1,4 @@
+from ..nucleo import Fila
 from ..seguridad import hash_contrasena
 
 
@@ -35,9 +36,9 @@ def cambiar_activo(bd, usuario_id, activo):
 
 def estadisticas(bd):
     consulta = lambda sql: bd.execute(sql).fetchone().n
-    return {
+    return Fila({
         "usuarios": consulta("SELECT COUNT(*) AS n FROM usuarios"),
         "clubes": consulta("SELECT COUNT(*) AS n FROM clubes WHERE estado = 'activo'"),
         "publicaciones": consulta("SELECT COUNT(*) AS n FROM publicaciones WHERE eliminado = 0"),
         "eventos": consulta("SELECT COUNT(*) AS n FROM propuestas_evento WHERE estado = 'aprobada'"),
-    }
+    })

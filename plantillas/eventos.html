@@ -1,11 +1,19 @@
 {% extends "base.html" %}
 {% block titulo %}Próximos eventos{% endblock %}
 {% block contenido %}
-<h1 class="titulo-pagina">📅 Próximos eventos</h1>
-{% set mostrar_club = True %}
-{% for e in eventos %}
-  {% include "parciales/evento.html" %}
-{% else %}
-  <section class="tarjeta vacio"><p class="emoji-grande">📅</p><p>No hay eventos aprobados por ahora. Entra a un club y propón uno.</p></section>
-{% endfor %}
+<header class="encabezado-pagina">
+  <div>
+    <p class="antetitulo">Calendario</p>
+    <h1>Próximos eventos</h1>
+    <p class="descripcion">Eventos aprobados por los clubes, ordenados por fecha.</p>
+  </div>
+</header>
+<section class="panel">
+  {% set mostrar_club = True %}
+  {% for e in eventos %}
+    {% include "parciales/evento.html" %}
+  {% else %}
+    <div class="vacio"><h3>Sin eventos programados</h3><p>Los miembros pueden proponer eventos desde la pestaña Eventos de cada club.</p></div>
+  {% endfor %}
+</section>
 {% endblock %}

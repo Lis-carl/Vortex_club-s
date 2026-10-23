@@ -1,27 +1,24 @@
 {% extends "base.html" %}
 {% block titulo %}Anuncios generales{% endblock %}
 {% block contenido %}
-<h1 class="titulo-pagina">📢 Anuncios generales</h1>
+<header class="encabezado-pagina">
+  <div>
+    <p class="antetitulo">Comunicados</p>
+    <h1>Anuncios generales</h1>
+    <p class="descripcion">Comunicados oficiales para toda la comunidad estudiantil.</p>
+  </div>
+</header>
 {% if es_admin %}
-<section class="tarjeta">
-  <h2>Publicar un anuncio general</h2>
-  <form method="post" action="/anuncios" class="formulario" novalidate>
-    <input type="hidden" name="csrf" value="{{ csrf }}">
-    <div class="campo"><label for="titulo">Título</label>
-      <input id="titulo" name="titulo" value="{{ valores.titulo }}" maxlength="150" required>
-      {% if errores.titulo %}<p class="error-campo">{{ errores.titulo }}</p>{% endif %}</div>
-    <div class="campo"><label for="contenido">Contenido</label>
-      <textarea id="contenido" name="contenido" rows="4" maxlength="5000" required>{{ valores.contenido }}</textarea>
-      {% if errores.contenido %}<p class="error-campo">{{ errores.contenido }}</p>{% endif %}</div>
-    <label class="casilla"><input type="checkbox" name="fijado" value="1"> Fijar arriba</label>
-    <button class="boton boton-primario">Publicar anuncio</button>
-  </form>
-</section>
-{% set puede_eliminar_anuncios = True %}
+  {% set formulario_titulo = "Publicar anuncio general" %}
+  {% set formulario_accion = "/anuncios" %}
+  {% include "parciales/formulario_anuncio.html" %}
 {% endif %}
-{% for a in anuncios %}
-  {% include "parciales/anuncio.html" %}
-{% else %}
-  <section class="tarjeta vacio"><p class="emoji-grande">📢</p><p>No hay anuncios generales por ahora.</p></section>
-{% endfor %}
+<section class="panel">
+  {% set puede_eliminar_anuncios = es_admin %}
+  {% for a in anuncios %}
+    {% include "parciales/anuncio.html" %}
+  {% else %}
+    <div class="vacio"><h3>Sin anuncios</h3><p>Aún no se han publicado anuncios generales.</p></div>
+  {% endfor %}
+</section>
 {% endblock %}

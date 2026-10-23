@@ -13,6 +13,16 @@ FUTURO = (datetime.now() + timedelta(days=10)).strftime("%Y-%m-%dT%H:%M")
 PASADO = (datetime.now() - timedelta(days=1)).strftime("%Y-%m-%dT%H:%M")
 
 
+def puntaje(publicacion_id):
+    return consulta("SELECT COALESCE(SUM(valor), 0) FROM votos_publicacion WHERE publicacion_id=?", publicacion_id)[0][0]
+
+
+def mi_voto(tabla, columna, objetivo_id, cif):
+    fila = consulta(f"SELECT v.valor FROM {tabla} v JOIN usuarios u ON u.id=v.usuario_id WHERE v.{columna}=? AND u.cif=?",
+                    objetivo_id, cif)
+    return fila[0][0] if fila else None
+
+
 def consulta(sql, *params):
     con = sqlite3.connect(os.environ["VORTEX_BD"])
     try:
@@ -231,8 +241,11 @@ class PruebasForoYAnuncios(PruebaServidor):
         pid = consulta("SELECT id FROM publicaciones WHERE titulo LIKE 'Taller de Arduino%'")[0][0]
         self.assertEqual(carlos.get(f"/publicaciones/{pid}").estado, 200)
         self.assertEqual(carlos.post(f"/publicaciones/{pid}/comentar", {"contenido": "hola"}, desde=f"/publicaciones/{pid}").estado, 403)
-        r = carlos.post(f"/publicaciones/{pid}/votar", {"valor": "1"}, desde=f"/publicaciones/{pid}", ajax=True)
+        r = carlos.post(f"/publicaciones/{pid}/votar", {"valor": "1", "siguiente": f"/publicaciones/{pid}#pub-{pid}"},
+                        desde=f"/publicaciones/{pid}")
         self.assertEqual(r.estado, 200)
+        self.assertTrue(r.url.endswith(f"/publicaciones/{pid}#pub-{pid}") or r.url.endswith(f"/publicaciones/{pid}"))
+        self.assertEqual(mi_voto("votos_publicacion", "publicacion_id", pid, CARLOS), 1)
 
     def test_xss_se_escapa(self):
         ana = self.cliente(ANA)
@@ -269,44 +282,45 @@ class PruebasForoYAnuncios(PruebaServidor):
         otro = consulta("SELECT id FROM comentarios WHERE publicacion_id != ? LIMIT 1", pid)[0][0]
         self.assertEqual(luis.post(f"{pag}/comentar", {"contenido": "x", "padre_id": str(otro)}, desde=pag).estado, 400)
         # votos de comentario
-        r = luis.post(f"/comentarios/{raiz}/votar", {"valor": "1"}, desde=pag, ajax=True).json()
-        self.assertEqual((r["puntaje"], r["mi_voto"]), (1, 1))
+        luis.post(f"/comentarios/{raiz}/votar", {"valor": "1"}, desde=pag)
+        self.assertEqual(mi_voto("votos_comentario", "comentario_id", raiz, LUIS), 1)
         # eliminar: el autor sí; un miembro ajeno no
         self.assertEqual(self.cliente(MARIA).post(f"/comentarios/{raiz}/eliminar", desde=pag).estado, 403)
         self.assertIn("Comentario eliminado", ana.post(f"/comentarios/{raiz}/eliminar", desde=pag).cuerpo)
-        self.assertIn("[comentario eliminado]", ana.get(pag).cuerpo)
+        self.assertIn('class="comentario-texto eliminado"', ana.get(pag).cuerpo)
 
-    def test_votos_ajax(self):
+    def test_votos(self):
         luis = self.cliente(LUIS)
         pid = consulta("SELECT id FROM publicaciones WHERE titulo LIKE 'Apertura recomendada%'")[0][0]
         pag = f"/publicaciones/{pid}"
-        base_puntaje = consulta("SELECT COALESCE(SUM(valor),0) FROM votos_publicacion WHERE publicacion_id=?", pid)[0][0]
-        r = luis.post(f"{pag}/votar", {"valor": "1"}, desde=pag, ajax=True).json()
-        self.assertEqual((r["puntaje"], r["mi_voto"]), (base_puntaje + 1, 1))
-        self.assertIn('id="votos-p-%d"' % pid, r["html"])
-        r = luis.post(f"{pag}/votar", {"valor": "1"}, desde=pag, ajax=True).json()          # repetir lo quita
-        self.assertEqual((r["puntaje"], r["mi_voto"]), (base_puntaje, None))
-        r = luis.post(f"{pag}/votar", {"valor": "-1"}, desde=pag, ajax=True).json()
-        self.assertEqual((r["puntaje"], r["mi_voto"]), (base_puntaje - 1, -1))
-        r = luis.post(f"{pag}/votar", {"valor": "1"}, desde=pag, ajax=True).json()          # cambiar el sentido
-        self.assertEqual((r["puntaje"], r["mi_voto"]), (base_puntaje + 1, 1))               # un solo voto por persona
-        self.assertEqual(luis.post(f"{pag}/votar", {"valor": "5"}, desde=pag, ajax=True).estado, 400)
+        base_puntaje = puntaje(pid)
+        r = luis.post(f"{pag}/votar", {"valor": "1", "siguiente": pag + f"#pub-{pid}"}, desde=pag)
+        self.assertEqual(r.estado, 200)                                   # vuelve a la misma página
+        self.assertEqual((puntaje(pid), mi_voto("votos_publicacion", "publicacion_id", pid, LUIS)), (base_puntaje + 1, 1))
+        self.assertIn('voto voto-arriba', r.cuerpo)                       # el botón queda marcado
+        luis.post(f"{pag}/votar", {"valor": "1"}, desde=pag)              # repetir lo quita
+        self.assertEqual((puntaje(pid), mi_voto("votos_publicacion", "publicacion_id", pid, LUIS)), (base_puntaje, None))
+        luis.post(f"{pag}/votar", {"valor": "-1"}, desde=pag)
+        self.assertEqual((puntaje(pid), mi_voto("votos_publicacion", "publicacion_id", pid, LUIS)), (base_puntaje - 1, -1))
+        luis.post(f"{pag}/votar", {"valor": "1"}, desde=pag)              # cambiar el sentido: un solo voto por persona
+        self.assertEqual((puntaje(pid), mi_voto("votos_publicacion", "publicacion_id", pid, LUIS)), (base_puntaje + 1, 1))
+        self.assertEqual(luis.post(f"{pag}/votar", {"valor": "5"}, desde=pag).estado, 400)
 
     def test_reacciones(self):
         maria = self.cliente(MARIA)
         pid = consulta("SELECT id FROM publicaciones WHERE titulo LIKE 'Taller de Arduino%'")[0][0]
         pag = f"/publicaciones/{pid}"
-        r = maria.post(f"{pag}/reaccion", {"tipo": "😂"}, desde=pag, ajax=True).json()
-        self.assertEqual(r["conteos"]["😂"], 1)
-        self.assertIn("😂", r["mias"])
-        r = maria.post(f"{pag}/reaccion", {"tipo": "😂"}, desde=pag, ajax=True).json()      # alternar: se quita
-        self.assertEqual(r["conteos"]["😂"], 0)
-        self.assertNotIn("😂", r["mias"])
-        self.assertEqual(maria.post(f"{pag}/reaccion", {"tipo": "💩"}, desde=pag, ajax=True).estado, 400)
+        conteo = lambda tipo: consulta("SELECT COUNT(*) FROM reacciones WHERE publicacion_id=? AND tipo=?", pid, tipo)[0][0]
+        r = maria.post(f"{pag}/reaccion", {"tipo": "😂", "siguiente": pag}, desde=pag)
+        self.assertEqual(conteo("😂"), 1)
+        self.assertIn("ficha ficha-activa", r.cuerpo)                     # su reacción se ve resaltada
+        maria.post(f"{pag}/reaccion", {"tipo": "😂"}, desde=pag)          # alternar: se quita
+        self.assertEqual(conteo("😂"), 0)
+        self.assertEqual(maria.post(f"{pag}/reaccion", {"tipo": "💩"}, desde=pag).estado, 400)
         # varios tipos a la vez, y el mismo emoji de otra persona suma
-        maria.post(f"{pag}/reaccion", {"tipo": "🔥"}, desde=pag, ajax=True)
-        r = self.cliente(LUIS).post(f"{pag}/reaccion", {"tipo": "🔥"}, desde=pag, ajax=True).json()
-        self.assertEqual(r["conteos"]["🔥"], 3)   # Jorge (semilla) + María + Luis
+        maria.post(f"{pag}/reaccion", {"tipo": "🔥"}, desde=pag)
+        self.cliente(LUIS).post(f"{pag}/reaccion", {"tipo": "🔥"}, desde=pag)
+        self.assertEqual(conteo("🔥"), 3)   # Jorge (datos de prueba) + María + Luis
 
     def test_moderacion_de_publicaciones(self):
         maria = self.cliente(MARIA)
@@ -346,23 +360,24 @@ class PruebasForoYAnuncios(PruebaServidor):
 class PruebasChatYEventos(PruebaServidor):
     def test_chat(self):
         ana, luis = self.cliente(ANA), self.cliente(LUIS)
-        self.assertIn("cautín", ana.get("/clubes/robotica/chat").cuerpo)
-        ultimo = consulta("SELECT MAX(id) FROM mensajes_chat")[0][0]
-        r = luis.post("/clubes/robotica/chat", {"contenido": "Mensaje <b>nuevo</b>"}, desde="/clubes/robotica/chat", ajax=True)
-        self.assertEqual(r.json(), {"ok": True})
-        mensajes = ana.get(f"/clubes/robotica/chat/mensajes?desde={ultimo}", ajax=True).json()
-        self.assertEqual(len(mensajes), 1)
-        self.assertEqual((mensajes[0]["autor"], mensajes[0]["contenido"], mensajes[0]["mio"]), ("Luis Pérez", "Mensaje <b>nuevo</b>", False))
-        self.assertEqual(ana.get(f"/clubes/robotica/chat/mensajes?desde={mensajes[0]['id']}", ajax=True).json(), [])
-        self.assertEqual(luis.post("/clubes/robotica/chat", {"contenido": "   "}, desde="/clubes/robotica/chat", ajax=True).estado, 400)
-        self.assertEqual(luis.post("/clubes/robotica/chat", {"contenido": "x" * 1001}, desde="/clubes/robotica/chat", ajax=True).estado, 400)
+        pagina = ana.get("/clubes/robotica/chat").cuerpo
+        self.assertIn('<iframe class="chat-marco" src="/clubes/robotica/chat/mensajes"', pagina)
+        marco = ana.get("/clubes/robotica/chat/mensajes").cuerpo
+        self.assertIn('<meta http-equiv="refresh" content="5">', marco)   # se actualiza solo, sin JavaScript
+        self.assertIn("cautín", marco)
+        r = luis.post("/clubes/robotica/chat", {"contenido": "Mensaje <b>nuevo</b>"}, desde="/clubes/robotica/chat")
+        self.assertTrue(r.url.endswith("/clubes/robotica/chat"))
+        marco = ana.get("/clubes/robotica/chat/mensajes").cuerpo
+        self.assertIn("Mensaje &lt;b&gt;nuevo&lt;/b&gt;", marco)           # escapado
+        self.assertLess(marco.index("Mensaje &lt;b&gt;nuevo"), marco.index("cautín"))   # el más nuevo primero (column-reverse)
+        self.assertIn('class="mensaje propio"', luis.get("/clubes/robotica/chat/mensajes").cuerpo)
+        self.assertIn("El mensaje es obligatorio", luis.post("/clubes/robotica/chat", {"contenido": "   "}, desde="/clubes/robotica/chat").cuerpo)
+        self.assertIn("no puede superar 1000", luis.post("/clubes/robotica/chat", {"contenido": "x" * 1001}, desde="/clubes/robotica/chat").cuerpo)
         # el chat solo es para miembros
         sofia = self.cliente(SOFIA)
         self.assertEqual(sofia.get("/clubes/robotica/chat").estado, 403)
-        self.assertEqual(sofia.get("/clubes/robotica/chat/mensajes", ajax=True).estado, 403)
-        self.assertEqual(sofia.post("/clubes/robotica/chat", {"contenido": "hola"}, desde="/", ajax=True).estado, 403)
-        # el HTML del chat inicial escapa el contenido
-        self.assertIn("Mensaje &lt;b&gt;nuevo&lt;/b&gt;", ana.get("/clubes/robotica/chat").cuerpo)
+        self.assertEqual(sofia.get("/clubes/robotica/chat/mensajes").estado, 403)
+        self.assertEqual(sofia.post("/clubes/robotica/chat", {"contenido": "hola"}, desde="/").estado, 403)
 
     def _form(self, **extra):
         datos = {"titulo": "Taller de soldadura", "descripcion": "Aprenderemos a soldar componentes.", "fecha_inicio": FUTURO,
@@ -413,7 +428,8 @@ class PruebasChatYEventos(PruebaServidor):
     def test_no_se_aprueba_evento_pasado(self):
         con = sqlite3.connect(os.environ["VORTEX_BD"])
         con.execute("INSERT INTO propuestas_evento (club_id, proponente_id, titulo, descripcion, fecha_inicio, lugar) "
-                    "VALUES (1, 3, 'Evento vencido', 'Descripción larga', ?, 'Aula')", (PASADO.replace("T", " "),))
+                    "VALUES ((SELECT id FROM clubes WHERE slug='robotica'), (SELECT id FROM usuarios WHERE cif=?), "
+                    "'Evento vencido', 'Descripción larga', ?, 'Aula')", (MARIA, PASADO.replace("T", " ")))
         con.commit()
         pid = con.execute("SELECT id FROM propuestas_evento WHERE titulo='Evento vencido'").fetchone()[0]
         con.close()
@@ -427,6 +443,7 @@ class PruebasAdmin(PruebaServidor):
         admin = self.cliente(ADMIN)
         r = admin.get("/admin")
         self.assertIn("Usuarios", r.cuerpo)
+        self.assertIn('<div class="estadistica"><b>7</b><span>Usuarios</span></div>', r.cuerpo)   # admin + 6 de prueba
         self.assertIn("Ana López", r.cuerpo)
         uid = consulta("SELECT id FROM usuarios WHERE cif=?", JORGE)[0][0]
         self.assertIn("Cuenta desactivada", admin.post(f"/admin/usuarios/{uid}", {"activo": "0"}, desde="/admin").cuerpo)
@@ -460,6 +477,65 @@ class PruebasAdmin(PruebaServidor):
         self.assertIn("Luis Pérez", r.cuerpo)
         self.assertIn("Robótica", r.cuerpo)
         self.assertEqual(self.cliente(ANA).get("/perfil/55555555").estado, 404)
+
+
+class PruebasInstalacionLimpia(PruebaServidor):
+    """La aplicación real arranca vacía: sin usuarios de ejemplo y con el catálogo oficial de 14 clubes."""
+    con_datos_prueba = False
+
+    CLUBES_OFICIALES = [
+        "Club Empresarial", "Club de Debate", "Voluntariado por el Autismo", "Voluntariado Aldeas Infantiles SOS",
+        "Club de Cine", "Club de Modelos", "Club de Lectura", "Club de Maestros de Ceremonias", "Club de Edecanes",
+        "Club Conanca", "Club de Traductores", "Voluntariado por la Niñez", "Club de Maquillaje", "Proyección Juvenil UNEN-UAM",
+    ]
+
+    def _registrar(self, cif, nombre):
+        c = self.cliente()
+        r = c.post("/registro", {"cif": cif, "nombre": nombre, "correo": f"{cif}@vortex.local",
+                                 "contrasena": "clave123", "confirmar": "clave123"}, desde="/registro")
+        self.assertEqual(r.estado, 200)
+        return c
+
+    def test_a_base_vacia_con_los_clubes_oficiales(self):   # «a»: corre primero en su clase
+        self.assertEqual(sorted(n for (n,) in consulta("SELECT nombre FROM clubes")), sorted(self.CLUBES_OFICIALES))
+        self.assertEqual(consulta("SELECT COUNT(*) FROM usuarios"), [(1,)])          # solo la administración
+        for tabla in ("membresias", "publicaciones", "comentarios", "anuncios", "propuestas_evento", "mensajes_chat"):
+            self.assertEqual(consulta(f"SELECT COUNT(*) FROM {tabla}"), [(0,)], tabla)
+        c = self._registrar("27100001", "Estudiante Nuevo")
+        catalogo = c.get("/clubes").cuerpo
+        for nombre in self.CLUBES_OFICIALES:
+            self.assertIn(nombre, catalogo)
+        self.assertIn("14 clubes disponibles", catalogo)
+        self.assertIn("Aún no perteneces a ningún club", c.get("/").cuerpo)
+        self.assertIn("Sin asignar", c.get("/clubes/club-de-debate").cuerpo)        # sin líder hasta que la administración lo asigne
+
+    def test_sin_javascript(self):
+        c = self._registrar("27100002", "Sin Script")
+        for ruta in ("/", "/clubes", "/anuncios", "/eventos", "/clubes/solicitar", "/clubes/club-de-cine",
+                     "/clubes/club-de-cine/miembros", "/clubes/club-de-cine/eventos", "/perfil/27100002"):
+            cuerpo = c.get(ruta).cuerpo
+            self.assertNotIn("<script", cuerpo.lower(), ruta)
+            self.assertNotRegex(cuerpo, r"\son[a-z]+=", ruta)                     # sin atributos onclick, onsubmit...
+        self.assertNotIn("<script", self.cliente().get("/acceder").cuerpo.lower())
+        self.assertEqual(c.get("/estatico/js/app.js").estado, 404)
+        from urllib.request import urlopen
+        with urlopen(self.base + "/acceder") as r:
+            self.assertIn("script-src 'none'", r.headers["Content-Security-Policy"])
+        self.assertEqual(c.get("/estatico/img/logo.svg").estado, 200)
+
+    def test_administracion_asigna_lider(self):
+        lider1 = self._registrar("27100003", "Primera Líder")
+        self._registrar("27100004", "Segundo Líder")
+        admin = self.cliente(ADMIN)
+        cid = consulta("SELECT id FROM clubes WHERE slug='club-de-debate'")[0][0]
+        self.assertIn("No existe una cuenta activa", admin.post(f"/admin/clubes/{cid}/lider", {"cif": "99999999"}, desde="/admin").cuerpo)
+        self.assertEqual(lider1.post(f"/admin/clubes/{cid}/lider", {"cif": "27100003"}, desde="/").estado, 403)
+        r = admin.post(f"/admin/clubes/{cid}/lider", {"cif": "27100003"}, desde="/admin")
+        self.assertIn("Primera Líder es ahora líder de Club de Debate", r.cuerpo)
+        self.assertIn("Configuración", lider1.get("/clubes/club-de-debate").cuerpo)      # pestaña solo para el líder
+        admin.post(f"/admin/clubes/{cid}/lider", {"cif": "27100004"}, desde="/admin")
+        roles = dict(consulta("SELECT u.cif, m.rol FROM membresias m JOIN usuarios u ON u.id=m.usuario_id WHERE m.club_id=?", cid))
+        self.assertEqual(roles, {"27100003": "miembro", "27100004": "lider"})      # siempre un solo líder
 
 
 if __name__ == "__main__":

@@ -1,51 +1,67 @@
 {% extends "base.html" %}
-{% block titulo %}Eventos de {{ club.nombre }}{% endblock %}
+{% block titulo %}Eventos · {{ club.nombre }}{% endblock %}
 {% block contenido %}
 {% include "parciales/club_cabecera.html" %}
-<div class="barra-orden">
-  <h2>Próximos eventos</h2>
-  {% if es_miembro %}<a class="boton boton-primario" href="/clubes/{{ club.slug }}/eventos/proponer">＋ Proponer un evento</a>{% endif %}
-</div>
-{% for e in proximos %}
-  {% include "parciales/evento.html" %}
-{% else %}
-  <section class="tarjeta vacio"><p class="emoji-grande">📅</p><p>No hay eventos programados.{% if es_miembro %} ¡Propón el primero!{% endif %}</p></section>
-{% endfor %}
+<section class="panel">
+  <div class="panel-cabecera"><h2>Próximos eventos</h2>
+    {% if es_miembro %}<a class="boton boton-primario boton-pequeno" href="/clubes/{{ club.slug }}/eventos/proponer">Proponer un evento</a>{% endif %}</div>
+  {% for e in proximos %}
+    {% include "parciales/evento.html" %}
+  {% else %}
+    <div class="vacio"><h3>Sin eventos programados</h3><p>{% if es_miembro %}Propón el primer evento del club.{% else %}Únete al club para proponer eventos.{% endif %}</p></div>
+  {% endfor %}
+</section>
 
 {% if es_responsable %}
-<section class="tarjeta">
-  <h2>Propuestas pendientes de revisión</h2>
+<section class="panel">
+  <div class="panel-cabecera"><h2>Propuestas por revisar</h2></div>
   {% for e in pendientes %}
   <div class="propuesta">
     <h3>{{ e.titulo }}</h3>
-    <p class="tenue">Propone <a href="/perfil/{{ e.proponente_cif }}">{{ e.proponente_nombre }}</a> · {{ e.fecha_inicio | fecha }} · {{ e.lugar }}{% if e.cupo %} · cupo {{ e.cupo }}{% endif %}</p>
+    <p class="evento-datos">
+      <span>Propone: <a href="/perfil/{{ e.proponente_cif }}">{{ e.proponente_nombre }}</a></span>
+      <span>Fecha: {{ e.fecha_inicio | fecha }}</span><span>Lugar: {{ e.lugar }}</span>
+      {% if e.cupo %}<span>Cupo: {{ e.cupo }}</span>{% endif %}
+    </p>
     <p>{{ e.descripcion | saltos }}</p>
-    {% if e.recursos %}<p class="tenue"><b>Recursos:</b> {{ e.recursos }}</p>{% endif %}
-    <form method="post" action="/propuestas/{{ e.id }}/revisar" class="formulario fila-botones">
+    {% if e.recursos %}<p class="tenue">Recursos: {{ e.recursos }}</p>{% endif %}
+    <form method="post" action="/propuestas/{{ e.id }}/revisar" class="formulario-linea">
       <input type="hidden" name="csrf" value="{{ csrf }}">
-      <input type="text" name="comentario" placeholder="Comentario (opcional)" maxlength="500" aria-label="Comentario">
+      <label for="comentario-{{ e.id }}" class="oculto">Comentario</label>
+      <input id="comentario-{{ e.id }}" type="text" name="comentario" placeholder="Comentario para el proponente (opcional)" maxlength="500">
       <button class="boton boton-primario" name="decision" value="aprobar">Aprobar</button>
       <button class="boton boton-peligro" name="decision" value="rechazar">Rechazar</button>
     </form>
   </div>
-  {% else %}<p class="tenue">No hay propuestas pendientes.</p>{% endfor %}
+  {% else %}
+    <p class="vacio-corto">No hay propuestas pendientes.</p>
+  {% endfor %}
 </section>
 {% endif %}
 
 {% if es_miembro %}
-<section class="tarjeta">
-  <h2>Mis propuestas</h2>
-  {% for e in mias %}
-    <div class="fila-simple"><b>{{ e.titulo }}</b><span class="tenue">{{ e.fecha_inicio | fecha }}</span>
-      <span class="etiqueta etiqueta-{{ e.estado }}">{{ e.estado }}</span>
-      {% if e.comentario_revision %}<span class="tenue">«{{ e.comentario_revision }}»</span>{% endif %}</div>
-  {% else %}<p class="tenue">Aún no has propuesto eventos en este club.</p>{% endfor %}
+<section class="panel">
+  <div class="panel-cabecera"><h2>Mis propuestas</h2></div>
+  {% if mias %}
+  <div class="tabla-envoltorio"><table class="tabla">
+    <thead><tr><th>Evento</th><th>Fecha</th><th>Estado</th><th>Comentario</th></tr></thead>
+    <tbody>
+    {% for e in mias %}
+      <tr><td><strong>{{ e.titulo }}</strong></td><td>{{ e.fecha_inicio | fecha }}</td>
+        <td><span class="etiqueta etiqueta-{{ e.estado }}">{{ e.estado }}</span></td><td class="tenue">{{ e.comentario_revision }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
+  {% else %}<p class="vacio-corto">Aún no has propuesto eventos en este club.</p>{% endif %}
 </section>
 {% endif %}
 
 {% if pasados %}
-<section class="tarjeta"><h2>Eventos pasados</h2>
-  {% for e in pasados %}<div class="fila-simple"><b>{{ e.titulo }}</b><span class="tenue">{{ e.fecha_inicio | fecha }} · {{ e.lugar }}</span></div>{% endfor %}
+<section class="panel">
+  <div class="panel-cabecera"><h2>Eventos realizados</h2></div>
+  <ul class="lista-simple">
+  {% for e in pasados %}<li><strong>{{ e.titulo }}</strong><span class="tenue">{{ e.fecha_inicio | fecha }} · {{ e.lugar }}</span></li>{% endfor %}
+  </ul>
 </section>
 {% endif %}
 {% endblock %}

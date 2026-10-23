@@ -1,39 +1,51 @@
 {% extends "base.html" %}
 {% block titulo %}Crear un club{% endblock %}
 {% block contenido %}
-<h1 class="titulo-pagina">Crear un club</h1>
-<section class="tarjeta">
-  <p class="tenue">Envía tu propuesta. Vida Estudiantil la revisará y, si se aprueba, tú quedarás como <b>líder</b> del club.</p>
-  <form method="post" action="/clubes/solicitar" class="formulario" novalidate>
+<header class="encabezado-pagina">
+  <div>
+    <p class="antetitulo">Gestión</p>
+    <h1>Solicitar un club nuevo</h1>
+    <p class="descripcion">La administración revisa cada solicitud. Si se aprueba, el club se crea y quedas como líder.</p>
+  </div>
+</header>
+<section class="panel">
+  <div class="panel-cabecera"><h2>Datos del club</h2></div>
+  <form method="post" action="/clubes/solicitar" class="panel-cuerpo formulario" novalidate>
     <input type="hidden" name="csrf" value="{{ csrf }}">
-    <div class="campo"><label for="nombre">Nombre del club</label>
-      <input id="nombre" name="nombre" value="{{ valores.nombre }}" maxlength="60" required>
-      {% if errores.nombre %}<p class="error-campo">{{ errores.nombre }}</p>{% endif %}</div>
-    <div class="campo"><label for="categoria">Categoría</label>
-      <select id="categoria" name="categoria" required>
-        <option value="">Elige una categoría</option>
-        {% for c in categorias %}<option value="{{ c.id }}" {% if valores.categoria == str(c.id) %}selected{% endif %}>{{ c.nombre }}</option>{% endfor %}
-      </select>
-      {% if errores.categoria %}<p class="error-campo">{{ errores.categoria }}</p>{% endif %}</div>
-    <div class="campo"><label for="descripcion">¿De qué trata el club?</label>
+    <div class="dos-columnas">
+      <div class="campo {% if errores.nombre %}con-error{% endif %}"><label for="nombre">Nombre del club</label>
+        <input id="nombre" name="nombre" value="{{ valores.nombre }}" maxlength="60" required>
+        {% if errores.nombre %}<p class="error-campo">{{ errores.nombre }}</p>{% endif %}</div>
+      <div class="campo {% if errores.categoria %}con-error{% endif %}"><label for="categoria">Categoría</label>
+        <select id="categoria" name="categoria" required>
+          <option value="">Selecciona una categoría</option>
+          {% for c in categorias %}<option value="{{ c.id }}" {% if valores.categoria == str(c.id) %}selected{% endif %}>{{ c.nombre }}</option>{% endfor %}
+        </select>
+        {% if errores.categoria %}<p class="error-campo">{{ errores.categoria }}</p>{% endif %}</div>
+    </div>
+    <div class="campo {% if errores.descripcion %}con-error{% endif %}"><label for="descripcion">Descripción</label>
       <textarea id="descripcion" name="descripcion" rows="4" maxlength="1000" required>{{ valores.descripcion }}</textarea>
-      {% if errores.descripcion %}<p class="error-campo">{{ errores.descripcion }}</p>{% endif %}</div>
-    <div class="campo"><label for="justificacion">¿Por qué debería existir? (opcional)</label>
+      {% if errores.descripcion %}<p class="error-campo">{{ errores.descripcion }}</p>{% else %}<p class="ayuda-campo">Qué hace el club y a quién está dirigido (mínimo 10 caracteres).</p>{% endif %}</div>
+    <div class="campo {% if errores.justificacion %}con-error{% endif %}"><label for="justificacion">Justificación (opcional)</label>
       <textarea id="justificacion" name="justificacion" rows="3" maxlength="1000">{{ valores.justificacion }}</textarea>
       {% if errores.justificacion %}<p class="error-campo">{{ errores.justificacion }}</p>{% endif %}</div>
     <label class="casilla"><input type="checkbox" name="con_aprobacion" value="1" {% if valores.con_aprobacion %}checked{% endif %}>
-      Los nuevos miembros deben ser aprobados por el líder o los capitanes</label>
-    <button class="boton boton-primario">Enviar solicitud</button>
+      El ingreso de nuevos miembros requiere aprobación del líder o los capitanes</label>
+    <div class="acciones-formulario"><button class="boton boton-primario">Enviar solicitud</button></div>
   </form>
 </section>
 {% if solicitudes %}
-<section class="tarjeta">
-  <h2>Mis solicitudes</h2>
-  {% for s in solicitudes %}
-    <div class="fila-simple"><b>{{ s.nombre }}</b>
-      <span class="etiqueta etiqueta-{{ s.estado }}">{{ s.estado }}</span>
-      {% if s.comentario %}<span class="tenue">«{{ s.comentario }}»</span>{% endif %}</div>
-  {% endfor %}
+<section class="panel">
+  <div class="panel-cabecera"><h2>Mis solicitudes</h2></div>
+  <div class="tabla-envoltorio"><table class="tabla">
+    <thead><tr><th>Club</th><th>Enviada</th><th>Estado</th><th>Comentario</th></tr></thead>
+    <tbody>
+    {% for s in solicitudes %}
+      <tr><td><strong>{{ s.nombre }}</strong></td><td>{{ s.creado_en | fecha_corta }}</td>
+        <td><span class="etiqueta etiqueta-{{ s.estado }}">{{ s.estado }}</span></td><td class="tenue">{{ s.comentario }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table></div>
 </section>
 {% endif %}
 {% endblock %}

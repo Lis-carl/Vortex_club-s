@@ -95,7 +95,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | ID | Requerimiento | Prioridad |
 |----|---------------|-----------|
 | RF-22 | Cada club debe tener una sala de chat para sus miembros activos. | A |
-| RF-23 | El chat debe actualizarse automáticamente con los mensajes nuevos sin recargar la página. | M |
+| RF-23 | El panel de mensajes del chat debe actualizarse automáticamente (recarga HTML cada 5 segundos, sin JavaScript). | M |
 
 ### Eventos
 | ID | Requerimiento | Prioridad |
@@ -111,6 +111,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | RF-28 | El administrador debe ver un panel con solicitudes de club pendientes, usuarios y estadísticas. | A |
 | RF-29 | El administrador debe poder desactivar o reactivar cuentas de usuario. | M |
 | RF-30 | El administrador debe poder desactivar un club. | B |
+| RF-31 | El administrador debe poder asignar o cambiar el líder de un club escribiendo el CIF del estudiante. | A |
 
 ## 2.4 Requerimientos no funcionales
 
@@ -118,8 +119,8 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 |----|------|---------------|
 | RNF-01 | Restricción tecnológica | El servidor debe programarse en **Python 3.10+ usando solo la biblioteca estándar** (sin `pip install`). |
 | RNF-02 | Restricción tecnológica | La única base de datos permitida es **SQLite** mediante el módulo estándar `sqlite3`. |
-| RNF-03 | Restricción tecnológica | El navegador no debe depender de librerías externas (sin frameworks CSS/JS ni CDN). |
-| RNF-04 | Usabilidad | La interfaz debe ser minimalista y similar a UAM Virtual: color verde azulado, tarjetas blancas, tipografía sin serifa. Un usuario nuevo debe poder unirse a un club en menos de 3 clics desde el inicio. |
+| RNF-03 | Restricción tecnológica | **Sin JavaScript.** Todas las páginas se generan en el servidor con Python; el navegador solo recibe HTML y CSS propios (sin frameworks ni CDN). La política de seguridad de contenido bloquea cualquier script (`script-src 'none'`). |
+| RNF-04 | Usabilidad | La interfaz debe ser sobria, profesional y similar a UAM Virtual: color verde petróleo institucional, paneles blancos con bordes finos y esquinas casi rectas, una sola tipografía y **sin emojis en títulos ni menús**. Un usuario nuevo debe poder unirse a un club en menos de 3 clics desde el inicio. |
 | RNF-05 | Usabilidad | El diseño debe adaptarse a pantallas de celular (ancho ≥ 360 px). |
 | RNF-06 | Seguridad | Las contraseñas se guardan con **PBKDF2-HMAC-SHA256** con sal aleatoria y 200 000 iteraciones; nunca en texto plano. |
 | RNF-07 | Seguridad | Todo formulario que modifique datos debe llevar un **token CSRF** ligado a la sesión. |
@@ -138,7 +139,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | ID | Regla |
 |----|-------|
 | RN-01 | El CIF es único y numérico (8 dígitos); el correo es único. |
-| RN-02 | Cada club tiene **exactamente un líder** activo. |
+| RN-02 | Cada club tiene **como máximo un líder**. Lo asigna la administración (o el líder actual al transferir el liderazgo). |
 | RN-03 | Solo los **miembros activos** de un club pueden publicar, comentar, chatear y proponer eventos en él. |
 | RN-04 | Cualquier usuario con sesión puede leer el foro y los anuncios de un club, aunque no sea miembro. El chat solo lo ven los miembros. |
 | RN-05 | Un usuario tiene como máximo una reacción de cada tipo por publicación (al volver a pulsarla se quita). |
@@ -164,6 +165,24 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | Eliminar contenido del club | | | | ✔ | ✔ | |
 | Nombrar capitanes, expulsar, editar club | | | | | ✔ | |
 | Aprobar clubes, anuncios generales, gestionar cuentas | | | | | | ✔ |
+| Asignar el líder de un club | | | | | | ✔ |
 
 > Votar y reaccionar se permite a cualquier usuario con sesión (no solo miembros), para que el
 > foro sea abierto a la lectura y la participación ligera, como en Reddit.
+
+## 2.7 Datos iniciales
+
+La plataforma se entrega **vacía**: no trae usuarios, publicaciones, anuncios ni eventos de
+ejemplo. Al crearse la base de datos solo se cargan:
+
+- las 8 categorías de clubes;
+- la cuenta de administración;
+- el catálogo oficial de **14 clubes** del afiche «Contactos de clubes, I semestre 2026» de la
+  Dirección de Vida Estudiantil: Club Empresarial, Club de Debate, Voluntariado por el Autismo,
+  Voluntariado Aldeas Infantiles SOS, Club de Cine, Club de Modelos, Club de Lectura, Club de
+  Maestros de Ceremonias, Club de Edecanes, Club Conanca, Club de Traductores, Voluntariado por la
+  Niñez, Club de Maquillaje y Proyección Juvenil UNEN-UAM.
+
+Los clubes empiezan sin miembros y sin líder. Cuando cada líder crea su cuenta, la administración
+lo asigna desde su panel (RF-31) y el líder completa la descripción del club. Los datos de
+contacto del afiche (correos y teléfonos personales) no se cargan en la plataforma.

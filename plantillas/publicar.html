@@ -2,23 +2,24 @@
 {% block titulo %}Crear publicación{% endblock %}
 {% block contenido %}
 {% include "parciales/club_cabecera.html" %}
-<section class="tarjeta">
-  <h2>Crear publicación en c/{{ club.slug }}</h2>
-  <form method="post" action="/clubes/{{ club.slug }}/publicar" enctype="multipart/form-data" class="formulario" novalidate>
+<section class="panel">
+  <div class="panel-cabecera"><h2>Nueva publicación</h2></div>
+  <form method="post" action="/clubes/{{ club.slug }}/publicar" enctype="multipart/form-data" class="panel-cuerpo formulario" novalidate>
     <input type="hidden" name="csrf" value="{{ csrf }}">
-    <div class="campo"><label for="titulo">Título</label>
+    <div class="campo {% if errores.titulo %}con-error{% endif %}"><label for="titulo">Título</label>
       <input id="titulo" name="titulo" value="{{ valores.titulo }}" maxlength="150" required>
       {% if errores.titulo %}<p class="error-campo">{{ errores.titulo }}</p>{% endif %}</div>
-    <div class="campo"><label for="contenido">Texto (opcional)</label>
-      <textarea id="contenido" name="contenido" rows="6" maxlength="10000">{{ valores.contenido }}</textarea>
+    <div class="campo {% if errores.contenido %}con-error{% endif %}"><label for="contenido">Texto (opcional)</label>
+      <textarea id="contenido" name="contenido" rows="7" maxlength="10000">{{ valores.contenido }}</textarea>
       {% if errores.contenido %}<p class="error-campo">{{ errores.contenido }}</p>{% endif %}</div>
-    <div class="campo"><label for="imagen">Imagen (opcional, PNG/JPG/GIF/WEBP, máx. 2 MB)</label>
+    <div class="campo {% if errores.imagen %}con-error{% endif %}"><label for="imagen">Imagen (opcional)</label>
       <input id="imagen" type="file" name="imagen" accept="image/png,image/jpeg,image/gif,image/webp">
-      {% if errores.imagen %}<p class="error-campo">{{ errores.imagen }}</p>{% endif %}</div>
-    <div class="fila-botones">
-      <a class="boton boton-claro" href="/clubes/{{ club.slug }}">Cancelar</a>
+      {% if errores.imagen %}<p class="error-campo">{{ errores.imagen }}</p>{% else %}<p class="ayuda-campo">PNG, JPG, GIF o WEBP de hasta 2 MB.</p>{% endif %}</div>
+    <div class="acciones-formulario">
+      <a class="boton boton-secundario" href="/clubes/{{ club.slug }}">Cancelar</a>
       <button class="boton boton-primario">Publicar</button>
     </div>
   </form>
 </section>
 {% endblock %}
+{% block lateral %}{% include "parciales/club_lateral.html" %}{% endblock %}

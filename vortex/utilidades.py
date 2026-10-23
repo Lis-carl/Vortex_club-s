@@ -75,7 +75,8 @@ def iniciales(texto):
     return "".join(p[0] for p in partes[:2]).upper() or "?"
 
 
-_COLORES = ["#1497A6", "#7C5CBF", "#D9822B", "#3B8E5A", "#C2506B", "#3F6FD1", "#8A6D3B", "#2F8F9D"]
+# Tonos sobrios para los avatares de iniciales.
+_COLORES = ["#0B4A57", "#12707E", "#3A5A78", "#56653A", "#7A3E48", "#4A4F57", "#8A6A2E", "#2F5D50"]
 
 
 def color(texto):

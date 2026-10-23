@@ -7,145 +7,139 @@
 
 | Referente | Qué se toma |
 |-----------|-------------|
-| **UAM Virtual** (pantalla de acceso) | Tarjeta blanca centrada sobre fondo, logotipo arriba, campos con ícono a la izquierda, botón ancho verde azulado "Acceder", recuadro celeste de ayuda "¿Qué hacer si no puedes acceder?", tipografía redondeada sin serifa. Usuario = **CIF**. |
-| **Reddit** (foro) | Barra superior con buscador y botón **Crear**, menú lateral izquierdo (Inicio, Explorar, Crear comunidad), feed central de tarjetas con "r/club • hace 12 h", título grande, imagen, botón **Unirse**, votos y comentarios. |
+| **UAM Virtual** (pantalla de acceso) | Formulario en una caja blanca, usuario = **CIF**, botón ancho "Acceder", recuadro de ayuda debajo del formulario, color verde azulado institucional. |
+| **Reddit** (foro) | Barra superior con buscador, menú lateral izquierdo, lista de publicaciones con columna de votos a la izquierda, metadatos «club · autor · hace 2 h», comentarios anidados. |
 
-Se combinan así: **la identidad visual es la de UAM Virtual** (colores, tarjetas, acceso) y **la
-estructura del foro es la de Reddit**.
+Se combinan así: **la sobriedad e identidad institucional de UAM Virtual** y **la estructura
+del foro de Reddit**, con un acabado formal: líneas rectas, bordes finos y sin adornos.
 
 ## 6.2 Guía de estilo
 
 | Elemento | Valor |
 |----------|-------|
-| Color primario | `#1497A6` (verde azulado del botón "Acceder") |
-| Primario oscuro (hover) | `#0E7C89` |
-| Color de acento suave | `#E8F4FB` (recuadro de ayuda) |
-| Texto principal | `#1F2937` |
-| Texto secundario | `#6B7280` |
-| Fondo de la app | `#F3F6F8` |
-| Tarjetas | `#FFFFFF`, borde `#E5E7EB`, radio 10 px, sombra muy suave |
-| Error / éxito | `#DC2626` / `#16A34A` |
-| Tipografía | `Poppins`, con respaldo `"Segoe UI", system-ui, sans-serif` (sin descargar fuentes) |
-| Íconos | Emojis y SVG en línea (sin librerías de íconos) |
-| Modo oscuro | Automático según el sistema operativo (`prefers-color-scheme`) |
+| Logotipo | Monograma **VC** (Vortex Club's) trazado en SVG: cuadrado verde petróleo con letras blancas (`estatico/img/logo.svg`) y versión en contorno blanco para fondos oscuros (`logo-blanco.svg`) |
+| Color de marca | `#0B4A57` (verde petróleo); hover `#073742`; acento `#12707E`; fondo suave `#E4EFF1` |
+| Texto | Títulos `#14212B`, texto `#27343E`, secundario `#5E6C78` |
+| Fondo y paneles | Fondo `#F2F4F6`; paneles blancos con borde de 1 px `#D7DDE3` y esquinas de **3 px** (casi rectas), sin sombras |
+| Estados | Peligro `#A8261C`, éxito `#1D6B45`, pendiente `#7A5300`, siempre con su fondo claro |
+| Tipografía | Una sola familia del sistema: `"Segoe UI", "Helvetica Neue", Arial` (no se descargan fuentes) |
+| Rótulos de sección | Mayúsculas pequeñas con espaciado amplio (p. ej. «ANUNCIOS GENERALES») |
+| Íconos y emojis | **Ninguno** en títulos, menús ni botones. Los únicos emojis visibles son las seis reacciones del foro, porque son el contenido de esa función |
+| Tema | Claro, único, para mantener una apariencia uniforme |
+| JavaScript | **Ninguno.** Todo se resuelve con HTML generado por Python y CSS |
 
 ## 6.3 Principios de interacción humano-computadora aplicados
 
-1. **Ajuste tarea-usuario:** las tres tareas más frecuentes (ver feed, entrar a un club,
+1. **Ajuste tarea-usuario:** las tareas más frecuentes (ver publicaciones, entrar a un club,
    publicar) están a un clic desde el menú lateral.
-2. **Consistencia:** todas las páginas de club comparten la misma cabecera y pestañas
-   (Foro · Anuncios · Eventos · Miembros · Chat).
-3. **Retroalimentación:** cada acción muestra un mensaje breve ("Te uniste al club",
-   "Propuesta enviada"); los votos y reacciones cambian al instante.
-4. **Prevención de errores:** acciones destructivas (eliminar, expulsar, salir) piden
-   confirmación; los botones que el usuario no puede usar no se muestran.
-5. **Carga cognitiva baja:** máximo 6 campos por formulario; etiquetas siempre visibles.
-6. **Accesibilidad:** contraste AA, etiquetas `<label>` en todos los campos, navegación con
+2. **Consistencia:** todas las páginas de club comparten la misma cabecera y las mismas pestañas
+   (Foro · Anuncios · Eventos · Miembros · Chat · Configuración).
+3. **Retroalimentación:** cada acción muestra un aviso breve ("Te uniste al club",
+   "Propuesta enviada"); al votar o reaccionar la página vuelve exactamente a la misma publicación
+   (ancla `#pub-ID`) con el contador actualizado.
+4. **Prevención de errores:** acciones destructivas (eliminar, expulsar, salir, desactivar) piden
+   confirmación con un recuadro desplegable `<details>` (sin JavaScript); los botones que el
+   usuario no puede usar no se muestran.
+5. **Carga cognitiva baja:** formularios cortos, etiquetas siempre visibles, ayudas bajo el campo.
+6. **Accesibilidad:** contraste AA, `<label>` en todos los campos, foco visible al navegar con
    teclado, textos alternativos en imágenes.
 
 ## 6.4 Mapa de navegación
 
 ```mermaid
 flowchart TD
-    ACC["Acceder"] <--> REG["Registrarse"]
-    ACC --> INI["Inicio (feed)"]
+    ACC["Iniciar sesión"] <--> REG["Crear cuenta"]
+    ACC --> INI["Inicio (publicaciones)"]
     INI --> EXP["Explorar clubes"]
     INI --> ANG["Anuncios generales"]
     INI --> EVE["Próximos eventos"]
     INI --> PER["Mi perfil"]
-    INI --> ADM["Panel de administración<br/>(solo admin)"]
-    EXP --> SOL["Solicitar nuevo club"]
+    INI --> ADM["Administración<br/>(solo administración)"]
+    EXP --> SOL["Solicitar un club nuevo"]
     EXP --> CLU["Página del club"]
     CLU --> FOR["Foro"]
     CLU --> ANC["Anuncios del club"]
     CLU --> EVC["Eventos del club"]
     CLU --> MIE["Miembros"]
     CLU --> CHA["Chat"]
-    CLU --> EDI["Editar club (líder)"]
+    CLU --> EDI["Configuración (líder)"]
     FOR --> PUB["Crear publicación"]
-    FOR --> HIL["Hilo de la publicación"]
+    FOR --> HIL["Publicación y comentarios"]
     EVC --> PRO["Proponer evento"]
 ```
 
 ## 6.5 Prototipos de pantalla (wireframes)
 
-### Acceder (estilo UAM Virtual)
+### Iniciar sesión
 
 ```text
-┌──────────────────────────── fondo degradado verde azulado ───────────────────────────┐
-│                         ┌──────────────────────────────┐                             │
-│                         │        ( ◉ ) VORTEX CLUB      │                             │
-│                         │     Clubes estudiantiles UAM  │                             │
-│                         │                               │                             │
-│                         │  Bienvenido/a. Inicia sesión  │                             │
-│                         │  con tu CIF para ver tus      │                             │
-│                         │  clubes.                      │                             │
-│                         │ ┌───────────────────────────┐ │                             │
-│                         │ │ 👤  CIF                    │ │                             │
-│                         │ └───────────────────────────┘ │                             │
-│                         │ ┌───────────────────────────┐ │                             │
-│                         │ │ 🔑  Contraseña          👁 │ │                             │
-│                         │ └───────────────────────────┘ │                             │
-│                         │ [         Acceder           ] │                             │
-│                         │ ┌───────────────────────────┐ │                             │
-│                         │ │ ¿No tienes cuenta?         │ │                             │
-│                         │ │ • Regístrate con tu CIF    │ │                             │
-│                         │ └───────────────────────────┘ │                             │
-│                         └──────────────────────────────┘                             │
-└──────────────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────┬───────────────────────────────────────────────┐
+│ [VC] Vortex Club's           │                                               │
+│ (panel verde petróleo)       │      ┌─────────────────────────────────┐      │
+│                              │      │ Iniciar sesión                  │      │
+│ Plataforma de clubes         │      │ Ingresa con tu CIF y contraseña │      │
+│ estudiantiles                │      │ CIF         [_______________]   │      │
+│                              │      │ Contraseña  [_______________]   │      │
+│ ─ Catálogo e inscripción     │      │ [            Acceder          ] │      │
+│ ─ Anuncios generales y club  │      │ ┃ ¿No tienes cuenta? Crea una   │      │
+│ ─ Foros, chat y eventos      │      │ ┃ ¿Olvidaste tu contraseña? ... │      │
+│                              │      └─────────────────────────────────┘      │
+│ COMUNIDAD UNIVERSITARIA      │                                               │
+└──────────────────────────────┴───────────────────────────────────────────────┘
 ```
 
-### Inicio (estilo Reddit, colores UAM)
+### Inicio
 
 ```text
-┌─────────────────────────────────────────────────────────────────────────────────────┐
-│ ◉ Vortex Club     [ 🔍 Buscar clubes...              ]        [+ Crear]  Carlos ▾   │
-├───────────────┬───────────────────────────────────────────────┬─────────────────────┤
-│ 🏠 Inicio      │ ┌───────────────────────────────────────────┐ │ 📢 Anuncios generales│
-│ 🧭 Explorar    │ │ c/robotica • Ana López • hace 2 h          │ │ • Feria de clubes   │
-│ 📢 Anuncios    │ │ Taller de Arduino este viernes             │ │   15/11             │
-│ 📅 Eventos     │ │ [ imagen ]                                 │ │ • Cierre de solic.  │
-│ ＋ Crear club   │ │ ▲ 12 ▼   💬 4   👍3 ❤️2 🔥1  [+😊]          │ │                     │
-│ ─────────────  │ └───────────────────────────────────────────┘ │ 📅 Próximos eventos │
-│ MIS CLUBES     │ ┌───────────────────────────────────────────┐ │ • 08/11 Hackatón    │
-│ 🤖 Robótica     │ │ c/ajedrez • ...                            │ │                     │
-│ ♟ Ajedrez       │ └───────────────────────────────────────────┘ │                     │
-└───────────────┴───────────────────────────────────────────────┴─────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│ [VC] Vortex Club's    [ Buscar clubes            ][Buscar]          [AL] Ana ▾   │
+├───────────────┬────────────────────────────────────────────┬─────────────────────┤
+│ GENERAL       │ INICIO                                     │ ANUNCIOS GENERALES  │
+│ ┃ Inicio      │ Publicaciones          [Mis clubes|Todos]  │ Título del anuncio  │
+│   Explorar    │ ───────────────────────────────────────────│ Fijado · hace 2 h   │
+│   Anuncios    │ [Recientes|Populares]                      │ Ver todos           │
+│   Eventos     │ ┌──┬──────────────────────────────────────┐├─────────────────────┤
+│ GESTIÓN       │ │▲ │ Club de Cine · Publicado por … · 3 h │ │ PRÓXIMOS EVENTOS    │
+│   Crear club  │ │3 │ Título de la publicación             │ │ [08 NOV] Título     │
+│ MIS CLUBES    │ │▼ │ Extracto…                            │ │ Ver calendario      │
+│   Club de Cine│ │  │ 2 comentarios  👍 1  Reaccionar      │ │                     │
+│               │ └──┴──────────────────────────────────────┘│                     │
+└───────────────┴────────────────────────────────────────────┴─────────────────────┘
 ```
 
 ### Página del club
 
 ```text
 ┌───────────────────────────────────────────────────────────────┐
-│ [R]  Robótica                                   [ Unirme ]    │
-│      Tecnología · 24 miembros · Abierto                       │
-│      Construimos robots y competimos...                       │
+│ [CC]  ARTE Y CULTURA                          [Unirme al club]│
+│       Club de Cine                                            │
+│       0 miembros · Ingreso abierto                            │
 ├───────────────────────────────────────────────────────────────┤
-│  Foro | Anuncios | Eventos | Miembros | Chat                  │
-├───────────────────────────────────────────────────────────────┤
-│  Ordenar: (Nuevos) Populares            [ + Crear publicación ]│
-│  ...tarjetas de publicaciones...                              │
+│  Foro   Anuncios   Eventos   Miembros   Chat   Configuración  │
+│  ━━━━                                                         │
 └───────────────────────────────────────────────────────────────┘
 ```
 
-### Miembros
+### Miembros (tabla)
 
 ```text
- LÍDER        👑 Ana López (Ing. en Sistemas)
- CAPITANES    ⭐ Luis Pérez         [Quitar capitán] (solo líder)
- MIEMBROS     • María Ruiz         [Nombrar capitán] [Expulsar]
- PENDIENTES   • Jorge Díaz         [Aceptar] [Rechazar]   (líder/capitán)
+ INTEGRANTE          CARRERA        ROL         (acciones solo para el líder)
+ Ana López           Sistemas       LÍDER
+ Luis Pérez          Sistemas       CAPITÁN     Quitar capitán · Transferir liderazgo · Expulsar
+ María Ruiz          Diseño         MIEMBRO     Nombrar capitán · Transferir liderazgo · Expulsar
 ```
 
 ### Chat
 
 ```text
 ┌───────────────────────────────────────────────┐
-│ Ana López  10:02                              │
-│ ¿Quién trae el cautín mañana?                 │
-│                         Luis Pérez  10:03     │
-│                               Yo lo llevo 👍   │
-├───────────────────────────────────────────────┤
+│ CHAT DEL CLUB                    Solo miembros│
+│ ┌───────────────────────────────────────────┐ │  ← marco que se recarga
+│ │ Ana López 10:02                           │ │    solo cada 5 segundos
+│ │ ¿Quién trae el cautín mañana?             │ │
+│ │                      Luis Pérez 10:03     │ │
+│ │                           Yo lo llevo.    │ │
+│ └───────────────────────────────────────────┘ │
 │ [ Escribe un mensaje...              ] [Enviar]│
 └───────────────────────────────────────────────┘
 ```
@@ -154,35 +148,36 @@ flowchart TD
 
 | Salida | Medio | Contenido | Orden |
 |--------|-------|-----------|-------|
-| Feed de inicio | Pantalla | Publicaciones de mis clubes con club, autor, fecha relativa, título, extracto, imagen, puntaje, comentarios y reacciones | Más recientes primero |
-| Foro del club | Pantalla | Igual que el feed, filtrado por club | Nuevos o Populares (puntaje) |
-| Anuncios | Pantalla | Título, autor, fecha, texto; insignia 📌 si está fijado | Fijados primero, luego fecha |
-| Integrantes | Pantalla | Agrupados por rol con nombre y carrera | Líder, capitanes, miembros (alfabético) |
-| Próximos eventos | Pantalla | Fecha destacada tipo calendario, título, club, lugar, cupo | Fecha ascendente |
-| Panel admin | Pantalla | Totales (usuarios, clubes, publicaciones, eventos), solicitudes pendientes, tabla de usuarios | — |
-| Chat | Pantalla, actualización cada 3 s | Autor, hora, mensaje; mis mensajes alineados a la derecha | Cronológico |
-| Conteos de reacciones / puntaje | JSON (para la página) | `{"puntaje": 12}` / `{"conteos": {"👍": 3}}` | — |
+| Inicio | Pantalla | Publicaciones de mis clubes con club, autor, fecha relativa, título, extracto, imagen, puntaje, comentarios y reacciones | Recientes o Populares |
+| Foro del club | Pantalla | Igual que el inicio, filtrado por club | Recientes o Populares (puntaje + reacciones + comentarios) |
+| Anuncios | Pantalla | Título, autor, fecha, texto; rótulo «Fijado» | Fijados primero, luego fecha |
+| Integrantes | Tabla | Nombre, carrera, rol y fecha de ingreso | Líder, capitanes, miembros (alfabético) |
+| Próximos eventos | Pantalla | Bloque de fecha (día y mes), título, hora, lugar, cupo, club | Fecha ascendente |
+| Administración | Pantalla y tablas | Totales (usuarios, clubes, publicaciones, eventos), solicitudes pendientes, tabla de clubes con asignación de líder, tabla de usuarios | — |
+| Chat | Marco con recarga automática cada 5 s | Autor, hora y mensaje; los propios a la derecha | Cronológico, el más nuevo abajo |
+| Estado vacío | Pantalla | Mensaje sobrio y acción sugerida («Aún no perteneces a ningún club» + Explorar clubes) | — |
 
 ## 6.7 Diseño de la entrada (formularios)
 
 | Formulario | Campos (tipo HTML) | Obligatorios |
 |-----------|--------------------|-------------|
-| Registro | CIF (`text`, `inputmode=numeric`, `maxlength=8`), nombre (`text`), correo (`email`), carrera (`text` + `datalist`), contraseña (`password`), confirmar (`password`) | Todos |
-| Acceder | CIF, contraseña | Todos |
+| Crear cuenta | CIF (`text`, `inputmode=numeric`, `maxlength=8`), nombre, correo (`email`), carrera (`text` + `datalist`), contraseña y confirmación (`password`) | Todos menos carrera |
+| Iniciar sesión | CIF, contraseña | Todos |
 | Solicitar club | Nombre, categoría (`select`), descripción (`textarea`), justificación (`textarea`), ¿requiere aprobación? (`checkbox`) | Nombre, categoría, descripción |
-| Crear publicación | Título, contenido (`textarea`), imagen (`file`, `accept=image/*`) | Título |
-| Comentario | Contenido (`textarea`), padre (oculto) | Contenido |
+| Crear publicación | Título, texto (`textarea`), imagen (`file`) | Título |
+| Comentario / respuesta | Contenido (`textarea`), padre (oculto) | Contenido |
 | Anuncio | Título, contenido, fijar (`checkbox`) | Título, contenido |
-| Propuesta de evento | Título, descripción, fecha y hora (`datetime-local`), lugar, cupo (`number`), recursos (`textarea`) | Título, descripción, fecha, lugar |
-| Revisión de propuesta | Decisión (botón Aprobar / Rechazar), comentario | Decisión |
+| Propuesta de evento | Nombre, descripción, fecha y hora (`datetime-local`), lugar, cupo (`number`), recursos | Nombre, descripción, fecha, lugar |
+| Revisión de propuesta | Decisión (Aprobar / Rechazar), comentario | Decisión |
+| Asignar líder (administración) | CIF del estudiante | CIF |
 | Mensaje de chat | Contenido (`text`, `maxlength=1000`) | Contenido |
 
-Todos los formularios que modifican datos llevan el campo oculto `csrf` y usan el método `POST`.
+Todos los formularios que modifican datos usan `POST` y llevan el campo oculto `csrf`.
 
 ## 6.8 Procedimientos de validación de entrada (cap. 15)
 
-Se valida **dos veces**: en el navegador (atributos `required`, `maxlength`, `type`) para dar
-retroalimentación rápida, y **siempre en el servidor**, que es la validación que cuenta.
+Se valida **dos veces**: en el navegador con atributos HTML (`required`, `maxlength`, `type`), que
+no requieren JavaScript, y **siempre en el servidor con Python**, que es la validación que cuenta.
 
 | Prueba de Kendall | Dónde se aplica |
 |-------------------|-----------------|
@@ -191,8 +186,8 @@ retroalimentación rápida, y **siempre en el servidor**, que es la validación 
 | Prueba de clase / composición | CIF solo dígitos; cupo entero; correo con `@` y dominio con punto |
 | Prueba de rango | Cupo 1–10 000; fecha del evento posterior a ahora; valor de voto ∈ {−1, 1} |
 | Prueba de valores no válidos | Rol ∈ {miembro, capitán, líder}; reacción ∈ 6 emojis; categoría existente |
-| Prueba de referencias cruzadas | Contraseña = confirmación; CIF y correo no registrados; nombre de club no repetido |
+| Prueba de referencias cruzadas | Contraseña = confirmación; CIF y correo no registrados; nombre de club no repetido; CIF del líder existente y activo |
 | Verificación de archivo | Imagen ≤ 2 MB y firma binaria de PNG, JPEG, GIF o WEBP |
 
-Cuando hay errores, el formulario se vuelve a mostrar **con lo que el usuario escribió** y un
-mensaje junto a cada campo con problema, para no obligarlo a escribir todo de nuevo.
+Cuando hay errores, el formulario se vuelve a mostrar **con lo que el usuario escribió**, el campo
+con problema resaltado en rojo y el mensaje debajo.

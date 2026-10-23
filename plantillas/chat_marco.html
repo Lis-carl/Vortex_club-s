@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="refresh" content="5">
+  <title>Mensajes</title>
+  <link rel="stylesheet" href="/estatico/css/estilo.css?v=2">
+</head>
+<body class="cuerpo-marco">
+  {# Los mensajes llegan del más nuevo al más antiguo; column-reverse los muestra abajo, como en cualquier chat. #}
+  <div class="mensajes">
+    {% for m in mensajes %}
+    <div class="mensaje {% if m.autor_id == usuario.id %}propio{% endif %}">
+      <p class="mensaje-meta"><strong>{{ m.autor_nombre }}</strong><span>{{ m.creado_en | hora }}</span></p>
+      <p class="mensaje-texto">{{ m.contenido }}</p>
+    </div>
+    {% else %}
+    <p class="mensajes-vacio">Aún no hay mensajes. Escribe el primero.</p>
+    {% endfor %}
+  </div>
+</body>
+</html>

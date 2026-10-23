@@ -1,19 +1,21 @@
 <div class="reacciones" id="reac-{{ pub.id }}">
   {% for r in pub.reacciones %}{% if r.n > 0 %}
-  <form method="post" action="/publicaciones/{{ pub.id }}/reaccion" data-ajax="reac-{{ pub.id }}">
-    <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="siguiente" value="{{ ruta_completa }}">
+  <form method="post" action="/publicaciones/{{ pub.id }}/reaccion">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <input type="hidden" name="siguiente" value="{{ ruta_completa }}#pub-{{ pub.id }}">
     <input type="hidden" name="tipo" value="{{ r.tipo }}">
-    <button class="chip {% if r.mia %}chip-activo{% endif %}" title="Quitar o poner esta reacción">{{ r.tipo }} {{ r.n }}</button>
+    <button class="ficha {% if r.mia %}ficha-activa{% endif %}" title="{% if r.mia %}Quitar mi reacción{% else %}Reaccionar igual{% endif %}">{{ r.tipo }} <b>{{ r.n }}</b></button>
   </form>
   {% endif %}{% endfor %}
-  <details class="selector">
-    <summary title="Reaccionar" aria-label="Elegir una reacción">☺＋</summary>
-    <div class="selector-menu">
+  <details class="reaccionar">
+    <summary class="accion">Reaccionar</summary>
+    <div class="reaccionar-menu">
       {% for r in pub.reacciones %}
-      <form method="post" action="/publicaciones/{{ pub.id }}/reaccion" data-ajax="reac-{{ pub.id }}">
-        <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="siguiente" value="{{ ruta_completa }}">
+      <form method="post" action="/publicaciones/{{ pub.id }}/reaccion">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <input type="hidden" name="siguiente" value="{{ ruta_completa }}#pub-{{ pub.id }}">
         <input type="hidden" name="tipo" value="{{ r.tipo }}">
-        <button class="emoji {% if r.mia %}emoji-activo{% endif %}">{{ r.tipo }}</button>
+        <button class="emoji {% if r.mia %}emoji-activo{% endif %}" aria-label="Reacción {{ r.tipo }}">{{ r.tipo }}</button>
       </form>
       {% endfor %}
     </div>

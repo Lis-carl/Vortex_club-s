@@ -1,9 +1,13 @@
-<article class="tarjeta evento">
-  <div class="fecha-tarjeta fecha-grande"><b>{{ e.fecha_inicio | dia }}</b><span>{{ e.fecha_inicio | mes }}</span></div>
-  <div class="evento-texto">
+<article class="evento">
+  <div class="fecha"><b>{{ e.fecha_inicio | dia }}</b><span>{{ e.fecha_inicio | mes }}</span></div>
+  <div>
     <h3>{{ e.titulo }}</h3>
-    <p class="tenue">🕒 {{ e.fecha_inicio | hora }} · 📍 {{ e.lugar }}{% if e.cupo %} · 👥 cupo {{ e.cupo }}{% endif %}
-      {% if mostrar_club %} · <a href="/clubes/{{ e.club_slug }}/eventos">{{ e.club_nombre }}</a>{% endif %}</p>
+    <p class="evento-datos">
+      <span>Hora: {{ e.fecha_inicio | hora }}</span>
+      <span>Lugar: {{ e.lugar }}</span>
+      {% if e.cupo %}<span>Cupo: {{ e.cupo }}</span>{% endif %}
+      {% if mostrar_club %}<span>Club: <a href="/clubes/{{ e.club_slug }}/eventos">{{ e.club_nombre }}</a></span>{% endif %}
+    </p>
     <p>{{ e.descripcion | saltos }}</p>
   </div>
 </article>

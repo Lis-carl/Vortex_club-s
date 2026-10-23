@@ -1,12 +1,15 @@
-<div class="votos" id="{{ v_id }}">
-  <form method="post" action="{{ v_url }}" data-ajax="{{ v_id }}">
-    <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="siguiente" value="{{ ruta_completa }}">
+{# Variables: v_url, v_id, v_puntaje, v_mio, v_ancla, v_modo (vertical | horizontal) #}
+<div class="votos votos-{{ v_modo }}" id="{{ v_id }}">
+  <form method="post" action="{{ v_url }}">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <input type="hidden" name="siguiente" value="{{ ruta_completa }}#{{ v_ancla }}">
     <input type="hidden" name="valor" value="1">
     <button class="voto {% if v_mio == 1 %}voto-arriba{% endif %}" title="Votar a favor" aria-label="Votar a favor">▲</button>
   </form>
   <span class="puntaje" aria-label="Puntaje">{{ v_puntaje }}</span>
-  <form method="post" action="{{ v_url }}" data-ajax="{{ v_id }}">
-    <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="siguiente" value="{{ ruta_completa }}">
+  <form method="post" action="{{ v_url }}">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <input type="hidden" name="siguiente" value="{{ ruta_completa }}#{{ v_ancla }}">
     <input type="hidden" name="valor" value="-1">
     <button class="voto {% if v_mio == -1 %}voto-abajo{% endif %}" title="Votar en contra" aria-label="Votar en contra">▼</button>
   </form>

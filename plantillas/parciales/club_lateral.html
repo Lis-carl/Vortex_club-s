@@ -1,7 +1,14 @@
-<section class="tarjeta">
-  <h3>Acerca de</h3>
-  <p>{{ club.descripcion | saltos }}</p>
-  <p class="tenue">Creado {{ club.creado_en | fecha_corta }}</p>
-  {% if lider %}<p>👑 Líder: <a href="/perfil/{{ lider.cif }}">{{ lider.nombre }}</a></p>{% endif %}
-  {% if es_miembro %}<a class="boton boton-primario boton-ancho" href="/clubes/{{ club.slug }}/publicar">＋ Crear publicación</a>{% endif %}
+<section class="panel">
+  <div class="panel-cabecera"><h2>Acerca del club</h2></div>
+  <div class="panel-cuerpo">
+    {% if club.descripcion %}<p>{{ club.descripcion | saltos }}</p>
+    {% else %}<p class="tenue">El club aún no ha publicado su descripción.</p>{% endif %}
+  </div>
+  <ul class="datos-club">
+    <li><span>Categoría</span><span>{{ club.categoria }}</span></li>
+    <li><span>Miembros</span><span>{{ club.n_miembros }}</span></li>
+    <li><span>Líder</span><span>{% if lider %}<a href="/perfil/{{ lider.cif }}">{{ lider.nombre }}</a>{% else %}Sin asignar{% endif %}</span></li>
+    <li><span>Ingreso</span><span>{% if club.requiere_aprobacion %}Con aprobación{% else %}Abierto{% endif %}</span></li>
+  </ul>
+  {% if es_miembro %}<div class="panel-pie"><a class="boton boton-primario boton-ancho" href="/clubes/{{ club.slug }}/publicar">Crear publicación</a></div>{% endif %}
 </section>

@@ -1,5 +1,4 @@
 """Utilidades de prueba: servidor temporal y un cliente HTTP con cookies (solo biblioteca estándar)."""
-import json
 import os
 import re
 import shutil
@@ -19,6 +18,7 @@ os.environ["VORTEX_SUBIDAS"] = os.path.join(_TEMPORAL, "subidas")
 os.environ["VORTEX_ITERACIONES"] = "1000"   # solo para pruebas: acelera PBKDF2
 
 from vortex import bd, servidor  # noqa: E402
+from pruebas import datos_prueba  # noqa: E402
 
 servidor.Manejador.log_message = lambda *a, **k: None   # sin ruido en la consola de pruebas
 
@@ -28,9 +28,6 @@ PNG = b"\x89PNG\r\n\x1a\n" + b"0" * 64
 class Respuesta:
     def __init__(self, estado, cuerpo, url):
         self.estado, self.cuerpo, self.url = estado, cuerpo, url
-
-    def json(self):
-        return json.loads(self.cuerpo)
 
 
 class Cliente:
@@ -50,22 +47,19 @@ class Cliente:
             finally:
                 e.close()
 
-    def get(self, ruta, ajax=False):
-        req = Request(self.base + ruta, headers={"X-Requested-With": "fetch"} if ajax else {})
-        return self._enviar(req)
+    def get(self, ruta):
+        return self._enviar(Request(self.base + ruta))
 
     def token(self, pagina="/acceder"):
         html = self.get(pagina).cuerpo
         m = re.search(r'name="csrf" value="([^"]+)"', html)
         return m.group(1) if m else ""
 
-    def post(self, ruta, datos=None, desde="/", ajax=False, csrf=True):
+    def post(self, ruta, datos=None, desde="/", csrf=True):
         datos = dict(datos or {})
         if csrf and "csrf" not in datos:
             datos["csrf"] = self.token(desde)
         cabeceras = {"Content-Type": "application/x-www-form-urlencoded"}
-        if ajax:
-            cabeceras["X-Requested-With"] = "fetch"
         return self._enviar(Request(self.base + ruta, urlencode(datos).encode(), cabeceras))
 
     def post_multipart(self, ruta, campos, archivos, desde="/"):
@@ -89,7 +83,12 @@ class Cliente:
 
 
 class PruebaServidor(unittest.TestCase):
-    """Cada clase de prueba levanta su propio servidor con una base de datos nueva (con datos de ejemplo)."""
+    """Cada clase de prueba levanta su propio servidor con una base de datos nueva.
+
+    Por omisión se cargan los datos ficticios de pruebas/datos_prueba.py; con_datos_prueba = False
+    deja la base tal como la crea la aplicación real (vacía, solo con el catálogo oficial de clubes).
+    """
+    con_datos_prueba = True
 
     @classmethod
     def setUpClass(cls):
@@ -97,7 +96,12 @@ class PruebaServidor(unittest.TestCase):
         for sufijo in ("", "-wal", "-shm"):
             if os.path.exists(ruta_bd + sufijo):
                 os.remove(ruta_bd + sufijo)
-        bd.inicializar(con_demo=True)
+        bd.inicializar()
+        if cls.con_datos_prueba:
+            con = bd.conectar()
+            datos_prueba.cargar(con)
+            con.commit()
+            con.close()
         cls.servidor = servidor.crear_servidor("127.0.0.1", 0)
         cls.base = f"http://127.0.0.1:{cls.servidor.server_address[1]}"
         cls.hilo = threading.Thread(target=cls.servidor.serve_forever, daemon=True)

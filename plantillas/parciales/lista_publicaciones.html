@@ -1,15 +1,18 @@
+<div class="lista-publicaciones">
 {% for pub in publicaciones %}
   {% set completa = False %}
   {% include "parciales/publicacion.html" %}
 {% else %}
-  <section class="tarjeta vacio">
-    <p class="emoji-grande">💬</p>
-    <p>{{ mensaje_vacio }}</p>
+  <section class="panel vacio">
+    <h3>{{ vacio_titulo }}</h3>
+    <p>{{ vacio_texto }}</p>
+    {% if vacio_url %}<a class="boton boton-primario" href="{{ vacio_url }}">{{ vacio_boton }}</a>{% endif %}
   </section>
 {% endfor %}
+</div>
 {% if pagina > 1 or hay_mas %}
 <nav class="paginacion" aria-label="Paginación">
-  {% if pagina > 1 %}<a class="boton boton-claro" href="?{{ base_consulta }}pagina={{ pagina - 1 }}">← Anteriores</a>{% endif %}
-  {% if hay_mas %}<a class="boton boton-claro" href="?{{ base_consulta }}pagina={{ pagina + 1 }}">Más antiguas →</a>{% endif %}
+  <span>{% if pagina > 1 %}<a class="boton boton-secundario" href="?{{ base_consulta }}pagina={{ pagina - 1 }}">Más recientes</a>{% endif %}</span>
+  <span>{% if hay_mas %}<a class="boton boton-secundario" href="?{{ base_consulta }}pagina={{ pagina + 1 }}">Más antiguas</a>{% endif %}</span>
 </nav>
 {% endif %}

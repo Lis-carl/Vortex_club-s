@@ -1,22 +1,23 @@
 {% extends "base.html" %}
-{% block titulo %}Editar {{ club.nombre }}{% endblock %}
+{% block titulo %}Configuración · {{ club.nombre }}{% endblock %}
 {% block contenido %}
 {% include "parciales/club_cabecera.html" %}
-<section class="tarjeta">
-  <h2>Editar información del club</h2>
-  <form method="post" action="/clubes/{{ club.slug }}/editar" class="formulario" novalidate>
+<section class="panel">
+  <div class="panel-cabecera"><h2>Configuración del club</h2></div>
+  <form method="post" action="/clubes/{{ club.slug }}/editar" class="panel-cuerpo formulario" novalidate>
     <input type="hidden" name="csrf" value="{{ csrf }}">
-    <div class="campo"><label for="categoria">Categoría</label>
+    <div class="campo {% if errores.categoria %}con-error{% endif %}"><label for="categoria">Categoría</label>
       <select id="categoria" name="categoria">
         {% for c in categorias %}<option value="{{ c.id }}" {% if valores.categoria == str(c.id) %}selected{% endif %}>{{ c.nombre }}</option>{% endfor %}
       </select>
       {% if errores.categoria %}<p class="error-campo">{{ errores.categoria }}</p>{% endif %}</div>
-    <div class="campo"><label for="descripcion">Descripción</label>
+    <div class="campo {% if errores.descripcion %}con-error{% endif %}"><label for="descripcion">Descripción</label>
       <textarea id="descripcion" name="descripcion" rows="5" maxlength="1000" required>{{ valores.descripcion }}</textarea>
-      {% if errores.descripcion %}<p class="error-campo">{{ errores.descripcion }}</p>{% endif %}</div>
+      {% if errores.descripcion %}<p class="error-campo">{{ errores.descripcion }}</p>{% else %}<p class="ayuda-campo">Mínimo 10 caracteres. Se muestra en el catálogo y en la página del club.</p>{% endif %}</div>
     <label class="casilla"><input type="checkbox" name="con_aprobacion" value="1" {% if valores.con_aprobacion %}checked{% endif %}>
-      Los nuevos miembros deben ser aprobados por el líder o los capitanes</label>
-    <button class="boton boton-primario">Guardar cambios</button>
+      El ingreso de nuevos miembros requiere aprobación del líder o los capitanes</label>
+    <div class="acciones-formulario"><button class="boton boton-primario">Guardar cambios</button></div>
   </form>
 </section>
 {% endblock %}
+{% block lateral %}{% include "parciales/club_lateral.html" %}{% endblock %}

@@ -60,9 +60,9 @@ def cerrar_sesion(bd, token):
 
 # --- CSRF ----------------------------------------------------------------------------------
 def validar_csrf(peticion):
-    """Las peticiones POST deben traer el token de la sesión (campo 'csrf' o cabecera X-CSRF)."""
+    """Las peticiones POST deben traer en el campo oculto 'csrf' el token de la sesión."""
     esperado = peticion.sesion.csrf if peticion.sesion else peticion.cookies.get("csrf_anon")
-    enviado = peticion.formulario.get("csrf") or peticion.encabezados.get("x-csrf") or ""
+    enviado = peticion.formulario.get("csrf") or ""
     if not esperado or not hmac.compare_digest(str(esperado), str(enviado)):
         raise ErrorHttp(403, "El token de seguridad no es válido. Recarga la página e inténtalo de nuevo.")
 
