@@ -1,0 +1,38 @@
+<section class="tarjeta cabecera-club">
+  <div class="club-tarjeta-cabecera">
+    <span class="avatar-club avatar-club-grande" style="background:{{ club.nombre | color }}">{{ club.nombre | iniciales }}</span>
+    <div class="cabecera-club-texto">
+      <h1>{{ club.nombre }}</h1>
+      <span class="tenue">c/{{ club.slug }} · {{ club.categoria }} · {{ club.n_miembros }} miembro{% if club.n_miembros != 1 %}s{% endif %}
+        · {% if club.requiere_aprobacion %}Ingreso con aprobación{% else %}Ingreso abierto{% endif %}</span>
+    </div>
+    <div class="cabecera-club-accion">
+      {% if club.estado != 'activo' %}<span class="etiqueta etiqueta-rechazada">Club desactivado</span>
+      {% elif not mi %}
+        <form method="post" action="/clubes/{{ club.slug }}/unirse">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <button class="boton boton-unirse">{% if club.requiere_aprobacion %}Solicitar ingreso{% else %}Unirme{% endif %}</button>
+        </form>
+      {% elif mi.estado == 'pendiente' %}
+        <span class="etiqueta etiqueta-espera">Solicitud pendiente</span>
+        <form method="post" action="/clubes/{{ club.slug }}/salir" data-confirmar="¿Cancelar tu solicitud?">
+          <input type="hidden" name="csrf" value="{{ csrf }}"><button class="enlace">Cancelar</button></form>
+      {% else %}
+        <span class="etiqueta">{% if mi.rol == 'lider' %}👑 Líder{% elif mi.rol == 'capitan' %}⭐ Capitán{% else %}Miembro{% endif %}</span>
+        {% if mi.rol != 'lider' %}
+        <form method="post" action="/clubes/{{ club.slug }}/salir" data-confirmar="¿Seguro que quieres salir del club?">
+          <input type="hidden" name="csrf" value="{{ csrf }}"><button class="enlace enlace-peligro">Salir</button></form>
+        {% endif %}
+      {% endif %}
+    </div>
+  </div>
+  <nav class="pestanas" aria-label="Secciones del club">
+    <a class="{% if pestana == 'foro' %}activa{% endif %}" href="/clubes/{{ club.slug }}">Foro</a>
+    <a class="{% if pestana == 'anuncios' %}activa{% endif %}" href="/clubes/{{ club.slug }}/anuncios">Anuncios</a>
+    <a class="{% if pestana == 'eventos' %}activa{% endif %}" href="/clubes/{{ club.slug }}/eventos">Eventos{% if pend_eventos %} <span class="insignia">{{ pend_eventos }}</span>{% endif %}</a>
+    <a class="{% if pestana == 'miembros' %}activa{% endif %}" href="/clubes/{{ club.slug }}/miembros">Miembros{% if pend_miembros %} <span class="insignia">{{ pend_miembros }}</span>{% endif %}</a>
+    {% if es_miembro %}<a class="{% if pestana == 'chat' %}activa{% endif %}" href="/clubes/{{ club.slug }}/chat">Chat</a>
+    {% else %}<span class="pestana-bloqueada" title="El chat es solo para miembros">🔒 Chat</span>{% endif %}
+    {% if es_lider %}<a class="{% if pestana == 'editar' %}activa{% endif %}" href="/clubes/{{ club.slug }}/editar">Editar</a>{% endif %}
+  </nav>
+</section>

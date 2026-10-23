@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block titulo %}Editar {{ club.nombre }}{% endblock %}
+{% block contenido %}
+{% include "parciales/club_cabecera.html" %}
+<section class="tarjeta">
+  <h2>Editar información del club</h2>
+  <form method="post" action="/clubes/{{ club.slug }}/editar" class="formulario" novalidate>
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <div class="campo"><label for="categoria">Categoría</label>
+      <select id="categoria" name="categoria">
+        {% for c in categorias %}<option value="{{ c.id }}" {% if valores.categoria == str(c.id) %}selected{% endif %}>{{ c.nombre }}</option>{% endfor %}
+      </select>
+      {% if errores.categoria %}<p class="error-campo">{{ errores.categoria }}</p>{% endif %}</div>
+    <div class="campo"><label for="descripcion">Descripción</label>
+      <textarea id="descripcion" name="descripcion" rows="5" maxlength="1000" required>{{ valores.descripcion }}</textarea>
+      {% if errores.descripcion %}<p class="error-campo">{{ errores.descripcion }}</p>{% endif %}</div>
+    <label class="casilla"><input type="checkbox" name="con_aprobacion" value="1" {% if valores.con_aprobacion %}checked{% endif %}>
+      Los nuevos miembros deben ser aprobados por el líder o los capitanes</label>
+    <button class="boton boton-primario">Guardar cambios</button>
+  </form>
+</section>
+{% endblock %}

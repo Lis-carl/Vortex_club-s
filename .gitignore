@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+datos/
+subidas/*
+!subidas/.gitkeep
+*.db
+*.db-wal
+*.db-shm
+.claude/
+referencias/

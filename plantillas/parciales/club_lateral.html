@@ -1,0 +1,7 @@
+<section class="tarjeta">
+  <h3>Acerca de</h3>
+  <p>{{ club.descripcion | saltos }}</p>
+  <p class="tenue">Creado {{ club.creado_en | fecha_corta }}</p>
+  {% if lider %}<p>👑 Líder: <a href="/perfil/{{ lider.cif }}">{{ lider.nombre }}</a></p>{% endif %}
+  {% if es_miembro %}<a class="boton boton-primario boton-ancho" href="/clubes/{{ club.slug }}/publicar">＋ Crear publicación</a>{% endif %}
+</section>

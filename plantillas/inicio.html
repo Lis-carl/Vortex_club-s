@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block titulo %}Inicio{% endblock %}
+{% block contenido %}
+<div class="barra-orden">
+  <div class="pestanas-mini">
+    <a class="{% if ver == 'mis' %}activa{% endif %}" href="/?ver=mis&amp;orden={{ orden }}">Mis clubes</a>
+    <a class="{% if ver == 'todos' %}activa{% endif %}" href="/?ver=todos&amp;orden={{ orden }}">Toda la universidad</a>
+  </div>
+  <div class="pestanas-mini">
+    <a class="{% if orden == 'nuevos' %}activa{% endif %}" href="/?ver={{ ver }}&amp;orden=nuevos">🕒 Nuevos</a>
+    <a class="{% if orden == 'populares' %}activa{% endif %}" href="/?ver={{ ver }}&amp;orden=populares">🔥 Populares</a>
+  </div>
+</div>
+{% if not tiene_clubes %}
+<section class="tarjeta destacada">
+  <h2>Aún no te has unido a ningún club</h2>
+  <p>Explora el catálogo y únete. Mientras tanto, verás las publicaciones de toda la universidad.</p>
+  <a class="boton boton-primario" href="/clubes">Explorar clubes</a>
+</section>
+{% endif %}
+{% set mensaje_vacio = "Todavía no hay publicaciones. ¡Sé el primero en publicar en un club!" %}
+{% set base_consulta = "ver=" + ver + "&orden=" + orden + "&" %}
+{% include "parciales/lista_publicaciones.html" %}
+{% endblock %}
+{% block lateral %}
+<section class="tarjeta">
+  <h3>📢 Anuncios generales</h3>
+  {% for a in anuncios_generales %}
+    <div class="item-lateral"><a href="/anuncios">{% if a.fijado %}📌 {% endif %}{{ a.titulo }}</a><span class="tenue">{{ a.creado_en | rel }}</span></div>
+  {% else %}<p class="tenue">Sin anuncios por ahora.</p>{% endfor %}
+  <a class="ver-mas" href="/anuncios">Ver todos</a>
+</section>
+<section class="tarjeta">
+  <h3>📅 Próximos eventos</h3>
+  {% for e in proximos %}
+    <div class="item-evento">
+      <div class="fecha-tarjeta"><b>{{ e.fecha_inicio | dia }}</b><span>{{ e.fecha_inicio | mes }}</span></div>
+      <div><a href="/clubes/{{ e.club_slug }}/eventos">{{ e.titulo }}</a><span class="tenue">{{ e.club_nombre }} · {{ e.fecha_inicio | hora }}</span></div>
+    </div>
+  {% else %}<p class="tenue">No hay eventos próximos.</p>{% endfor %}
+  <a class="ver-mas" href="/eventos">Ver calendario</a>
+</section>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block titulo %}{{ pub.titulo }}{% endblock %}
+{% block contenido %}
+<p><a class="enlace" href="/clubes/{{ club.slug }}">← Volver a c/{{ club.slug }}</a></p>
+{% set completa = True %}
+{% include "parciales/publicacion.html" %}
+
+<section class="tarjeta" id="comentarios">
+  <h2>Comentarios ({{ pub.n_comentarios }})</h2>
+  {% if es_miembro %}
+  <form method="post" action="/publicaciones/{{ pub.id }}/comentar" class="formulario">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <label for="comentario-nuevo" class="oculto">Escribe un comentario</label>
+    <textarea id="comentario-nuevo" name="contenido" rows="3" maxlength="5000" placeholder="¿Qué opinas?" required></textarea>
+    <button class="boton boton-primario">Comentar</button>
+  </form>
+  {% else %}
+  <p class="tenue">Únete al club para comentar en este hilo.</p>
+  {% endif %}
+
+  {% for c in comentarios %}
+  <div class="comentario nivel-{{ c.nivel }}" id="comentario-{{ c.id }}">
+    <div class="meta">
+      <span class="avatar-mini" style="background:{{ c.autor_nombre | color }}">{{ c.autor_nombre | iniciales }}</span>
+      <a href="/perfil/{{ c.autor_cif }}">{{ c.autor_nombre }}</a><span class="punto">•</span>
+      <time class="tenue">{{ c.creado_en | rel }}</time>
+    </div>
+    {% if c.eliminado %}<p class="tenue"><em>[comentario eliminado]</em></p>
+    {% else %}<div class="cuerpo">{{ c.contenido | saltos }}</div>{% endif %}
+    <div class="acciones">
+      {% if not c.eliminado %}
+        {% set v_url = "/comentarios/" + str(c.id) + "/votar" %}
+        {% set v_id = "votos-c-" + str(c.id) %}
+        {% set v_puntaje = c.puntaje %}
+        {% set v_mio = c.mi_voto %}
+        {% include "parciales/votos.html" %}
+      {% endif %}
+      {% if es_miembro and not c.eliminado %}
+      <details class="responder"><summary>Responder</summary>
+        <form method="post" action="/publicaciones/{{ pub.id }}/comentar" class="formulario">
+          <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="padre_id" value="{{ c.id }}">
+          <textarea name="contenido" rows="2" maxlength="5000" aria-label="Tu respuesta" required></textarea>
+          <button class="boton boton-claro">Responder</button>
+        </form>
+      </details>
+      {% endif %}
+      {% if c.puede_eliminar %}
+      <form method="post" action="/comentarios/{{ c.id }}/eliminar" data-confirmar="¿Eliminar este comentario?">
+        <input type="hidden" name="csrf" value="{{ csrf }}"><button class="enlace enlace-peligro">🗑 Eliminar</button></form>
+      {% endif %}
+    </div>
+  </div>
+  {% else %}
+  <p class="tenue">Todavía no hay comentarios.</p>
+  {% endfor %}
+</section>
+{% endblock %}
+{% block lateral %}{% include "parciales/club_lateral.html" %}{% endblock %}

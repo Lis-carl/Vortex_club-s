@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block contenido %}
+<section class="tarjeta vacio">
+  <p class="codigo-error">{{ codigo }}</p>
+  <h1>{{ titulo }}</h1>
+  <p>{{ mensaje }}</p>
+  <p><a class="boton boton-primario" href="/">Volver al inicio</a></p>
+</section>
+{% endblock %}
+{% block acceso %}
+<section class="tarjeta-acceso">
+  <p class="codigo-error">{{ codigo }}</p>
+  <h1>{{ titulo }}</h1>
+  <p>{{ mensaje }}</p>
+  <p><a class="boton boton-primario" href="/acceder">Ir a acceder</a></p>
+</section>
+{% endblock %}

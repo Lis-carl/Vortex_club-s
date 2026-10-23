@@ -1,0 +1,21 @@
+<div class="reacciones" id="reac-{{ pub.id }}">
+  {% for r in pub.reacciones %}{% if r.n > 0 %}
+  <form method="post" action="/publicaciones/{{ pub.id }}/reaccion" data-ajax="reac-{{ pub.id }}">
+    <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="siguiente" value="{{ ruta_completa }}">
+    <input type="hidden" name="tipo" value="{{ r.tipo }}">
+    <button class="chip {% if r.mia %}chip-activo{% endif %}" title="Quitar o poner esta reacción">{{ r.tipo }} {{ r.n }}</button>
+  </form>
+  {% endif %}{% endfor %}
+  <details class="selector">
+    <summary title="Reaccionar" aria-label="Elegir una reacción">☺＋</summary>
+    <div class="selector-menu">
+      {% for r in pub.reacciones %}
+      <form method="post" action="/publicaciones/{{ pub.id }}/reaccion" data-ajax="reac-{{ pub.id }}">
+        <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="siguiente" value="{{ ruta_completa }}">
+        <input type="hidden" name="tipo" value="{{ r.tipo }}">
+        <button class="emoji {% if r.mia %}emoji-activo{% endif %}">{{ r.tipo }}</button>
+      </form>
+      {% endfor %}
+    </div>
+  </details>
+</div>

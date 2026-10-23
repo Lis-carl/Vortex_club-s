@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block titulo %}Crear publicación{% endblock %}
+{% block contenido %}
+{% include "parciales/club_cabecera.html" %}
+<section class="tarjeta">
+  <h2>Crear publicación en c/{{ club.slug }}</h2>
+  <form method="post" action="/clubes/{{ club.slug }}/publicar" enctype="multipart/form-data" class="formulario" novalidate>
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <div class="campo"><label for="titulo">Título</label>
+      <input id="titulo" name="titulo" value="{{ valores.titulo }}" maxlength="150" required>
+      {% if errores.titulo %}<p class="error-campo">{{ errores.titulo }}</p>{% endif %}</div>
+    <div class="campo"><label for="contenido">Texto (opcional)</label>
+      <textarea id="contenido" name="contenido" rows="6" maxlength="10000">{{ valores.contenido }}</textarea>
+      {% if errores.contenido %}<p class="error-campo">{{ errores.contenido }}</p>{% endif %}</div>
+    <div class="campo"><label for="imagen">Imagen (opcional, PNG/JPG/GIF/WEBP, máx. 2 MB)</label>
+      <input id="imagen" type="file" name="imagen" accept="image/png,image/jpeg,image/gif,image/webp">
+      {% if errores.imagen %}<p class="error-campo">{{ errores.imagen }}</p>{% endif %}</div>
+    <div class="fila-botones">
+      <a class="boton boton-claro" href="/clubes/{{ club.slug }}">Cancelar</a>
+      <button class="boton boton-primario">Publicar</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

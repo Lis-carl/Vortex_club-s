@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block titulo %}Proponer evento{% endblock %}
+{% block contenido %}
+{% include "parciales/club_cabecera.html" %}
+<section class="tarjeta">
+  <h2>Proponer un evento a {{ club.nombre }}</h2>
+  <p class="tenue">Un líder o capitán revisará tu propuesta. Verás su estado en «Mis propuestas».</p>
+  <form method="post" action="/clubes/{{ club.slug }}/eventos/proponer" class="formulario" novalidate>
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <div class="campo"><label for="titulo">Título del evento</label>
+      <input id="titulo" name="titulo" value="{{ valores.titulo }}" maxlength="150" required>
+      {% if errores.titulo %}<p class="error-campo">{{ errores.titulo }}</p>{% endif %}</div>
+    <div class="campo"><label for="descripcion">Descripción</label>
+      <textarea id="descripcion" name="descripcion" rows="4" maxlength="3000" required>{{ valores.descripcion }}</textarea>
+      {% if errores.descripcion %}<p class="error-campo">{{ errores.descripcion }}</p>{% endif %}</div>
+    <div class="dos-columnas">
+      <div class="campo"><label for="fecha_inicio">Fecha y hora</label>
+        <input id="fecha_inicio" type="datetime-local" name="fecha_inicio" value="{{ valores.fecha_inicio }}" required>
+        {% if errores.fecha_inicio %}<p class="error-campo">{{ errores.fecha_inicio }}</p>{% endif %}</div>
+      <div class="campo"><label for="cupo">Cupo (opcional)</label>
+        <input id="cupo" type="number" name="cupo" value="{{ valores.cupo }}" min="1" max="10000">
+        {% if errores.cupo %}<p class="error-campo">{{ errores.cupo }}</p>{% endif %}</div>
+    </div>
+    <div class="campo"><label for="lugar">Lugar</label>
+      <input id="lugar" name="lugar" value="{{ valores.lugar }}" maxlength="120" required>
+      {% if errores.lugar %}<p class="error-campo">{{ errores.lugar }}</p>{% endif %}</div>
+    <div class="campo"><label for="recursos">Recursos necesarios (opcional)</label>
+      <textarea id="recursos" name="recursos" rows="2" maxlength="1000">{{ valores.recursos }}</textarea>
+      {% if errores.recursos %}<p class="error-campo">{{ errores.recursos }}</p>{% endif %}</div>
+    <div class="fila-botones">
+      <a class="boton boton-claro" href="/clubes/{{ club.slug }}/eventos">Cancelar</a>
+      <button class="boton boton-primario">Enviar propuesta</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

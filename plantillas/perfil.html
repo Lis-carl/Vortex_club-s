@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block titulo %}{{ persona.nombre }}{% endblock %}
+{% block contenido %}
+<section class="tarjeta perfil">
+  <span class="avatar avatar-grande" style="background:{{ persona.nombre | color }}">{{ persona.nombre | iniciales }}</span>
+  <div>
+    <h1>{{ persona.nombre }}</h1>
+    <p class="tenue">CIF {{ persona.cif }}{% if persona.carrera %} · {{ persona.carrera }}{% endif %} · miembro desde {{ persona.creado_en | fecha_corta }}</p>
+    {% if persona.rol_global == 'admin' %}<span class="etiqueta">Administración</span>{% endif %}
+  </div>
+</section>
+<section class="tarjeta">
+  <h2>Clubes</h2>
+  {% for c in clubes_persona %}
+    <div class="fila-simple"><a href="/clubes/{{ c.slug }}">{{ c.nombre }}</a><span class="etiqueta">{{ c.rol }}</span></div>
+  {% else %}<p class="tenue">No pertenece a ningún club todavía.</p>{% endfor %}
+</section>
+{% if es_yo and solicitudes %}
+<section class="tarjeta"><h2>Mis solicitudes de club</h2>
+  {% for s in solicitudes %}<div class="fila-simple"><b>{{ s.nombre }}</b><span class="etiqueta etiqueta-{{ s.estado }}">{{ s.estado }}</span></div>{% endfor %}
+</section>
+{% endif %}
+<h2 class="titulo-seccion">Publicaciones recientes</h2>
+{% set mensaje_vacio = "Todavía no ha publicado nada." %}
+{% set pagina = 1 %}
+{% set hay_mas = False %}
+{% include "parciales/lista_publicaciones.html" %}
+{% endblock %}

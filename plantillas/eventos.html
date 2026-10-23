@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block titulo %}Próximos eventos{% endblock %}
+{% block contenido %}
+<h1 class="titulo-pagina">📅 Próximos eventos</h1>
+{% set mostrar_club = True %}
+{% for e in eventos %}
+  {% include "parciales/evento.html" %}
+{% else %}
+  <section class="tarjeta vacio"><p class="emoji-grande">📅</p><p>No hay eventos aprobados por ahora. Entra a un club y propón uno.</p></section>
+{% endfor %}
+{% endblock %}

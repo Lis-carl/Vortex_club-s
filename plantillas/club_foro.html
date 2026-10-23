@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block titulo %}{{ club.nombre }}{% endblock %}
+{% block contenido %}
+{% include "parciales/club_cabecera.html" %}
+<div class="barra-orden">
+  <div class="pestanas-mini">
+    <a class="{% if orden == 'nuevos' %}activa{% endif %}" href="/clubes/{{ club.slug }}?orden=nuevos">🕒 Nuevos</a>
+    <a class="{% if orden == 'populares' %}activa{% endif %}" href="/clubes/{{ club.slug }}?orden=populares">🔥 Populares</a>
+  </div>
+  {% if es_miembro %}<a class="boton boton-primario" href="/clubes/{{ club.slug }}/publicar">＋ Crear publicación</a>{% endif %}
+</div>
+{% set mensaje_vacio = "Este foro está vacío. ¡Inicia la conversación!" %}
+{% set base_consulta = "orden=" + orden + "&" %}
+{% include "parciales/lista_publicaciones.html" %}
+{% endblock %}
+{% block lateral %}{% include "parciales/club_lateral.html" %}{% endblock %}

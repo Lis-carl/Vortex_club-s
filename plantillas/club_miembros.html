@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block titulo %}Miembros de {{ club.nombre }}{% endblock %}
+{% block contenido %}
+{% include "parciales/club_cabecera.html" %}
+
+{% if pendientes %}
+<section class="tarjeta">
+  <h2>Solicitudes de ingreso</h2>
+  {% for m in pendientes %}
+  <div class="fila-persona">
+    <span class="avatar" style="background:{{ m.nombre | color }}">{{ m.nombre | iniciales }}</span>
+    <div class="persona-texto"><a href="/perfil/{{ m.cif }}">{{ m.nombre }}</a><span class="tenue">{{ m.carrera }}</span></div>
+    <form method="post" action="/clubes/{{ club.slug }}/miembros/{{ m.membresia_id }}" class="fila-botones">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <button class="boton boton-primario" name="accion" value="aceptar">Aceptar</button>
+      <button class="boton boton-claro" name="accion" value="rechazar">Rechazar</button>
+    </form>
+  </div>
+  {% endfor %}
+</section>
+{% endif %}
+
+<section class="tarjeta">
+  <h2>👑 Líder</h2>
+  {% for m in lideres %}
+  <div class="fila-persona"><span class="avatar" style="background:{{ m.nombre | color }}">{{ m.nombre | iniciales }}</span>
+    <div class="persona-texto"><a href="/perfil/{{ m.cif }}">{{ m.nombre }}</a><span class="tenue">{{ m.carrera }}</span></div></div>
+  {% endfor %}
+</section>
+
+<section class="tarjeta">
+  <h2>⭐ Capitanes</h2>
+  {% for m in capitanes %}
+  <div class="fila-persona"><span class="avatar" style="background:{{ m.nombre | color }}">{{ m.nombre | iniciales }}</span>
+    <div class="persona-texto"><a href="/perfil/{{ m.cif }}">{{ m.nombre }}</a><span class="tenue">{{ m.carrera }}</span></div>
+    {% if es_lider %}
+    <form method="post" action="/clubes/{{ club.slug }}/miembros/{{ m.membresia_id }}" class="fila-botones">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <button class="boton boton-claro" name="accion" value="quitar_capitan">Quitar capitán</button>
+      <button class="boton boton-claro" name="accion" value="transferir" data-confirmar-boton="¿Transferir el liderazgo a {{ m.nombre }}? Tú pasarás a ser capitán.">Transferir liderazgo</button>
+    </form>
+    {% endif %}
+  </div>
+  {% else %}<p class="tenue">Todavía no hay capitanes.</p>{% endfor %}
+</section>
+
+<section class="tarjeta">
+  <h2>Miembros ({{ len(simples) }})</h2>
+  {% for m in simples %}
+  <div class="fila-persona"><span class="avatar" style="background:{{ m.nombre | color }}">{{ m.nombre | iniciales }}</span>
+    <div class="persona-texto"><a href="/perfil/{{ m.cif }}">{{ m.nombre }}</a><span class="tenue">{{ m.carrera }} · desde {{ m.unido_en | fecha_corta }}</span></div>
+    {% if es_lider %}
+    <form method="post" action="/clubes/{{ club.slug }}/miembros/{{ m.membresia_id }}" class="fila-botones">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <button class="boton boton-claro" name="accion" value="hacer_capitan">Nombrar capitán</button>
+      <button class="boton boton-claro" name="accion" value="transferir" data-confirmar-boton="¿Transferir el liderazgo a {{ m.nombre }}? Tú pasarás a ser capitán.">Transferir liderazgo</button>
+      <button class="boton boton-peligro" name="accion" value="expulsar" data-confirmar-boton="¿Expulsar a {{ m.nombre }} del club?">Expulsar</button>
+    </form>
+    {% endif %}
+  </div>
+  {% else %}<p class="tenue">Aún no hay miembros.</p>{% endfor %}
+</section>
+{% endblock %}
+{% block lateral %}{% include "parciales/club_lateral.html" %}{% endblock %}

@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Inicio{% endblock %} · Vortex Club</title>
+  <link rel="icon" type="image/svg+xml" href="/estatico/img/logo.svg">
+  <link rel="stylesheet" href="/estatico/css/estilo.css">
+</head>
+<body>
+{% if usuario %}
+  <header class="barra">
+    <a class="marca" href="/"><img src="/estatico/img/logo.svg" alt="" width="34" height="34"><span>Vortex <b>Club</b></span></a>
+    <form class="buscador" action="/clubes" method="get" role="search">
+      <input type="search" name="q" placeholder="Buscar clubes..." aria-label="Buscar clubes" maxlength="60">
+    </form>
+    <nav class="barra-acciones">
+      <a class="boton boton-claro" href="/clubes/solicitar">＋ Crear club</a>
+      <details class="menu-usuario">
+        <summary><span class="avatar" style="background:{{ usuario.nombre | color }}">{{ usuario.nombre | iniciales }}</span></summary>
+        <div class="menu-usuario-caja">
+          <strong>{{ usuario.nombre }}</strong>
+          <span class="tenue">CIF {{ usuario.cif }}</span>
+          <a href="/perfil/{{ usuario.cif }}">Mi perfil</a>
+          <form method="post" action="/salir">
+            <input type="hidden" name="csrf" value="{{ csrf }}">
+            <button class="enlace">Cerrar sesión</button>
+          </form>
+        </div>
+      </details>
+    </nav>
+  </header>
+  <div class="disposicion">
+    <aside class="menu" aria-label="Navegación principal">
+      <a href="/" class="{% if ruta == '/' %}activo{% endif %}">🏠 Inicio</a>
+      <a href="/clubes" class="{% if ruta == '/clubes' %}activo{% endif %}">🧭 Explorar clubes</a>
+      <a href="/anuncios" class="{% if ruta == '/anuncios' %}activo{% endif %}">📢 Anuncios</a>
+      <a href="/eventos" class="{% if ruta == '/eventos' %}activo{% endif %}">📅 Eventos</a>
+      <a href="/clubes/solicitar" class="{% if ruta == '/clubes/solicitar' %}activo{% endif %}">＋ Crear un club</a>
+      {% if es_admin %}<a href="/admin" class="{% if ruta == '/admin' %}activo{% endif %}">🛠 Administración</a>{% endif %}
+      <p class="menu-titulo">Mis clubes</p>
+      {% for c in mis_clubes %}
+        <a href="/clubes/{{ c.slug }}"><span class="avatar-mini" style="background:{{ c.nombre | color }}">{{ c.nombre | iniciales }}</span> {{ c.nombre }}</a>
+      {% else %}
+        <p class="tenue menu-vacio">Aún no perteneces a ningún club.</p>
+      {% endfor %}
+    </aside>
+    <main class="contenido">
+      {% if aviso %}<div class="aviso aviso-{{ aviso.nivel }}" role="status">{{ aviso.texto }}</div>{% endif %}
+      {% block contenido %}{% endblock %}
+    </main>
+    <aside class="lateral">{% block lateral %}{% endblock %}</aside>
+  </div>
+{% else %}
+  <main class="pantalla-acceso">
+    {% if aviso %}<div class="aviso aviso-{{ aviso.nivel }} aviso-flotante" role="status">{{ aviso.texto }}</div>{% endif %}
+    {% block acceso %}{% endblock %}
+  </main>
+{% endif %}
+<script src="/estatico/js/app.js" defer></script>
+</body>
+</html>

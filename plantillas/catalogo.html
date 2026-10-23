@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block titulo %}Explorar clubes{% endblock %}
+{% block contenido %}
+<h1 class="titulo-pagina">Explorar clubes</h1>
+<form class="filtros" method="get" action="/clubes">
+  <input type="search" name="q" value="{{ q }}" placeholder="Buscar por nombre o descripción" maxlength="60" aria-label="Buscar">
+  <select name="cat" aria-label="Categoría">
+    <option value="">Todas las categorías</option>
+    {% for c in categorias %}<option value="{{ c.id }}" {% if cat == c.id %}selected{% endif %}>{{ c.nombre }}</option>{% endfor %}
+  </select>
+  <button class="boton boton-primario">Buscar</button>
+</form>
+<div class="rejilla-clubes">
+{% for c in lista %}
+  <article class="tarjeta club-tarjeta">
+    <div class="club-tarjeta-cabecera">
+      <span class="avatar-club" style="background:{{ c.nombre | color }}">{{ c.nombre | iniciales }}</span>
+      <div><h2><a href="/clubes/{{ c.slug }}">{{ c.nombre }}</a></h2>
+        <span class="tenue">{{ c.categoria }} · {{ c.n_miembros }} miembro{% if c.n_miembros != 1 %}s{% endif %}</span></div>
+    </div>
+    <p>{{ c.descripcion | extracto }}</p>
+    <div class="club-tarjeta-pie">
+      {% if c.mi_rol %}<a class="boton boton-claro" href="/clubes/{{ c.slug }}">Ver club</a><span class="etiqueta">Eres {{ c.mi_rol }}</span>
+      {% elif c.mi_pendiente %}<span class="etiqueta etiqueta-espera">Solicitud pendiente</span>
+      {% else %}
+        <form method="post" action="/clubes/{{ c.slug }}/unirse">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <button class="boton boton-unirse">{% if c.requiere_aprobacion %}Solicitar ingreso{% else %}Unirme{% endif %}</button>
+        </form>
+      {% endif %}
+    </div>
+  </article>
+{% else %}
+  <section class="tarjeta vacio" style="grid-column:1/-1"><p class="emoji-grande">🔎</p><p>No encontramos clubes con esos filtros.</p>
+    <a class="boton boton-primario" href="/clubes/solicitar">Crear un club</a></section>
+{% endfor %}
+</div>
+{% endblock %}
