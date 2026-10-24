@@ -52,12 +52,19 @@ def no_leidas(bd, usuario_id):
                       (usuario_id,)).fetchone().n
 
 
+def para_panel(bd, usuario_id, limite=8):
+    """Las del panel flotante de la campana: las que no se han quitado de ahí."""
+    return bd.execute("SELECT * FROM notificaciones WHERE usuario_id = ? AND oculta_panel = 0 ORDER BY id DESC LIMIT ?",
+                      (usuario_id, limite)).fetchall()
+
+
 def quitar(bd, usuario_id, notificacion_id):
-    bd.execute("DELETE FROM notificaciones WHERE id = ? AND usuario_id = ?", (notificacion_id, usuario_id))
+    """Quita la notificación solo del panel flotante; sigue en la página de Notificaciones."""
+    bd.execute("UPDATE notificaciones SET oculta_panel = 1 WHERE id = ? AND usuario_id = ?", (notificacion_id, usuario_id))
 
 
 def quitar_todas(bd, usuario_id):
-    bd.execute("DELETE FROM notificaciones WHERE usuario_id = ?", (usuario_id,))
+    bd.execute("UPDATE notificaciones SET oculta_panel = 1 WHERE usuario_id = ?", (usuario_id,))
 
 
 def marcar_leidas(bd, usuario_id):

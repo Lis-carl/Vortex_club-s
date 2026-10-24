@@ -775,10 +775,12 @@ class PruebasRolesYFuncionesEncuesta(PruebaServidor):
         # quitar una notificación y luego todas desde el panel
         ana = self.cliente(ANA)
         nid = consulta("SELECT id FROM notificaciones WHERE texto LIKE 'Jorge Díaz comentó%'")[0][0]
-        ana.post(f"/notificaciones/{nid}/quitar", {"siguiente": "/"}, desde="/")
-        self.assertEqual(consulta("SELECT COUNT(*) FROM notificaciones WHERE id=?", nid), [(0,)])
-        ana.post("/notificaciones/limpiar", {"siguiente": "/"}, desde="/")
-        self.assertEqual(consulta("SELECT COUNT(*) FROM notificaciones WHERE usuario_id=(SELECT id FROM usuarios WHERE cif=?)", ANA), [(0,)])
+        r = ana.post(f"/notificaciones/{nid}/quitar", {"siguiente": "/"}, desde="/")
+        self.assertNotIn(f'/notificaciones/{nid}/quitar', r.cuerpo)                      # ya no está en el panel
+        self.assertIn("Jorge Díaz comentó tu publicación", ana.get("/notificaciones").cuerpo)   # pero sí en la página
+        r = ana.post("/notificaciones/limpiar", {"siguiente": "/"}, desde="/")
+        self.assertIn("No hay notificaciones nuevas en el panel", r.cuerpo.split('class="notif-panel"')[1])
+        self.assertIn("Jorge Díaz comentó tu publicación", ana.get("/notificaciones").cuerpo)
 
     def test_calendario_y_sin_puntos(self):
         mes = consulta("SELECT substr(fecha_inicio, 1, 7) FROM propuestas_evento WHERE titulo='Torneo relámpago de ajedrez'")[0][0]

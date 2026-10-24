@@ -52,6 +52,8 @@ def _migrar(bd):
     columnas_eventos = {c.name for c in bd.execute("PRAGMA table_info(propuestas_evento)").fetchall()}
     if "imagen" not in columnas_eventos:
         bd.execute("ALTER TABLE propuestas_evento ADD COLUMN imagen TEXT NOT NULL DEFAULT ''")
+    if "oculta_panel" not in {c.name for c in bd.execute("PRAGMA table_info(notificaciones)").fetchall()}:
+        bd.execute("ALTER TABLE notificaciones ADD COLUMN oculta_panel INTEGER NOT NULL DEFAULT 0")
     for tabla in ("publicaciones", "comentarios", "anuncios", "mensajes_chat", "mensajes_privados"):
         if "editado_en" not in {c.name for c in bd.execute(f"PRAGMA table_info({tabla})").fetchall()}:
             bd.execute(f"ALTER TABLE {tabla} ADD COLUMN editado_en TEXT")   # marca de «editado»

@@ -80,9 +80,9 @@ def eliminar_anuncio(p, id):
 @ruta("POST", "/notificaciones/limpiar")
 @requiere_sesion
 def limpiar_notificaciones(p):
-    """Botón de papelera del panel: quita todas las notificaciones del usuario."""
+    """Botón de papelera del panel: las quita del panel flotante (siguen en la página de Notificaciones)."""
     notificaciones.quitar_todas(p.bd, p.usuario.id)
-    return Respuesta.redirigir(destino_seguro(p.formulario.get("siguiente"), "/")).con_aviso("ok", "Notificaciones quitadas.")
+    return Respuesta.redirigir(destino_seguro(p.formulario.get("siguiente"), "/")).con_aviso("ok", "Notificaciones quitadas del panel. Siguen en Notificaciones.")
 
 
 @ruta("POST", "/notificaciones/<id>/quitar")

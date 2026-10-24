@@ -182,6 +182,7 @@ CREATE TABLE IF NOT EXISTS notificaciones (
     texto       TEXT    NOT NULL,
     enlace      TEXT    NOT NULL DEFAULT '/',
     leida       INTEGER NOT NULL DEFAULT 0 CHECK (leida IN (0, 1)),
+    oculta_panel INTEGER NOT NULL DEFAULT 0 CHECK (oculta_panel IN (0, 1)),   -- quitada del panel de la campana
     creado_en   TEXT    NOT NULL DEFAULT (datetime('now', 'localtime'))
 );
 
