@@ -11,6 +11,18 @@
     <p>{{ e.descripcion | saltos }}</p>
     {% if e.cupo %}<div class="barra-cupo" aria-hidden="true"><span style="width:{{ min(100, int(e.n_asistentes * 100 / e.cupo)) }}%"></span></div>{% endif %}
     <div class="evento-acciones">
+      {% if e.proponente_id != usuario.id %}
+        {% set v_url = "/propuestas/" + str(e.id) + "/votar" %}
+        {% set v_id = "votos-e-" + str(e.id) %}
+        {% set v_puntaje = e.puntaje %}
+        {% set v_mio = e.mi_voto %}
+        {% set v_ancla = "evento-" + str(e.id) %}
+        {% set v_texto = "Me interesa" %}
+        {% set v_ayuda = "sube en los destacados" %}
+        {% include "parciales/votos.html" %}
+      {% else %}
+        <span class="votos votos-solo" title="Puntaje de tu evento"><span class="puntaje {% if e.puntaje > 0 %}puntaje-positivo{% endif %}">{{ e.puntaje }}</span><span class="voto-texto">votos</span></span>
+      {% endif %}
       <form method="post" action="/eventos/{{ e.id }}/asistencia">
         <input type="hidden" name="csrf" value="{{ csrf }}">
         <input type="hidden" name="siguiente" value="{{ ruta_completa }}#evento-{{ e.id }}">

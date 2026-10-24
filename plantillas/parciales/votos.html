@@ -1,13 +1,14 @@
-{# Votos de utilidad. Variables: v_url, v_id, v_puntaje, v_mio, v_ancla.
+{# Votos. Variables: v_url, v_id, v_puntaje, v_mio, v_ancla y opcionales v_texto / v_ayuda
+   (por omisión «Útil» / «sube en Populares»; en eventos: «Me interesa» / «sube en los destacados»).
    «Útil» sube la publicación o el comentario en el orden «Populares»; «Poco útil» lo baja. #}
 <div class="votos" id="{{ v_id }}">
   <form method="post" action="{{ v_url }}">
     <input type="hidden" name="csrf" value="{{ csrf }}">
     <input type="hidden" name="siguiente" value="{{ ruta_completa }}#{{ v_ancla }}">
     <input type="hidden" name="valor" value="1">
-    <button class="voto {% if v_mio == 1 %}voto-arriba{% endif %} voto-mas" title="{% if v_mio == 1 %}Quitar mi voto{% else %}Útil: sube en Populares{% endif %}" aria-pressed="{% if v_mio == 1 %}true{% else %}false{% endif %}">
+    <button class="voto {% if v_mio == 1 %}voto-arriba{% endif %} voto-mas" title="{% if v_mio == 1 %}Quitar mi voto{% else %}{{ v_texto or "Útil" }}: {{ v_ayuda or "sube en Populares" }}{% endif %}" aria-pressed="{% if v_mio == 1 %}true{% else %}false{% endif %}">
       <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="currentColor"/></svg>
-      <span class="voto-texto">Útil</span>
+      <span class="voto-texto">{{ v_texto or "Útil" }}</span>
     </button>
   </form>
   <span class="puntaje {% if v_puntaje > 0 %}puntaje-positivo{% elif v_puntaje < 0 %}puntaje-negativo{% endif %}" title="Puntaje de utilidad">{{ v_puntaje }}</span>
@@ -15,7 +16,7 @@
     <input type="hidden" name="csrf" value="{{ csrf }}">
     <input type="hidden" name="siguiente" value="{{ ruta_completa }}#{{ v_ancla }}">
     <input type="hidden" name="valor" value="-1">
-    <button class="voto {% if v_mio == -1 %}voto-abajo{% endif %} voto-menos" title="{% if v_mio == -1 %}Quitar mi voto{% else %}Poco útil: baja en Populares{% endif %}" aria-label="Poco útil" aria-pressed="{% if v_mio == -1 %}true{% else %}false{% endif %}">
+    <button class="voto {% if v_mio == -1 %}voto-abajo{% endif %} voto-menos" title="{% if v_mio == -1 %}Quitar mi voto{% else %}{% if v_texto %}No me interesa{% else %}Poco útil: baja en Populares{% endif %}{% endif %}" aria-label="{% if v_texto %}No me interesa{% else %}Poco útil{% endif %}" aria-pressed="{% if v_mio == -1 %}true{% else %}false{% endif %}">
       <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 20l-7-8h4.5V4h5v8H19z" fill="currentColor"/></svg>
     </button>
   </form>

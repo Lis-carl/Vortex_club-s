@@ -78,7 +78,9 @@ Cada anuncio nuevo te llega también como notificación.
 3. Verás el estado en **Mis propuestas** y recibirás una notificación cuando se apruebe o rechace.
 4. Los eventos aprobados aparecen en el club y en el **Calendario** mensual (menú izquierdo). Usa
    «Mis clubes y confirmados» para ver solo los tuyos.
-5. Pulsa **Confirmar asistencia** para apartar tu lugar (se respeta el cupo). Verás «Asistirás» y
+5. En los eventos aprobados puedes votar **Me interesa**: los más votados de todos los clubes aparecen
+   como **destacados** arriba del calendario, y puedes ordenar la lista por **Más votados**.
+6. Pulsa **Confirmar asistencia** para apartar tu lugar (se respeta el cupo). Verás «Asistirás» y
    podrás **Cancelar asistencia** cuando quieras. Te lo recordaremos 48 horas antes.
 
 ### Miembros y chat

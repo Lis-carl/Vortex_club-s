@@ -717,7 +717,8 @@ class PruebasVotacionDePropuestas(PruebaServidor):
         self.assertIn("quedó aprobada", r.cuerpo)
         self.assertEqual(consulta("SELECT estado FROM propuestas_evento WHERE id=?", pid), [("aprobada",)])
         self.assertIn("aprobada por votación de los miembros", maria.get("/notificaciones").cuerpo)
-        self.assertIn("ya fue revisada", jorge.post(f"/propuestas/{pid}/votar", {"valor": "-1"}, desde="/").cuerpo)
+        # Ya aprobada, el voto sigue contando para posicionar el evento entre los de todos los clubes.
+        self.assertNotIn("ya fue revisada", jorge.post(f"/propuestas/{pid}/votar", {"valor": "1"}, desde="/").cuerpo)
 
     def test_votos_en_contra_impiden_aprobar(self):
         maria, jorge, luis, ana = self.cliente(MARIA), self.cliente(JORGE), self.cliente(LUIS), self.cliente(ANA)
@@ -730,6 +731,27 @@ class PruebasVotacionDePropuestas(PruebaServidor):
         ana.post(f"/propuestas/{pid}/votar", {"valor": "-1"}, desde="/")
         luis.post(f"/propuestas/{pid}/votar", {"valor": "1"}, desde="/")
         self.assertEqual(consulta("SELECT estado FROM propuestas_evento WHERE id=?", pid), [("pendiente",)])
+
+
+class PruebasPosicionDeEventos(PruebaServidor):
+    def test_votos_posicionan_los_eventos_de_todos_los_clubes(self):
+        hack = consulta("SELECT id, substr(fecha_inicio,1,7) FROM propuestas_evento WHERE titulo='Hackatón de robots'")[0]
+        torneo = consulta("SELECT id FROM propuestas_evento WHERE titulo='Torneo relámpago de ajedrez'")[0][0]
+        sofia, jorge, maria = self.cliente(SOFIA), self.cliente(JORGE), self.cliente(MARIA)
+        # Cualquier estudiante (aunque no sea del club) vota «Me interesa» en un evento aprobado.
+        for c in (sofia, jorge, maria):
+            r = c.post(f"/propuestas/{hack[0]}/votar", {"valor": "1", "siguiente": "/eventos"}, desde="/eventos")
+            self.assertEqual(r.estado, 200)
+        jorge.post(f"/propuestas/{torneo}/votar", {"valor": "1"}, desde="/eventos")
+        self.assertIn("No puedes votar el evento que tú propusiste",
+                      self.cliente(ANA).post(f"/propuestas/{hack[0]}/votar", {"valor": "1"}, desde="/eventos").cuerpo)
+        pagina = sofia.get("/eventos").cuerpo
+        self.assertIn('class="destacados"', pagina)
+        destacados = pagina.split('class="destacados"')[1].split("</section>")[0]
+        self.assertLess(destacados.index("Hackatón de robots"), destacados.index("Torneo relámpago"))   # 3 votos > 1
+        mes = sofia.get(f"/eventos?mes={hack[1]}&orden=votos").cuerpo
+        self.assertIn("Me interesa", mes)
+        self.assertIn('class="activo" href="/eventos?mes=', mes)
 
 
 if __name__ == "__main__":

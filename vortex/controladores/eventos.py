@@ -26,7 +26,8 @@ def proximos(p):
     except ValueError:
         anio, mes = hoy.year, hoy.month
     solo_mios = p.consulta.get("vista") == "mios"
-    del_mes = eventos.del_mes(p.bd, p.usuario.id, anio, mes, solo_mios)
+    orden = "votos" if p.consulta.get("orden") == "votos" else "fecha"
+    del_mes = eventos.del_mes(p.bd, p.usuario.id, anio, mes, solo_mios, orden)
     por_dia = {}
     for e in del_mes:
         por_dia.setdefault(int(e.fecha_inicio[8:10]), []).append(e)
@@ -36,8 +37,8 @@ def proximos(p):
     siguiente = (anio + 1, 1) if mes == 12 else (anio, mes + 1)
     return render(p, "eventos.html", semanas=semanas, dias_semana=DIAS_SEMANA, titulo_mes=f"{MESES_LARGOS[mes - 1]} {anio}",
                   mes_anterior=f"{anterior[0]:04d}-{anterior[1]:02d}", mes_siguiente=f"{siguiente[0]:04d}-{siguiente[1]:02d}",
-                  mes_actual=f"{anio:04d}-{mes:02d}", vista="mios" if solo_mios else "todos",
-                  eventos=eventos.proximos(p.bd, p.usuario.id), eventos_mes=del_mes)
+                  mes_actual=f"{anio:04d}-{mes:02d}", vista="mios" if solo_mios else "todos", orden=orden,
+                  destacados=eventos.destacados(p.bd, p.usuario.id), eventos_mes=del_mes)
 
 
 @ruta("POST", "/eventos/<id>/asistencia")
@@ -148,6 +149,8 @@ def votar_propuesta(p, id):
     if not propuesta:
         raise ErrorHttp(404, "Esa propuesta no existe.")
     club = clubes.por_id_simple(p.bd, propuesta.club_id)
+    if propuesta.estado == "aprobada":
+        return _votar_evento(p, propuesta)
     m = clubes.membresia(p.bd, p.usuario.id, club.id)
     if not m or m.estado != "activa":
         raise ErrorHttp(403, "Solo los miembros del club pueden votar sus propuestas.")
@@ -174,3 +177,18 @@ def votar_propuesta(p, id):
     faltan = max(0, umbral - apoyos)
     return volver.con_aviso("ok", f"Voto registrado. Faltan {faltan} apoyo{'s' if faltan != 1 else ''} para aprobarla."
                             if faltan else "Voto registrado.")
+
+
+def _votar_evento(p, propuesta):
+    """Con el evento ya aprobado, cualquier estudiante puede votar «Me interesa» para posicionarlo
+    entre los eventos de todos los clubes (calendario general y destacados)."""
+    volver = Respuesta.redirigir(destino_seguro(p.formulario.get("siguiente"), "/eventos"))
+    if propuesta.fecha_inicio < datetime.now().strftime("%Y-%m-%d %H:%M"):
+        return volver.con_aviso("error", "Ese evento ya ocurrió.")
+    if propuesta.proponente_id == p.usuario.id:
+        return volver.con_aviso("error", "No puedes votar el evento que tú propusiste.")
+    valor = p.formulario.get("valor")
+    if valor not in ("1", "-1"):
+        raise ErrorHttp(400, "Voto no válido.")
+    eventos.votar_propuesta(p.bd, p.usuario.id, propuesta.id, int(valor))
+    return volver

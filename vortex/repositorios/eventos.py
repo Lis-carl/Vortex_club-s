@@ -12,7 +12,10 @@ def _ahora():
 _EVENTOS = """
 SELECT e.*,
        (SELECT COUNT(*) FROM asistencias a WHERE a.evento_id = e.id) AS n_asistentes,
-       (SELECT 1 FROM asistencias a WHERE a.evento_id = e.id AND a.usuario_id = :uid) AS mi_asistencia
+       (SELECT 1 FROM asistencias a WHERE a.evento_id = e.id AND a.usuario_id = :uid) AS mi_asistencia,
+       COALESCE((SELECT SUM(v.valor) FROM votos_propuesta v WHERE v.propuesta_id = e.id), 0) AS puntaje,
+       (SELECT v.valor FROM votos_propuesta v WHERE v.propuesta_id = e.id AND v.usuario_id = :uid) AS mi_voto,
+       (SELECT p.proponente_id FROM propuestas_evento p WHERE p.id = e.id) AS proponente_id
 FROM v_eventos e
 """
 
@@ -87,19 +90,30 @@ def del_club(bd, club_id, usuario_id):
     return proximos, pasados
 
 
-def proximos(bd, usuario_id, limite=50):
-    return bd.execute(_EVENTOS + " WHERE e.fecha_inicio >= :ahora ORDER BY e.fecha_inicio LIMIT :limite",
-                      {"uid": usuario_id, "ahora": _ahora(), "limite": limite}).fetchall()
+# Posición de los eventos de todos los clubes: primero los más votados; a igual puntaje, los que tienen
+# más asistentes confirmados; después, el más cercano.
+_ORDEN_VOTOS = " ORDER BY puntaje DESC, n_asistentes DESC, e.fecha_inicio"
 
 
-def del_mes(bd, usuario_id, anio, mes, solo_mios=False):
+def proximos(bd, usuario_id, limite=50, orden="fecha"):
+    sql = _EVENTOS + " WHERE e.fecha_inicio >= :ahora"
+    sql += _ORDEN_VOTOS if orden == "votos" else " ORDER BY e.fecha_inicio"
+    return bd.execute(sql + " LIMIT :limite", {"uid": usuario_id, "ahora": _ahora(), "limite": limite}).fetchall()
+
+
+def destacados(bd, usuario_id, limite=3):
+    """Próximos eventos con más votos a favor (solo los que tienen puntaje positivo)."""
+    return [e for e in proximos(bd, usuario_id, limite, orden="votos") if e.puntaje > 0]
+
+
+def del_mes(bd, usuario_id, anio, mes, solo_mios=False, orden="fecha"):
     """Eventos aprobados de un mes. solo_mios: de mis clubes o a los que confirmé asistencia."""
     sql = _EVENTOS + " WHERE e.fecha_inicio LIKE :prefijo"
     if solo_mios:
         sql += (" AND (e.club_id IN (SELECT club_id FROM membresias WHERE usuario_id = :uid AND estado = 'activa')"
                 " OR e.id IN (SELECT evento_id FROM asistencias WHERE usuario_id = :uid))")
-    return bd.execute(sql + " ORDER BY e.fecha_inicio",
-                      {"uid": usuario_id, "prefijo": f"{anio:04d}-{mes:02d}-%"}).fetchall()
+    sql += _ORDEN_VOTOS if orden == "votos" else " ORDER BY e.fecha_inicio"
+    return bd.execute(sql, {"uid": usuario_id, "prefijo": f"{anio:04d}-{mes:02d}-%"}).fetchall()
 
 
 def evento(bd, evento_id, usuario_id):

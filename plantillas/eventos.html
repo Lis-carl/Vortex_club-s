@@ -13,6 +13,18 @@
   </nav>
 </header>
 
+{% if destacados %}
+<section class="destacados" aria-label="Eventos destacados">
+  {% for e in destacados %}
+  <a class="destacado" href="/eventos?mes={{ e.fecha_inicio[:7] }}&amp;orden=votos#evento-{{ e.id }}">
+    <span class="destacado-pos">{{ bucle.indice }}</span>
+    <span class="destacado-texto"><b>{{ e.titulo }}</b><small>{{ e.club_nombre }} · {{ e.fecha_inicio | fecha_corta }}</small></span>
+    <span class="destacado-votos">{{ e.puntaje }}<small>votos</small></span>
+  </a>
+  {% endfor %}
+</section>
+{% endif %}
+
 <section class="panel calendario">
   <div class="calendario-cabecera">
     <a class="boton boton-secundario boton-pequeno" href="/eventos?mes={{ mes_anterior }}&amp;vista={{ vista }}" aria-label="Mes anterior">‹ Anterior</a>
@@ -33,7 +45,11 @@
 </section>
 
 <section class="panel">
-  <div class="panel-cabecera"><h2>Eventos de {{ titulo_mes }}</h2></div>
+  <div class="panel-cabecera"><h2>Eventos de {{ titulo_mes }}</h2>
+    <nav class="segmentos" aria-label="Orden de los eventos">
+      <a class="{% if orden == 'fecha' %}activo{% endif %}" href="/eventos?mes={{ mes_actual }}&amp;vista={{ vista }}&amp;orden=fecha">Por fecha</a>
+      <a class="{% if orden == 'votos' %}activo{% endif %}" href="/eventos?mes={{ mes_actual }}&amp;vista={{ vista }}&amp;orden=votos">Más votados</a>
+    </nav></div>
   {% set mostrar_club = True %}
   {% for e in eventos_mes %}
     {% include "parciales/evento.html" %}

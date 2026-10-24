@@ -156,6 +156,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | RF-34 | El sistema debe mostrar **recordatorios** de los eventos confirmados que empiezan en las próximas 48 horas. | M |
 | RF-35 | El sistema debe ofrecer un **calendario mensual** de actividades, con filtro «mis clubes y confirmados». | A |
 | RF-39 | Los miembros del club deben poder **votar las propuestas de evento** (apoyar o en contra). Una propuesta se **aprueba automáticamente** cuando alcanza los apoyos de la mitad de los miembros activos (mínimo 2) y tiene más apoyos que votos en contra. Líder y capitanes pueden seguir aprobando o rechazando directamente. | A |
+| RF-40 | Los votos también **posicionan los eventos aprobados de todos los clubes**: cualquier estudiante puede marcar «Me interesa» (o «No me interesa»); el calendario general muestra los **eventos destacados** (los más votados) y permite ordenar por «Más votados» (puntaje, luego asistentes confirmados, luego fecha). | M |
 | RF-36 | El sistema debe calcular **puntos de participación** (publicación 5, comentario 2, asistencia 3, reacción recibida 1), y un nivel (Nuevo, Participante, Activo, Destacado), visibles en el perfil. | B |
 
 ## 2.4 Requerimientos no funcionales

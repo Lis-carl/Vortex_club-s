@@ -72,6 +72,7 @@ OK
 | RF-34 Recordatorios | `test_recordatorio_de_eventos_proximos` |
 | RF-35 Calendario mensual / RF-36 Participación | `test_calendario_y_participacion` |
 | RF-39 Votación de propuestas | `PruebasVotacionDePropuestas.test_propuesta_aprobada_por_votacion`, `test_votos_en_contra_impiden_aprobar` |
+| RF-40 Posición de eventos por votos | `PruebasPosicionDeEventos.test_votos_posicionan_los_eventos_de_todos_los_clubes` |
 | RF-37 Solicitud de capitán | `test_solicitud_de_capitan_aprobada_por_la_administracion` |
 | RF-38 Administración con permiso total | `test_administracion_tiene_permiso_total` |
 | RN-10 / RN-11 Rol según la cuenta y borrado solo de lo propio | `test_rol_determinado_por_la_cuenta`, `test_estudiante_no_borra_lo_ajeno` |

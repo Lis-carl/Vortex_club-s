@@ -35,6 +35,8 @@
           {% set v_puntaje = c.puntaje %}
           {% set v_mio = c.mi_voto %}
           {% set v_ancla = "comentario-" + str(c.id) %}
+          {% set v_texto = None %}
+          {% set v_ayuda = None %}
           {% include "parciales/votos.html" %}
         {% endif %}
         {% if es_miembro and not c.eliminado %}
