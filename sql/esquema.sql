@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     correo          TEXT    NOT NULL UNIQUE COLLATE NOCASE,
     carrera         TEXT    NOT NULL DEFAULT '',
     foto            TEXT    NOT NULL DEFAULT '',
+    chats_limpiados_hasta INTEGER NOT NULL DEFAULT 0,
     hash_contrasena TEXT    NOT NULL,
     sal             TEXT    NOT NULL,
     rol_global      TEXT    NOT NULL DEFAULT 'estudiante' CHECK (rol_global IN ('estudiante', 'admin')),

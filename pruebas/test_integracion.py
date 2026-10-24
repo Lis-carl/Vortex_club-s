@@ -436,14 +436,18 @@ class PruebasChatYEventos(PruebaServidor):
         ana.post(f"/mensajes/{LUIS}", {"contenido": "¿Traes el cautín?"}, desde=f"/mensajes/{LUIS}")
         panel = luis.get("/eventos").cuerpo.split('aria-label="Chats"')[1]
         self.assertIn("¿Traes el cautín?", panel)                         # mensaje reciente en el panel
-        self.assertIn('action="/clubes/robotica/chat"', panel)            # y el chat de sus clubes
+        self.assertNotIn('action="/clubes/robotica/chat"', panel)         # solo chats privados
         # contestar desde el panel deja al usuario en la misma página
         r = luis.post(f"/mensajes/{ANA}", {"contenido": "Sí, lo llevo", "siguiente": "/eventos"}, desde="/eventos")
         self.assertTrue(r.url.endswith("/eventos"))
         self.assertIn("Mensaje enviado a Ana López", r.cuerpo)
         self.assertIn("Sí, lo llevo", ana.get(f"/mensajes/{LUIS}/marco").cuerpo)
-        r = luis.post("/clubes/robotica/chat", {"contenido": "Hola club", "siguiente": "/eventos"}, desde="/eventos")
-        self.assertIn("Mensaje enviado al chat de Robótica", r.cuerpo)
+        # limpiar el panel quita los chats de ahí, pero siguen en Mensajes
+        r = luis.post("/mensajes/limpiar-panel", {"siguiente": "/eventos"}, desde="/eventos")
+        self.assertIn("No hay chats recientes", r.cuerpo.split('aria-label="Chats"')[1])
+        self.assertIn(f'href="/mensajes/{ANA}"', luis.get("/mensajes").cuerpo)
+        ana.post(f"/mensajes/{LUIS}", {"contenido": "Nuevo mensaje"}, desde=f"/mensajes/{LUIS}")
+        self.assertIn("Nuevo mensaje", luis.get("/eventos").cuerpo.split('aria-label="Chats"')[1])   # vuelve con mensajes nuevos
 
     def test_pagina_de_evento(self):
         eid = consulta("SELECT id FROM propuestas_evento WHERE titulo='Hackatón de robots'")[0][0]
@@ -759,6 +763,8 @@ class PruebasRolesYFuncionesEncuesta(PruebaServidor):
         self.assertIn("Ver notificación completa", panel)
         self.assertNotIn("campana-numero", maria.post("/notificaciones/leidas", {"siguiente": "/"}, desde="/").cuerpo)
         self.cliente(ANA).post("/clubes/robotica/anuncios", {"titulo": "Otro cambio", "contenido": "Lab 6"}, desde="/clubes/robotica/anuncios")
+        nid = consulta("SELECT id FROM notificaciones WHERE texto LIKE '%Otro cambio' AND usuario_id=(SELECT id FROM usuarios WHERE cif=?)", MARIA)[0][0]
+        self.assertIn(f'action="/notificaciones/{nid}/quitar"', maria.get("/").cuerpo)
         bandeja = maria.get("/notificaciones").cuerpo
         self.assertIn("Nuevo anuncio en Robótica: Otro cambio", bandeja)
         self.assertIn('class="nueva"', bandeja)
@@ -766,6 +772,13 @@ class PruebasRolesYFuncionesEncuesta(PruebaServidor):
         pid = consulta("SELECT id FROM publicaciones WHERE titulo LIKE 'Taller de Arduino%'")[0][0]
         self.cliente(JORGE).post(f"/publicaciones/{pid}/comentar", {"contenido": "Me apunto también"}, desde="/")
         self.assertIn("Jorge Díaz comentó tu publicación", self.cliente(ANA).get("/notificaciones").cuerpo)
+        # quitar una notificación y luego todas desde el panel
+        ana = self.cliente(ANA)
+        nid = consulta("SELECT id FROM notificaciones WHERE texto LIKE 'Jorge Díaz comentó%'")[0][0]
+        ana.post(f"/notificaciones/{nid}/quitar", {"siguiente": "/"}, desde="/")
+        self.assertEqual(consulta("SELECT COUNT(*) FROM notificaciones WHERE id=?", nid), [(0,)])
+        ana.post("/notificaciones/limpiar", {"siguiente": "/"}, desde="/")
+        self.assertEqual(consulta("SELECT COUNT(*) FROM notificaciones WHERE usuario_id=(SELECT id FROM usuarios WHERE cif=?)", ANA), [(0,)])
 
     def test_calendario_y_sin_puntos(self):
         mes = consulta("SELECT substr(fecha_inicio, 1, 7) FROM propuestas_evento WHERE titulo='Torneo relámpago de ajedrez'")[0][0]

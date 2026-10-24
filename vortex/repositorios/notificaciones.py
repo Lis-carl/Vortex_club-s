@@ -52,5 +52,13 @@ def no_leidas(bd, usuario_id):
                       (usuario_id,)).fetchone().n
 
 
+def quitar(bd, usuario_id, notificacion_id):
+    bd.execute("DELETE FROM notificaciones WHERE id = ? AND usuario_id = ?", (notificacion_id, usuario_id))
+
+
+def quitar_todas(bd, usuario_id):
+    bd.execute("DELETE FROM notificaciones WHERE usuario_id = ?", (usuario_id,))
+
+
 def marcar_leidas(bd, usuario_id):
     bd.execute("UPDATE notificaciones SET leida = 1 WHERE usuario_id = ? AND leida = 0", (usuario_id,))

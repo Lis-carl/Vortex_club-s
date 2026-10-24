@@ -32,6 +32,15 @@ def bandeja(p):
                   contactos=privados.contactos(p.bd, p.usuario.id))
 
 
+@ruta("POST", "/mensajes/limpiar-panel")
+@requiere_sesion
+def limpiar_panel(p):
+    """Quita los chats del panel de la cabecera; los mensajes siguen en la página de Mensajes."""
+    privados.limpiar_panel(p.bd, p.usuario.id)
+    return Respuesta.redirigir(destino_seguro(p.formulario.get("siguiente"), "/")).con_aviso(
+        "ok", "Chats quitados del panel. Siguen disponibles en Mensajes.")
+
+
 @ruta("GET", "/mensajes/<cif>")
 @requiere_sesion
 def conversacion(p, cif):

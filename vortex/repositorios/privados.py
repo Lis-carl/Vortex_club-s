@@ -35,7 +35,7 @@ def contactos(bd, usuario_id):
 def conversaciones(bd, usuario_id):
     """Una fila por persona con la que hay mensajes: el último mensaje y cuántos faltan por leer."""
     return bd.execute(
-        """SELECT u.id, u.cif, u.nombre, u.foto, m.contenido AS ultimo, m.creado_en, m.emisor_id,
+        """SELECT u.id, u.cif, u.nombre, u.foto, m.id AS ultimo_id, m.contenido AS ultimo, m.creado_en, m.emisor_id,
                   (SELECT COUNT(*) FROM mensajes_privados x
                    WHERE x.emisor_id = u.id AND x.receptor_id = ? AND x.leido = 0) AS sin_leer
            FROM (SELECT CASE WHEN emisor_id = ? THEN receptor_id ELSE emisor_id END AS otro, MAX(id) AS ultimo_id
@@ -79,6 +79,20 @@ def editar(bd, mensaje_id, contenido):
 def marcar_leidos(bd, receptor_id, emisor_id):
     bd.execute("UPDATE mensajes_privados SET leido = 1 WHERE receptor_id = ? AND emisor_id = ? AND leido = 0",
                (receptor_id, emisor_id))
+
+
+def recientes_para_panel(bd, usuario_id, cantidad=6):
+    """Conversaciones del panel de chats: solo las que tienen mensajes después de la última limpieza."""
+    fila = bd.execute("SELECT chats_limpiados_hasta FROM usuarios WHERE id = ?", (usuario_id,)).fetchone()
+    hasta = fila.chats_limpiados_hasta if fila else 0
+    return [c for c in conversaciones(bd, usuario_id) if c.ultimo_id > hasta][:cantidad]
+
+
+def limpiar_panel(bd, usuario_id):
+    """Quita los chats del panel sin borrar los mensajes (siguen en la página de Mensajes)."""
+    bd.execute("""UPDATE usuarios SET chats_limpiados_hasta = COALESCE(
+                      (SELECT MAX(id) FROM mensajes_privados WHERE ? IN (emisor_id, receptor_id)), 0)
+                  WHERE id = ?""", (usuario_id, usuario_id))
 
 
 def no_leidos(bd, usuario_id):

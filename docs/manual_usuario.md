@@ -112,8 +112,9 @@ Puedes conversar en privado con cualquier integrante de tus clubes:
 
 Si dejan de compartir un club, la conversación queda solo de lectura.
 
-**Respuesta rápida:** el ícono de chats junto a la campana abre un panel con tus conversaciones
-recientes y los chats de tus clubes, con el último mensaje de cada uno. Escribe en «Responder…» y pulsa
+**Respuesta rápida:** el ícono de chats junto a la campana abre un panel con tus chats privados
+recientes, con el último mensaje de cada uno. La **papelera** del panel los quita de ahí (siguen en
+**Mensajes** y vuelven a aparecer cuando llega un mensaje nuevo). Escribe en «Responder…» y pulsa
 enviar: el mensaje sale sin salir de la página en la que estás.
 
 ### Solicitar ser capitán
@@ -122,7 +123,7 @@ y envía. La administración revisará tu solicitud y recibirás una notificaci�
 
 ## 6. Notificaciones
 
-- **Notificaciones:** al pulsar la campana se abre un panel con tus últimas notificaciones (con «Ver notificación completa», el botón para marcarlas todas como leídas y «Ver todo»). La campana muestra cuántos avisos tienes sin leer (anuncios, eventos aprobados,
+- **Notificaciones:** al pulsar la campana se abre un panel con tus últimas notificaciones (con «Ver notificación completa», el botón para marcarlas todas como leídas, la **papelera** para quitarlas todas, la **×** para quitar una y «Ver todo»). La campana muestra cuántos avisos tienes sin leer (anuncios, eventos aprobados,
   respuestas a tus propuestas y solicitudes, comentarios a tus publicaciones, asignaciones de rol).
   Al abrir la bandeja quedan marcados como leídos.
 
