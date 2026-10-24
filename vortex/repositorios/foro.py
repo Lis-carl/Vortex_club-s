@@ -1,8 +1,16 @@
 """Publicaciones, comentarios, votos y reacciones (estilo Reddit)."""
 from ..nucleo import Fila
 
-# Reacciones permitidas, en el orden en que se muestran. Coinciden con el CHECK de sql/esquema.sql.
-TIPOS_REACCION = ["\U0001F44D", "❤️", "\U0001F602", "\U0001F62E", "\U0001F622", "\U0001F525"]
+# Reacciones permitidas: (emoji, clave para estilos, nombre visible). El emoji coincide con el CHECK de sql/esquema.sql.
+REACCIONES = [
+    ("\U0001F44D", "apoyo", "Apoyo"),
+    ("\u2764\ufe0f", "encanta", "Me encanta"),
+    ("\U0001F602", "divierte", "Me divierte"),
+    ("\U0001F62E", "sorprende", "Me sorprende"),
+    ("\U0001F622", "entristece", "Me entristece"),
+    ("\U0001F525", "increible", "Increíble"),
+]
+TIPOS_REACCION = [emoji for emoji, _, _ in REACCIONES]
 
 _BASE = """
 SELECT p.id, p.club_id, p.autor_id, p.titulo, p.contenido, p.imagen, p.creado_en,
@@ -33,8 +41,9 @@ def _con_reacciones(bd, publicaciones, usuario_id):
         por_pub.setdefault(f.publicacion_id, {})[f.tipo] = f
     for p in publicaciones:
         datos = por_pub.get(p.id, {})
-        p["reacciones"] = [Fila(tipo=t, n=datos[t].n if t in datos else 0, mia=bool(t in datos and datos[t].mia))
-                           for t in TIPOS_REACCION]
+        p["reacciones"] = [Fila(tipo=t, clave=clave, nombre=nombre, n=datos[t].n if t in datos else 0,
+                                mia=bool(t in datos and datos[t].mia))
+                           for t, clave, nombre in REACCIONES]
     return publicaciones
 
 

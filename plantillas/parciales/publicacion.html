@@ -1,13 +1,4 @@
 <article class="publicacion" id="pub-{{ pub.id }}">
-  <div class="pub-votos">
-    {% set v_url = "/publicaciones/" + str(pub.id) + "/votar" %}
-    {% set v_id = "votos-p-" + str(pub.id) %}
-    {% set v_puntaje = pub.puntaje %}
-    {% set v_mio = pub.mi_voto %}
-    {% set v_ancla = "pub-" + str(pub.id) %}
-    {% set v_modo = "vertical" %}
-    {% include "parciales/votos.html" %}
-  </div>
   <div class="pub-cuerpo">
     <p class="pub-meta">
       <a class="pub-club" href="/clubes/{{ pub.club_slug }}">{{ pub.club_nombre }}</a>
@@ -24,7 +15,13 @@
       <p class="pub-extracto">{{ pub.contenido | extracto }}</p>
     {% endif %}
     <div class="pub-acciones">
-      <a class="accion" href="/publicaciones/{{ pub.id }}#comentarios">{{ pub.n_comentarios }} comentario{% if pub.n_comentarios != 1 %}s{% endif %}</a>
+      {% set v_url = "/publicaciones/" + str(pub.id) + "/votar" %}
+      {% set v_id = "votos-p-" + str(pub.id) %}
+      {% set v_puntaje = pub.puntaje %}
+      {% set v_mio = pub.mi_voto %}
+      {% set v_ancla = "pub-" + str(pub.id) %}
+      {% include "parciales/votos.html" %}
+      <a class="accion accion-comentarios" href="/publicaciones/{{ pub.id }}#comentarios"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>{{ pub.n_comentarios }}<span class="voto-texto">&nbsp;comentario{% if pub.n_comentarios != 1 %}s{% endif %}</span></a>
       {% include "parciales/reacciones.html" %}
       {% if pub.puede_eliminar %}
         {% set c_url = "/publicaciones/" + str(pub.id) + "/eliminar" %}

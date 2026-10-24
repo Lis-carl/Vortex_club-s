@@ -29,6 +29,8 @@ del foro de Reddit**, con un acabado formal: líneas rectas, bordes finos y sin 
 | Menú lateral | El ítem activo usa el color principal al 10 % de opacidad y una línea de acento vertical a la izquierda |
 | Filtros | Control segmentado: pista gris clara compartida y opción activa en blanco con sombra suave |
 | Banner de bienvenida | Saludo y fecha arriba a la izquierda; debajo, en una fila horizontal, «Mis clubes» y «Eventos confirmados». Fondo: foto de la entrada de la UAM bajo un velo en el color institucional |
+| Votos | Píldora «Útil» con flecha hacia arriba, el puntaje y una flecha «Poco útil». Tienen un sentido claro: ordenan el foro en «Populares». El voto activo se rellena de color (teal para útil, rojo para poco útil) |
+| Reacciones | Seis reacciones con nombre y color propio: Apoyo (azul), Me encanta (rosa), Me divierte (ámbar), Me sorprende (violeta), Me entristece (azul grisáceo) e Increíble (naranja). Las que tienen votos se ven como fichas con su tono; el menú «Reaccionar» las muestra en una cuadrícula con el emoji en un círculo de color y su nombre |
 | Estados vacíos | Ícono minimalista en gris claro dentro de un círculo (publicaciones, calendario, anuncios, notificaciones, personas) más un texto que explica qué aparecerá ahí |
 | Fondo del acceso | Foto de la entrada de la Universidad Americana (`estatico/img/campus-uam.jpg`) bajo un velo en el color UAM y una trama fina de líneas diagonales; la foto se acerca muy despacio |
 | Identidad UAM | Lema del afiche de Vida Estudiantil «Sé parte de un club» en el acceso; «Universidad Americana (UAM) · Managua, Nicaragua · Dirección de Vida Estudiantil · I Semestre 2026» en el pie; carreras de la UAM en el registro; los 14 clubes oficiales |

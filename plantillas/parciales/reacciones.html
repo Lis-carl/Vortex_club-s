@@ -4,18 +4,25 @@
     <input type="hidden" name="csrf" value="{{ csrf }}">
     <input type="hidden" name="siguiente" value="{{ ruta_completa }}#pub-{{ pub.id }}">
     <input type="hidden" name="tipo" value="{{ r.tipo }}">
-    <button class="ficha {% if r.mia %}ficha-activa{% endif %}" title="{% if r.mia %}Quitar mi reacción{% else %}Reaccionar igual{% endif %}">{{ r.tipo }} <b>{{ r.n }}</b></button>
+    <button class="ficha {% if r.mia %}ficha-activa{% endif %} reaccion-{{ r.clave }}" title="{{ r.nombre }} · {% if r.mia %}pulsa para quitar tu reacción{% else %}pulsa para sumarte{% endif %}">
+      <span class="ficha-emoji" aria-hidden="true">{{ r.tipo }}</span><b>{{ r.n }}</b><span class="oculto">{{ r.nombre }}</span>
+    </button>
   </form>
   {% endif %}{% endfor %}
   <details class="reaccionar">
-    <summary class="accion">Reaccionar</summary>
+    <summary class="accion accion-reaccionar" title="Reaccionar">
+      <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><circle cx="11" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M7.8 13.6a4 4 0 0 0 6.4 0" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="8.6" cy="10" r="1.1" fill="currentColor"/><circle cx="13.4" cy="10" r="1.1" fill="currentColor"/><path d="M19 3v5M16.5 5.5h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+      <span>Reaccionar</span>
+    </summary>
     <div class="reaccionar-menu">
       {% for r in pub.reacciones %}
       <form method="post" action="/publicaciones/{{ pub.id }}/reaccion">
         <input type="hidden" name="csrf" value="{{ csrf }}">
         <input type="hidden" name="siguiente" value="{{ ruta_completa }}#pub-{{ pub.id }}">
         <input type="hidden" name="tipo" value="{{ r.tipo }}">
-        <button class="emoji {% if r.mia %}emoji-activo{% endif %}" aria-label="Reacción {{ r.tipo }}">{{ r.tipo }}</button>
+        <button class="emoji {% if r.mia %}emoji-activo{% endif %} reaccion-{{ r.clave }}" title="{{ r.nombre }}">
+          <span class="emoji-icono" aria-hidden="true">{{ r.tipo }}</span><small>{{ r.nombre }}</small>
+        </button>
       </form>
       {% endfor %}
     </div>

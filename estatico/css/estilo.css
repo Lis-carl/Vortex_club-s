@@ -588,3 +588,58 @@ input[type=datetime-local], select, textarea, .ficha, .voto, .emoji { border-rad
 /* Un menú desplegado (confirmar, reaccionar, cambiar foto) queda por encima de las tarjetas siguientes */
 .principal > *, .lista-publicaciones > * { position: relative; }
 .principal > *:has(details[open]), .lista-publicaciones > *:has(details[open]) { z-index: 20; }
+
+
+/* =====================================================================
+   Votos de utilidad y reacciones v7
+   ===================================================================== */
+.publicacion { grid-template-columns: minmax(0, 1fr); }
+.pub-cuerpo { padding: 16px 18px 12px; }
+.pub-acciones { gap: 8px; margin-left: 0; margin-top: 12px; padding-top: 10px; border-top: 1px solid #F0F3F5; }
+.accion-comentarios, .accion-reaccionar { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 999px; background: #F2F6F7; color: var(--gris); }
+.accion-comentarios:hover, .accion-reaccionar:hover, .reaccionar[open] .accion-reaccionar { background: var(--marca-claro); color: var(--marca-profundo); }
+
+/* Píldora de votos: «Útil» con su conteo y «Poco útil» */
+.votos { display: inline-flex; align-items: center; gap: 0; height: 32px; padding: 0 3px; border-radius: 999px; background: #F2F6F7; }
+.votos form { display: flex; }
+.voto { display: inline-flex; align-items: center; gap: 5px; width: auto; height: 26px; padding: 0 9px; border: 0; border-radius: 999px; background: transparent; color: var(--gris); font: inherit; font-size: .82rem; font-weight: 600; cursor: pointer; }
+.voto svg { transition: transform .18s ease; }
+.voto-mas:hover { background: rgba(0, 154, 169, .12); color: var(--marca-profundo); }
+.voto-mas:hover svg { transform: translateY(-2px); }
+.voto-menos:hover { background: rgba(168, 38, 28, .10); color: var(--peligro); }
+.voto-menos:hover svg { transform: translateY(2px); }
+.voto.voto-arriba { background: var(--marca); color: #fff; box-shadow: 0 2px 8px rgba(0, 154, 169, .35); }
+.voto.voto-abajo { background: var(--peligro); color: #fff; }
+.puntaje { min-width: 26px; padding: 0 4px; text-align: center; font-weight: 700; font-size: .88rem; color: var(--gris); font-variant-numeric: tabular-nums; }
+.puntaje-positivo { color: var(--marca-profundo); }
+.puntaje-negativo { color: var(--peligro); }
+.comentario-acciones .votos { height: 28px; }
+.comentario-acciones .voto { height: 22px; font-size: .78rem; }
+
+/* Reacciones: cada una con su color y su nombre */
+.reacciones { gap: 6px; }
+.ficha { --tono: #9AA8B3; --fondo-tono: #F2F6F7; height: 32px; padding: 0 10px 0 6px; gap: 6px; border: 1.5px solid transparent; border-radius: 999px; background: var(--fondo-tono); color: var(--tinta); font-weight: 600; }
+.ficha-emoji { display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; border-radius: 50%; background: #fff; font-size: .95rem; box-shadow: 0 1px 2px rgba(16, 40, 48, .12); }
+.ficha:hover { border-color: var(--tono); transform: translateY(-1px); }
+.ficha.ficha-activa { border-color: var(--tono); background: #fff; color: var(--tono); box-shadow: 0 0 0 3px var(--fondo-tono); }
+.reaccion-apoyo { --tono: #1F7AE0; --fondo-tono: #E8F1FD; }
+.reaccion-encanta { --tono: #D93A5F; --fondo-tono: #FDEBEF; }
+.reaccion-divierte { --tono: #C98A00; --fondo-tono: #FEF5DD; }
+.reaccion-sorprende { --tono: #7E57C2; --fondo-tono: #F1ECFA; }
+.reaccion-entristece { --tono: #4A7C9B; --fondo-tono: #E9F1F6; }
+.reaccion-increible { --tono: #E4572E; --fondo-tono: #FDEDE7; }
+
+.reaccionar-menu { display: grid; grid-template-columns: repeat(3, 84px); gap: 6px; padding: 10px; border-radius: 14px; bottom: calc(100% + 8px); }
+.reaccionar-menu form { display: block; }
+.emoji { --tono: #9AA8B3; --fondo-tono: #F2F6F7; display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; height: auto; padding: 8px 4px 6px; border: 1.5px solid transparent; border-radius: 12px; background: transparent; cursor: pointer; }
+.emoji-icono { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: var(--fondo-tono); font-size: 1.35rem; transition: transform .18s cubic-bezier(.3, 1.6, .5, 1); }
+.emoji small { font-size: .68rem; font-weight: 600; color: var(--gris); white-space: nowrap; }
+.emoji:hover { background: var(--fondo-tono); transform: none; }
+.emoji:hover .emoji-icono { transform: scale(1.22) translateY(-2px); }
+.emoji:hover small, .emoji-activo small { color: var(--tono); }
+.emoji-activo { border-color: var(--tono); background: var(--fondo-tono); }
+
+@media (max-width: 760px) {
+  .voto-texto { display: none; }
+  .reaccionar-menu { grid-template-columns: repeat(3, 72px); }
+}

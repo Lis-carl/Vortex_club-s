@@ -58,8 +58,8 @@ para líder, capitanes y administración).
 
 ### Foro
 - **Crear publicación:** título, texto opcional e imagen opcional (PNG, JPG, GIF o WEBP de hasta 2 MB).
-- **Votar:** ▲ a favor, ▼ en contra. Pulsar de nuevo tu voto lo retira.
-- **Reaccionar:** pulsa **Reaccionar** y elige una de las seis reacciones. La página vuelve a la misma publicación.
+- **Votar:** pulsa **Útil** si la publicación te sirvió (sube en *Populares*) o la flecha hacia abajo si es poco útil (baja). Pulsar de nuevo tu voto lo retira.
+- **Reaccionar:** pulsa **Reaccionar** y elige *Apoyo*, *Me encanta*, *Me divierte*, *Me sorprende*, *Me entristece* o *Increíble*. Cada una tiene su color; pulsa una ficha ya contada para sumarte o quitar la tuya.
 - **Comentar:** abre la publicación y escribe; usa **Responder** para contestar a un comentario.
 - **Eliminar:** como estudiante solo puedes eliminar **lo que tú publicaste**. Líder, capitanes y
   administración pueden eliminar publicaciones de otros en su club.
