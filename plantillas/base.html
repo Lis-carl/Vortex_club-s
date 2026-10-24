@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block titulo %}Inicio{% endblock %} | Vortex Clubs</title>
   <link rel="icon" type="image/svg+xml" href="/estatico/img/logo.svg?v=6">
-  <link rel="stylesheet" href="/estatico/css/estilo.css?v=44">
+  <link rel="stylesheet" href="/estatico/css/estilo.css?v=45">
 </head>
 <body>
 {% if usuario %}
@@ -16,9 +16,10 @@
       <label for="menu-movil" class="hamburguesa" title="Abrir menú" aria-label="Abrir menú">
         <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </label>
-      <a class="marca" href="/">
-        <img src="/estatico/img/logo.svg?v=6" alt="" width="34" height="34">
-        <span class="marca-texto">Vortex Clubs<small>UAM · Vida Estudiantil</small></span>
+      <a class="marca marca-v2" href="/" aria-label="Vortex Clubs, inicio">
+        <img class="marca-logo" src="/estatico/img/logo.svg?v=6" alt="" width="40" height="40">
+        <span class="marca-nombre">Vortex Clubs</span>
+        <small class="marca-lema">UAM · Vida Estudiantil</small>
       </a>
       {% include "parciales/panel_notificaciones.html" %}
       {% include "parciales/panel_chats.html" %}

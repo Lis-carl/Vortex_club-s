@@ -1346,3 +1346,34 @@ body:has(.feed) .marco-app { flex: 1; width: 100%; padding-bottom: 0; }
 .comentario { border-left: 0; padding-left: 0; }
 .comentario.nivel-1, .comentario.nivel-2, .comentario.nivel-3, .comentario.nivel-4, .comentario.nivel-5 { padding-left: 20px; border-left: 2px solid var(--linea); }
 .comentario .pub-meta .avatar { border-radius: 50%; }
+
+/* Marca de la cabecera v2: logo grande; «Vortex Clubs» al lado con una línea azul que nace del logo
+   y pasa por debajo del nombre; «UAM · Vida Estudiantil» debajo de todo */
+.cabecera-interior { height: 62px; }
+.marca-v2 { display: grid; grid-template-columns: auto auto; grid-template-rows: auto auto; column-gap: 10px; row-gap: 2px;
+  align-items: center; line-height: 1; }
+.marca-v2 .marca-logo { grid-row: 1; grid-column: 1; width: 40px; height: 40px; border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 112, 124, .25); position: relative; z-index: 1; }
+.marca-v2 .marca-nombre { grid-row: 1; grid-column: 2; position: relative; align-self: center; padding-bottom: 5px;
+  font-size: 1.22rem; font-weight: 800; letter-spacing: -.01em; color: var(--tinta); }
+.marca-v2 .marca-nombre::after { content: ""; position: absolute; left: -18px; right: -6px; bottom: 0; height: 2.5px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--marca-oscuro) 0%, var(--marca) 55%, rgba(0, 154, 169, 0) 100%); }
+.marca-v2 .marca-lema { grid-row: 2; grid-column: 1 / 3; padding-left: 1px; font-size: .62rem; font-weight: 600;
+  letter-spacing: .22em; text-transform: uppercase; color: var(--gris); }
+.marca-v2:hover .marca-nombre { color: var(--marca-profundo); }
+.marca-v2 .marca-logo { transition: transform .4s; }
+.lateral-nav { top: 86px; }
+.complementario { top: 90px; }
+.notif-panel { top: calc(100% + 14px); }
+@media (min-width: 1025px) { body:has(.feed) .complementario > .lateral-fijo { top: 62px; } }
+.feed-pestanas { top: 62px; }
+@media (max-width: 1024px) { .notif-panel { top: 70px; } .lateral-nav { top: 0; } }
+@media (max-width: 760px) {
+  .cabecera-interior { height: 58px; }
+  .marca-v2 .marca-logo { width: 34px; height: 34px; }
+  .marca-v2 .marca-nombre { font-size: 1.02rem; }
+  .marca-v2 .marca-lema { display: none; }
+  .marca-v2 { grid-template-rows: auto; }
+  .notif-panel, .panel-chats .notif-panel, .cuenta-menu { top: 64px; }
+  .feed-pestanas { top: 58px; }
+}
