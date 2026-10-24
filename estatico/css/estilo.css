@@ -1134,3 +1134,9 @@ body { background:
   .redactor, .publicacion { padding: 14px; }
   .redactor-club { max-width: 140px; }
 }
+
+/* Motivos de la primera diapositiva: solo texto con un guion amarillo debajo */
+.slide-motivos { gap: 8px 26px; margin-top: 10px; }
+.slide-motivos li { position: relative; padding: 0 0 8px; border: 0; border-radius: 0; background: none; font-size: .88rem; }
+.slide-motivos li::before { content: none; }
+.slide-motivos li::after { content: ""; position: absolute; left: 0; bottom: 0; width: 22px; height: 3px; border-radius: 2px; background: var(--acento-calido); }
