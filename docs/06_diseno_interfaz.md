@@ -26,6 +26,7 @@ del foro de Reddit**, con un acabado formal: líneas rectas, bordes finos y sin 
 | Rótulos de sección | Mayúsculas pequeñas con espaciado amplio (p. ej. «ANUNCIOS GENERALES») |
 | Íconos y emojis | **Ninguno** en títulos, menús ni botones. Los únicos emojis visibles son las seis reacciones del foro, porque son el contenido de esa función |
 | Tema | Claro, único, para mantener una apariencia uniforme |
+| Fondo del acceso | Foto de la entrada de la Universidad Americana (`estatico/img/campus-uam.jpg`) bajo un velo en el color UAM y una trama fina de líneas diagonales; la foto se acerca muy despacio |
 | Identidad UAM | Lema del afiche de Vida Estudiantil «Sé parte de un club» en la cabecera y el acceso; «Universidad Americana (UAM) · Managua, Nicaragua · Dirección de Vida Estudiantil · I Semestre 2026» en el pie; carreras de la UAM en el registro; los 14 clubes oficiales |
 | Movimiento | Animaciones pequeñas de CSS: entrada escalonada de paneles y publicaciones, elevación al pasar el cursor, menús que se despliegan suavemente, campana que se mueve y contador que late cuando hay notificaciones, barra de cupo que se llena. Se desactivan si el sistema pide «reducir movimiento» |
 | Cabecera | Logotipo, lema, campana de notificaciones con contador y menú de cuenta con el tipo de usuario (Estudiante, Capitán, Líder o Administración). **Sin barra de búsqueda** (la búsqueda queda en el catálogo de clubes) |
