@@ -9,14 +9,47 @@
 <section class="feed" aria-label="Publicaciones">
   <div class="feed-pestanas">
     <nav class="feed-origen" aria-label="Origen de las publicaciones">
-      <a class="{% if ver == 'mis' %}activo{% endif %}" href="/?ver=mis&amp;orden={{ orden }}">Mis clubes</a>
-      <a class="{% if ver == 'todos' %}activo{% endif %}" href="/?ver=todos&amp;orden={{ orden }}">Toda la UAM</a>
+      <a class="{% if ver == 'mis' %}activo{% endif %}" href="/?ver=mis&amp;orden={{ orden }}&amp;fecha={{ fecha }}">Mis clubes</a>
+      <a class="{% if ver == 'todos' %}activo{% endif %}" href="/?ver=todos&amp;orden={{ orden }}&amp;fecha={{ fecha }}">Toda la UAM</a>
     </nav>
-    <nav class="feed-orden" aria-label="Orden">
-      <a class="{% if orden == 'nuevos' %}activo{% endif %}" href="/?ver={{ ver }}&amp;orden=nuevos">Recientes</a>
-      <a class="{% if orden == 'populares' %}activo{% endif %}" href="/?ver={{ ver }}&amp;orden=populares">Populares</a>
-    </nav>
+    <details class="feed-filtro" {% if n_filtros %}data-activo{% endif %}>
+      <summary title="Filtrar publicaciones" aria-label="Filtrar publicaciones">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 5h16l-6 7.5V19l-4-2v-4.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        <span>Filtrar</span>{% if n_filtros %}<span class="filtro-numero">{{ n_filtros }}</span>{% endif %}
+      </summary>
+      <form method="get" action="/" class="filtro-panel">
+        <input type="hidden" name="ver" value="{{ ver }}">
+        <label>Club
+          <select name="club">
+            <option value="">Todos los clubes</option>
+            {% for c in opciones_club %}<option value="{{ c.slug }}" {% if club_filtro and club_filtro.slug == c.slug %}selected{% endif %}>{{ c.nombre }}</option>{% endfor %}
+          </select>
+        </label>
+        <label>Fecha
+          <select name="fecha">
+            {% for clave in ["todo", "hoy", "semana", "mes"] %}<option value="{{ clave }}" {% if fecha == clave %}selected{% endif %}>{{ nombres_periodo[clave] }}</option>{% endfor %}
+          </select>
+        </label>
+        <label>Ordenar por
+          <select name="orden">
+            <option value="nuevos" {% if orden == 'nuevos' %}selected{% endif %}>Más recientes</option>
+            <option value="populares" {% if orden == 'populares' %}selected{% endif %}>Más populares</option>
+          </select>
+        </label>
+        <div class="filtro-acciones">
+          <a href="/?ver={{ ver }}">Quitar filtros</a>
+          <button class="boton boton-primario boton-pequeno">Aplicar</button>
+        </div>
+      </form>
+    </details>
   </div>
+  {% if n_filtros %}
+  <p class="filtros-activos">Filtrando:
+    {% if club_filtro %}<span>{{ club_filtro.nombre }}</span>{% endif %}
+    {% if fecha != 'todo' %}<span>{{ nombres_periodo[fecha] }}</span>{% endif %}
+    {% if orden != 'nuevos' %}<span>Más populares</span>{% endif %}
+    <a href="/?ver={{ ver }}">Quitar</a></p>
+  {% endif %}
 
   {% if tiene_clubes %}
   <form class="redactor" method="post" action="/publicar" enctype="multipart/form-data">
@@ -62,7 +95,7 @@
     {% set vacio_texto = "Las publicaciones de los clubes de la UAM aparecerán aquí." %}
     {% set vacio_url = None %}
   {% endif %}
-  {% set base_consulta = "ver=" + ver + "&orden=" + orden + "&" %}
+  {% set base_consulta = "ver=" + ver + "&orden=" + orden + "&fecha=" + fecha + "&club=" + (club_filtro.slug if club_filtro else "") + "&" %}
   {% if recordatorios %}
   {% include "parciales/recordatorio.html" %}
   {% endif %}

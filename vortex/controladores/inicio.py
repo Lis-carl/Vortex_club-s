@@ -1,4 +1,5 @@
 """Inicio, anuncios generales, notificaciones y panel de gestión de líderes y capitanes."""
+from datetime import datetime, timedelta
 
 from .. import formularios as frm
 from ..acceso import requiere_sesion, es_admin, es_responsable_en, modo_gestion, destino_seguro
@@ -21,6 +22,10 @@ def marcar_permisos(p, publicaciones):
     return publicaciones
 
 
+_PERIODOS = {"todo": None, "hoy": timedelta(days=1), "semana": timedelta(days=7), "mes": timedelta(days=30)}
+_NOMBRES_PERIODO = {"todo": "Cualquier fecha", "hoy": "Hoy", "semana": "Última semana", "mes": "Último mes"}
+
+
 @ruta("GET", "/")
 @requiere_sesion
 def feed(p):
@@ -29,10 +34,20 @@ def feed(p):
     ver = p.consulta.get("ver") or ("mis" if tiene_clubes else "todos")
     orden = "populares" if p.consulta.get("orden") == "populares" else "nuevos"
     pagina = int(p.consulta["pagina"]) if (p.consulta.get("pagina") or "").isdigit() else 1
-    pubs = foro.listar(p.bd, p.usuario.id, solo_mis_clubes=(ver == "mis"), orden=orden, limite=21, pagina=pagina)
+    # Filtros del ícono de embudo: club, fecha y orden
+    opciones_club = mis if ver == "mis" else [c for c in clubes.todos(p.bd) if c.estado == "activo"]
+    club_filtro = next((c for c in opciones_club if c.slug == p.consulta.get("club")), None)
+    fecha = p.consulta.get("fecha") if p.consulta.get("fecha") in _PERIODOS else "todo"
+    desde = (datetime.now() - _PERIODOS[fecha]).strftime("%Y-%m-%d %H:%M:%S") if _PERIODOS[fecha] else None
+    if fecha == "hoy":
+        desde = datetime.now().strftime("%Y-%m-%d 00:00:00")
+    pubs = foro.listar(p.bd, p.usuario.id, solo_mis_clubes=(ver == "mis"), club_id=club_filtro.id if club_filtro else None,
+                       orden=orden, limite=21, pagina=pagina, desde=desde)
     hay_mas = len(pubs) > 20
     avisar_eventos_proximos(p)
     return render(p, "inicio.html", publicaciones=marcar_permisos(p, pubs[:20]), ver=ver, orden=orden, pagina=pagina,
+                  opciones_club=opciones_club, club_filtro=club_filtro, fecha=fecha, nombres_periodo=_NOMBRES_PERIODO,
+                  n_filtros=(1 if club_filtro else 0) + (fecha != "todo") + (orden != "nuevos"),
                   hay_mas=hay_mas, tiene_clubes=tiene_clubes,
                   recordatorios=notificaciones.recordatorios_sin_leer(p.bd, p.usuario.id),
                   anuncios_generales=anuncios.listar(p.bd, None, 3), proximos=eventos.proximos(p.bd, p.usuario.id, 3),

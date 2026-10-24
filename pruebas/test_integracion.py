@@ -449,6 +449,17 @@ class PruebasChatYEventos(PruebaServidor):
         ana.post(f"/mensajes/{LUIS}", {"contenido": "Nuevo mensaje"}, desde=f"/mensajes/{LUIS}")
         self.assertIn("Nuevo mensaje", luis.get("/eventos").cuerpo.split('aria-label="Chats"')[1])   # vuelve con mensajes nuevos
 
+    def test_filtro_del_inicio(self):
+        ana = self.cliente(ANA)
+        inicio = ana.get("/").cuerpo
+        self.assertIn('class="feed-filtro"', inicio)
+        self.assertNotIn(">Recientes</a>", inicio)                                   # ya no hay pestañas de orden
+        self.assertIn("Taller de Arduino", inicio)
+        filtrado = ana.get("/?ver=mis&club=voluntariado-solidario&fecha=todo&orden=nuevos").cuerpo
+        self.assertNotIn("Taller de Arduino", filtrado.split('class="lista-publicaciones"')[1])   # solo publicaciones de ese club
+        self.assertIn("Filtrando:", filtrado)
+        self.assertIn("Taller de Arduino", ana.get("/?ver=mis&club=robotica&fecha=mes").cuerpo)
+
     def test_pagina_de_evento(self):
         eid = consulta("SELECT id FROM propuestas_evento WHERE titulo='Hackatón de robots'")[0][0]
         maria, ana = self.cliente(MARIA), self.cliente(ANA)

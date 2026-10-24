@@ -48,7 +48,7 @@ def _con_reacciones(bd, publicaciones, usuario_id):
 
 
 def listar(bd, usuario_id, club_id=None, solo_mis_clubes=False, autor_id=None, orden="nuevos",
-           limite=20, pagina=1):
+           limite=20, pagina=1, desde=None):
     sql, params = _BASE, {"uid": usuario_id, "limite": limite, "desp": (max(pagina, 1) - 1) * limite}
     if club_id:
         sql += " AND p.club_id = :club"
@@ -58,6 +58,9 @@ def listar(bd, usuario_id, club_id=None, solo_mis_clubes=False, autor_id=None, o
     if autor_id:
         sql += " AND p.autor_id = :autor"
         params["autor"] = autor_id
+    if desde:
+        sql += " AND p.creado_en >= :desde"
+        params["desde"] = desde
     sql += (" ORDER BY (puntaje + n_reacciones + n_comentarios) DESC, p.id DESC" if orden == "populares"
             else " ORDER BY p.id DESC")
     sql += " LIMIT :limite OFFSET :desp"
