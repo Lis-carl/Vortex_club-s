@@ -340,7 +340,7 @@ sequenceDiagram
     participant BD as SQLite
 
     U->>N: Escribe CIF y contraseña
-    N->>S: POST /acceder (rol, cif, contrasena, csrf)
+    N->>S: POST /acceder (cif, contrasena, csrf)
     S->>R: resolver("POST", "/acceder")
     R-->>S: cuentas.acceder
     S->>C: acceder(peticion)
@@ -348,8 +348,8 @@ sequenceDiagram
     BD-->>C: fila (hash, sal, activo)
     C->>Sg: verificar_contrasena(contrasena, sal, hash)
     Sg-->>C: verdadero
-    C->>BD: ¿la cuenta tiene el rol elegido? (rol_global o membresías)
-    C->>Sg: crear_sesion(usuario_id, rol_acceso)
+    C->>BD: rol de la cuenta (rol_global y membresías: líder > capitán > estudiante)
+    C->>Sg: crear_sesion(usuario_id, rol)
     Sg->>BD: INSERT INTO sesiones
     Sg-->>C: token
     C-->>S: Respuesta 303 → /  + Set-Cookie: sesion=token

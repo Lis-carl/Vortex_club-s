@@ -363,14 +363,6 @@ input[type=file] { font: inherit; font-size: .88rem; }
 .campana-numero { position: absolute; top: -7px; right: -7px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--peligro); color: #fff; font-size: .68rem; font-weight: 700; line-height: 18px; text-align: center; animation: latido 2s ease-in-out infinite; }
 .con-pendientes svg { animation: campaneo 3s ease-in-out infinite; transform-origin: 50% 10%; }
 
-.selector-rol { border: 0; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
-.selector-rol legend { font-size: .8rem; font-weight: 600; color: var(--tinta); margin-bottom: 6px; }
-.opcion-rol { position: relative; }
-.opcion-rol input { position: absolute; opacity: 0; }
-.opcion-rol span { display: block; padding: 9px 10px; border: 1px solid var(--linea); border-radius: var(--radio); text-align: center; font-size: .86rem; font-weight: 600; color: var(--gris); cursor: pointer; transition: all .15s; }
-.opcion-rol span:hover { border-color: var(--marca); color: var(--marca-oscuro); }
-.opcion-rol input:checked + span { background: var(--marca); border-color: var(--marca); color: #fff; box-shadow: 0 4px 12px rgba(0,154,169,.28); }
-.opcion-rol input:focus-visible + span { outline: 2px solid var(--marca-oscuro); outline-offset: 2px; }
 
 .bienvenida { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; align-items: center; padding: 22px 24px; border-radius: var(--radio); color: #fff;
   background: linear-gradient(120deg, var(--marca) 0%, var(--marca-oscuro) 70%, var(--marca-profundo) 100%); position: relative; overflow: hidden; }

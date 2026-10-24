@@ -1,6 +1,6 @@
 """Registro, acceso, cierre de sesión y perfil."""
 from .. import config, seguridad, formularios as frm
-from ..acceso import requiere_sesion, destino_seguro, ROLES_ACCESO
+from ..acceso import requiere_sesion, destino_seguro
 from ..enrutador import ruta
 from ..nucleo import ErrorHttp, Respuesta
 from ..repositorios import usuarios, clubes, foro, participacion
@@ -26,8 +26,7 @@ def _iniciar_sesion(p, usuario_id, destino, rol_acceso="estudiante"):
 def acceder_formulario(p):
     if p.usuario:
         return Respuesta.redirigir("/")
-    return render(p, "acceder.html", cif="", error="", rol="estudiante", roles=ROLES_ACCESO,
-                  siguiente=destino_seguro(p.consulta.get("siguiente"), ""))
+    return render(p, "acceder.html", cif="", error="", siguiente=destino_seguro(p.consulta.get("siguiente"), ""))
 
 
 @ruta("POST", "/acceder")
@@ -35,15 +34,10 @@ def acceder(p):
     cif = (p.formulario.get("cif") or "").strip()
     contrasena = p.formulario.get("contrasena") or ""
     siguiente = destino_seguro(p.formulario.get("siguiente"), "")
-    rol = p.formulario.get("rol") or "estudiante"
     clave = f"{p.ip}|{cif}"
 
     def fallo(mensaje):
-        return render(p, "acceder.html", 401, cif=cif, error=mensaje, siguiente=siguiente,
-                      rol=rol if rol in ROLES_ACCESO else "estudiante", roles=ROLES_ACCESO)
-
-    if rol not in ROLES_ACCESO:
-        return fallo("Elige un rol válido para ingresar.")
+        return render(p, "acceder.html", 401, cif=cif, error=mensaje, siguiente=siguiente)
 
     if seguridad.limite_acceso.bloqueado(clave):
         return fallo("Demasiados intentos fallidos. Espera unos minutos e inténtalo de nuevo.")
@@ -59,14 +53,8 @@ def acceder(p):
     if not usuario.activo:
         return fallo("Tu cuenta está desactivada. Comunícate con Vida Estudiantil.")
     seguridad.limite_acceso.reiniciar(clave)
-    # El rol elegido debe corresponder a la cuenta.
-    if rol == "admin" and usuario.rol_global != "admin":
-        return fallo("Tu cuenta no tiene permisos de administración. Elige otro rol.")
-    if rol in ("capitan", "lider"):
-        roles = clubes.roles_de(p.bd, usuario.id)
-        if rol not in roles:
-            nombre = "capitán" if rol == "capitan" else "líder"
-            return fallo(f"Tu cuenta no es {nombre} de ningún club. Ingresa con otro rol.")
+    # El tipo de usuario lo determina la cuenta (administración, líder, capitán o estudiante).
+    rol = seguridad.rol_de_cuenta(p.bd, usuario.id, usuario.rol_global)
     return _iniciar_sesion(p, usuario.id, siguiente or _INICIO_POR_ROL[rol], rol)
 
 

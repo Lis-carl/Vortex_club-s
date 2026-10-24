@@ -51,7 +51,20 @@ def obtener_sesion(bd, token):
         return None, None
     sesion = Fila(token=fila.token, csrf=fila.csrf)
     usuario = Fila({k: v for k, v in fila.items() if k not in ("token", "csrf")})
+    usuario["rol_acceso"] = rol_de_cuenta(bd, usuario.id, usuario.rol_global)
     return sesion, usuario
+
+
+def rol_de_cuenta(bd, usuario_id, rol_global):
+    """El tipo de usuario lo determina la cuenta: administración, o el rol más alto que tenga en algún
+    club activo (líder > capitán > estudiante). Se recalcula en cada petición, así un nombramiento
+    nuevo se aplica de inmediato sin volver a iniciar sesión."""
+    if rol_global == "admin":
+        return "admin"
+    roles = {f.rol for f in bd.execute(
+        """SELECT DISTINCT m.rol FROM membresias m JOIN clubes c ON c.id = m.club_id
+           WHERE m.usuario_id = ? AND m.estado = 'activa' AND c.estado = 'activo'""", (usuario_id,)).fetchall()}
+    return "lider" if "lider" in roles else "capitan" if "capitan" in roles else "estudiante"
 
 
 def cerrar_sesion(bd, token):

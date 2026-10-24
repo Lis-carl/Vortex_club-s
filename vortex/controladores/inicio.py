@@ -100,5 +100,5 @@ def ver_notificaciones(p):
 @requiere_sesion
 def gestion(p):
     if not (modo_gestion(p) or es_admin(p)):
-        raise ErrorHttp(403, "El panel de gestión es para líderes y capitanes. Inicia sesión con ese rol.")
+        raise ErrorHttp(403, "El panel de gestión es para líderes y capitanes.")
     return render(p, "gestion.html", a_cargo=clubes.clubes_a_cargo(p.bd, p.usuario.id))

@@ -75,15 +75,11 @@ class Cliente:
         return self._enviar(Request(self.base + ruta, b"".join(partes),
                                     {"Content-Type": f"multipart/form-data; boundary={limite}"}))
 
-    def entrar(self, cif, clave=None, rol=None):
-        """Inicia sesión. Sin rol explícito usa el más alto que tenga la cuenta (admin, líder, capitán, estudiante)."""
+    def entrar(self, cif, clave=None):
         clave = clave or ("admin123" if cif == "00000001" else "demo1234")
-        roles = [rol] if rol else (["admin"] if cif == "00000001" else ["lider", "capitan", "estudiante"])
-        for intento in roles:
-            r = self.post("/acceder", {"cif": cif, "contrasena": clave, "rol": intento}, desde="/acceder")
-            if r.estado == 200 and "/acceder" not in r.url:
-                return r
-        raise AssertionError(f"No se pudo entrar como {cif}: {r.estado}")
+        r = self.post("/acceder", {"cif": cif, "contrasena": clave}, desde="/acceder")
+        assert r.estado == 200 and "/acceder" not in r.url, f"No se pudo entrar como {cif}: {r.estado}"
+        return r
 
 
 class PruebaServidor(unittest.TestCase):

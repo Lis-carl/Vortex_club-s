@@ -10,15 +10,10 @@ Funciona en cualquier navegador, en computadora o en celular, y no necesita Java
    y contraseña (mínimo 6 caracteres).
 3. Entrarás directamente al catálogo de clubes.
 
-Para entrar otro día:
-
-1. Elige **con qué rol ingresas**: *Estudiante*, *Capitán*, *Líder* o *Administración*.
-2. Escribe tu **CIF** y tu **contraseña** y pulsa **Acceder**.
-
-El rol debe corresponder a tu cuenta (por ejemplo, solo puedes entrar como Líder si eres líder de
-algún club). Con el rol **Estudiante** usas la plataforma como cualquier miembro; para administrar
-tu club entra como **Líder** o **Capitán**. Si fallas la contraseña 5 veces seguidas, el acceso se
-bloquea unos minutos.
+Para entrar otro día escribe tu **CIF** y tu **contraseña** y pulsa **Acceder**. No tienes que
+elegir nada más: la plataforma sabe qué tipo de usuario eres por tu cuenta. Si la administración o
+el líder te nombra capitán, o te asignan como líder, verás de inmediato las herramientas de tu club.
+Si fallas la contraseña 5 veces seguidas, el acceso se bloquea unos minutos.
 
 Para salir: pulsa tu nombre (arriba a la derecha) → **Cerrar sesión**.
 
@@ -26,7 +21,7 @@ Para salir: pulsa tu nombre (arriba a la derecha) → **Cerrar sesión**.
 
 | Zona | Qué hay |
 |------|---------|
-| Barra superior | Logotipo VC, el lema «Sé parte de un club», la **campana de notificaciones** (con el número de avisos sin leer) y tu menú de cuenta con el rol con que ingresaste |
+| Barra superior | Logotipo VC, el lema «Sé parte de un club», la **campana de notificaciones** (con el número de avisos sin leer) y tu menú de cuenta con tu tipo de usuario |
 | Menú izquierdo | **General:** Inicio, Explorar clubes, Anuncios, Calendario, Notificaciones · **Gestión:** Clubes a mi cargo (líder/capitán), Crear un club, Administración (si te corresponde) · **Mis clubes** |
 | Centro | El contenido de la página |
 | Columna derecha | Próximos eventos y anuncios generales (en pantallas grandes) |
@@ -94,7 +89,7 @@ y envía. La administración revisará tu solicitud y recibirás una notificaci�
   reacción recibida de otra persona 1. Según tus puntos tienes un nivel: *Nuevo* (0), *Participante*
   (10), *Activo* (30) o *Destacado* (60). Tus puntos y tu nivel aparecen en tu inicio y en tu perfil.
 
-## 7. Si eres capitán (entra con el rol Capitán)
+## 7. Si eres capitán
 
 | Tarea | Dónde |
 |-------|-------|
@@ -105,7 +100,7 @@ y envía. La administración revisará tu solicitud y recibirás una notificaci�
 | Editar descripción, categoría y modo de ingreso | Pestaña **Configuración** |
 | Eliminar contenido inadecuado | **Eliminar** y confirmar |
 
-## 8. Si eres líder (entra con el rol Líder)
+## 8. Si eres líder
 
 Además de lo del capitán:
 
@@ -118,7 +113,7 @@ Además de lo del capitán:
 ### Crear un club nuevo
 Menú → **Crear un club**. La administración revisa la solicitud; si se aprueba, quedas como líder.
 
-## 9. Si eres administración (entra con el rol Administración)
+## 9. Si eres administración
 
 La administración tiene **permiso sobre todo**: puede publicar, moderar, editar y gestionar los
 miembros de cualquier club. En el menú → **Administración**:
@@ -133,7 +128,7 @@ miembros de cualquier club. En el menú → **Administración**:
 
 ## 10. Preguntas frecuentes
 
-**No puedo editar mi club aunque soy capitán.** Cierra sesión y vuelve a entrar con el rol **Capitán**.
+**No puedo editar mi club.** Solo el líder, los capitanes y la administración pueden hacerlo. Pide a tu líder que te nombre capitán o solicítalo desde la página del club.
 
 **No puedo publicar en un club.** Debes ser miembro. Si el club requiere aprobación, espera a que te acepten.
 

@@ -49,7 +49,7 @@ python -m unittest discover -s pruebas -t .
 
 | Función | Dónde |
 |---------|-------|
-| Registro e inicio de sesión con CIF y **rol de acceso** (Estudiante, Capitán, Líder, Administración) | `/registro`, `/acceder` |
+| Registro e inicio de sesión con CIF; el **tipo de usuario lo determina la cuenta** (estudiante, capitán, líder o administración) | `/registro`, `/acceder` |
 | Catálogo de clubes; unirse (abierto o con aprobación) | `/clubes` |
 | Anuncios **generales** (administración) y **por club** (líder/capitanes) | `/anuncios`, `/clubes/<club>/anuncios` |
 | Ver **líder, capitanes y miembros**; nombrar capitanes, expulsar, transferir liderazgo | `/clubes/<club>/miembros` |

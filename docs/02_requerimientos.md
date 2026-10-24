@@ -91,7 +91,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | ID | Requerimiento | Prioridad |
 |----|---------------|-----------|
 | RF-01 | El sistema debe permitir registrarse con CIF, nombre completo, correo, carrera y contraseña. | A |
-| RF-02 | El sistema debe permitir iniciar sesión con CIF, contraseña y **rol de acceso** (Estudiante, Capitán, Líder o Administración), y cerrar sesión. El rol elegido debe corresponder a la cuenta. | A |
+| RF-02 | El sistema debe permitir iniciar sesión con CIF y contraseña, y cerrar sesión. El **tipo de usuario lo determina la cuenta**: administración, líder o capitán si alguien lo nombró en un club, o estudiante. | A |
 | RF-03 | El sistema debe mostrar un perfil con los clubes y publicaciones del usuario. | M |
 
 ### Clubes y membresías
@@ -191,7 +191,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | RN-07 | La fecha de una propuesta de evento debe ser posterior al momento en que se envía. |
 | RN-08 | El nombre de un club es único. |
 | RN-09 | Una cuenta desactivada no puede iniciar sesión. |
-| RN-10 | Los permisos de líder o capitán solo están activos si la persona inicia sesión con ese rol; con el rol Estudiante actúa como miembro común. La administración tiene permiso total solo si entra como Administración. |
+| RN-10 | El rol se calcula a partir de la cuenta en cada petición: si alguien es nombrado capitán o líder, obtiene esos permisos de inmediato en ese club, sin elegir nada al iniciar sesión. |
 | RN-11 | Un estudiante solo puede eliminar sus propias publicaciones y comentarios. |
 | RN-12 | No se puede confirmar asistencia a un evento lleno o que ya ocurrió. |
 | RN-13 | Un miembro puede tener como máximo una solicitud de capitán pendiente por club. |
@@ -222,8 +222,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 > Votar y reaccionar se permite a cualquier usuario con sesión (no solo miembros), para que el
 > foro sea abierto a la lectura y la participación ligera, como en Reddit.
 >
-> Las columnas Capitán y Líder aplican cuando la persona inicia sesión con ese rol (RN-10); la
-> columna Admin, cuando la cuenta de administración entra como Administración.
+> Las columnas Capitán y Líder aplican en el club donde la persona tiene ese rol (RN-10).
 
 ## 2.7 Datos iniciales
 

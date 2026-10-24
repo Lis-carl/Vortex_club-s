@@ -1,11 +1,10 @@
 """Control de acceso: decoradores de sesión y permisos por club.
 
-Al iniciar sesión el usuario elige con qué rol entra (estudiante, capitán, líder o administración)
-y ese rol queda guardado en la sesión (``usuario.rol_acceso``):
+El tipo de usuario lo determina la cuenta (``usuario.rol_acceso``, calculado en cada petición):
 
-* **estudiante**: solo permisos de miembro, aunque sea capitán o líder de algún club;
-* **capitán / líder**: además, los permisos reales que tenga en cada club (según su membresía);
-* **administración**: permiso total sobre todos los clubes.
+* **administración**: la cuenta de administración; permiso total sobre todos los clubes;
+* **líder / capitán**: si alguien lo nombró en algún club; tiene esos permisos en ese club;
+* **estudiante**: permisos de miembro.
 """
 from functools import wraps
 from urllib.parse import quote
@@ -32,18 +31,18 @@ def requiere_admin(funcion):
     @requiere_sesion
     def interno(p, **parametros):
         if not es_admin(p):
-            raise ErrorHttp(403, "Esta sección es solo para la administración. Inicia sesión con el rol Administración.")
+            raise ErrorHttp(403, "Esta sección es solo para la administración.")
         return funcion(p, **parametros)
     return interno
 
 
 def es_admin(p):
-    """Administración con permiso total: cuenta de administración que entró con ese rol."""
+    """Administración con permiso total."""
     return bool(p.usuario and p.usuario.rol_global == "admin" and p.usuario.rol_acceso == "admin")
 
 
 def modo_gestion(p):
-    """El usuario entró como capitán o líder, así que sus roles en los clubes están activos."""
+    """La cuenta es líder o capitán de algún club."""
     return bool(p.usuario and p.usuario.rol_acceso in ("capitan", "lider"))
 
 
@@ -93,8 +92,7 @@ def exigir_miembro(p, club):
 
 def exigir_responsable(p, club):
     if not es_responsable_en(p, club.id):
-        raise ErrorHttp(403, "Solo el líder, los capitanes del club o la administración pueden hacer esto. "
-                             "Si tienes ese rol, inicia sesión como Líder o Capitán.")
+        raise ErrorHttp(403, "Solo el líder, los capitanes del club o la administración pueden hacer esto.")
     return _membresia_activa(p, club.id) or Fila(rol="admin", estado="activa")
 
 

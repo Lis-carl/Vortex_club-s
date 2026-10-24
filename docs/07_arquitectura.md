@@ -183,20 +183,20 @@ integradas de Python), sobre los datos que entrega el controlador.
 
 ## 7.8 Modelo de permisos
 
-Al iniciar sesión se elige el **rol de acceso**, que se guarda en la sesión (`sesiones.rol_acceso`)
-y se valida contra la cuenta: «Administración» exige `rol_global = 'admin'`; «Líder» o «Capitán»
-exigen ese rol en al menos un club. `vortex/acceso.py` concentra las reglas:
+El **tipo de usuario lo determina la cuenta**: no se elige al iniciar sesión.
+`seguridad.rol_de_cuenta` lo calcula en cada petición: «admin» si `rol_global = 'admin'`; si no,
+«lider» o «capitan» si tiene ese rol en algún club activo; si no, «estudiante». Así, un nombramiento
+nuevo se aplica de inmediato. `vortex/acceso.py` concentra las reglas:
 
 | Función | Devuelve verdadero cuando… |
 |---------|----------------------------|
-| `es_admin(p)` | la cuenta es de administración **y** entró como Administración (permiso total) |
-| `modo_gestion(p)` | entró como Capitán o Líder |
-| `es_responsable_en(p, club)` | es administración, o (modo gestión y es líder o capitán activo del club) |
-| `es_lider_en(p, club)` | es administración, o (modo gestión y es el líder del club) |
+| `es_admin(p)` | la cuenta es de administración (permiso total) |
+| `modo_gestion(p)` | la cuenta es líder o capitán de algún club |
+| `es_responsable_en(p, club)` | es administración, o es líder o capitán activo de **ese** club |
+| `es_lider_en(p, club)` | es administración, o es el líder de **ese** club |
 | `exigir_miembro(p, club)` | es miembro activo o administración; si no, error 403 |
 
-Con el rol Estudiante una persona actúa como miembro común, aunque sea líder en algún club, y solo
-puede eliminar lo que ella misma publicó.
+Un estudiante (o un líder en un club que no es el suyo) solo puede eliminar lo que él mismo publicó.
 
 ## 7.9 Seguridad
 

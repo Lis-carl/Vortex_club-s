@@ -177,9 +177,6 @@ class PruebasClubes(PruebaServidor):
     def test_editar_club_lider_y_capitan(self):
         self.assertEqual(self.cliente(LUIS).get("/clubes/robotica/editar").estado, 200)    # el capitán también edita
         self.assertEqual(self.cliente(MARIA).get("/clubes/robotica/editar").estado, 403)   # miembro simple de Robótica
-        luis_estudiante = Cliente(self.base)
-        luis_estudiante.entrar(LUIS, rol="estudiante")
-        self.assertEqual(luis_estudiante.get("/clubes/robotica/editar").estado, 403)       # entró como estudiante
         ana = self.cliente(ANA)
         self.assertEqual(ana.get("/clubes/robotica/editar").estado, 200)
         r = ana.post("/clubes/robotica/editar", {"descripcion": "corta", "categoria": "1"}, desde="/clubes/robotica/editar")
@@ -534,9 +531,7 @@ class PruebasInstalacionLimpia(PruebaServidor):
         self.assertEqual(lider1.post(f"/admin/clubes/{cid}/lider", {"cif": "27100003"}, desde="/").estado, 403)
         r = admin.post(f"/admin/clubes/{cid}/lider", {"cif": "27100003"}, desde="/admin")
         self.assertIn("Primera Líder es ahora líder de Club de Debate", r.cuerpo)
-        self.assertNotIn(">Configuración<", lider1.get("/clubes/club-de-debate").cuerpo)  # su sesión es de estudiante
-        lider1.entrar("27100003", clave="clave123", rol="lider")
-        self.assertIn(">Configuración<", lider1.get("/clubes/club-de-debate").cuerpo)     # con rol de líder sí
+        self.assertIn(">Configuración<", lider1.get("/clubes/club-de-debate").cuerpo)     # el rol se aplica de inmediato
         self.assertIn("te asignó como líder de Club de Debate", lider1.get("/notificaciones").cuerpo)
         admin.post(f"/admin/clubes/{cid}/lider", {"cif": "27100004"}, desde="/admin")
         roles = dict(consulta("SELECT u.cif, m.rol FROM membresias m JOIN usuarios u ON u.id=m.usuario_id WHERE m.club_id=?", cid))
@@ -546,32 +541,32 @@ class PruebasInstalacionLimpia(PruebaServidor):
 class PruebasRolesYFuncionesEncuesta(PruebaServidor):
     """Rol elegido al iniciar sesión, permisos, solicitudes de capitán y funciones pedidas en la encuesta."""
 
-    def test_login_con_rol(self):
-        c = Cliente(self.base)
-        r = c.post("/acceder", {"cif": JORGE, "contrasena": "demo1234", "rol": "lider"}, desde="/acceder")
-        self.assertIn("no es líder de ningún club", r.cuerpo)
-        r = c.post("/acceder", {"cif": ANA, "contrasena": "demo1234", "rol": "admin"}, desde="/acceder")
-        self.assertIn("no tiene permisos de administración", r.cuerpo)
-        r = c.post("/acceder", {"cif": LUIS, "contrasena": "demo1234", "rol": "capitan"}, desde="/acceder")
-        self.assertTrue(r.url.endswith("/gestion"))                          # capitán: panel de sus clubes
-        self.assertIn("Robótica", r.cuerpo)
+    def test_rol_determinado_por_la_cuenta(self):
+        self.assertNotIn('name="rol"', Cliente(self.base).get("/acceder").cuerpo)   # no se elige el rol
+        luis = Cliente(self.base)
+        r = luis.entrar(LUIS)
+        self.assertTrue(r.url.endswith("/gestion"))                                   # capitán de Robótica
         self.assertIn("Capitán", r.cuerpo)
-        admin = Cliente(self.base)
-        self.assertTrue(admin.entrar(ADMIN, rol="admin").url.endswith("/admin"))
-        admin_estudiante = Cliente(self.base)
-        admin_estudiante.entrar(ADMIN, rol="estudiante")
-        self.assertEqual(admin_estudiante.get("/admin").estado, 403)          # sin el rol de administración
-        self.assertIn('name="rol"', Cliente(self.base).get("/acceder").cuerpo)
+        self.assertTrue(Cliente(self.base).entrar(ANA).url.endswith("/gestion"))      # líder
+        self.assertTrue(Cliente(self.base).entrar(ADMIN).url.endswith("/admin"))      # administración
+        jorge = Cliente(self.base)                                                    # estudiante nuevo
+        jorge.post("/registro", {"cif": "27200001", "nombre": "Estudiante Común", "correo": "comun@vortex.local",
+                                 "contrasena": "clave123", "confirmar": "clave123"}, desde="/registro")
+        self.assertEqual(jorge.get("/gestion").estado, 403)
+        jorge.post("/clubes/robotica/unirse", desde="/clubes/robotica")
+        # Al ser nombrado capitán, el rol cambia sin volver a iniciar sesión.
+        mid = consulta("SELECT m.id FROM membresias m JOIN usuarios u ON u.id=m.usuario_id JOIN clubes c ON c.id=m.club_id "
+                       "WHERE u.cif='27200001' AND c.slug='robotica'")[0][0]
+        self.cliente(ANA).post(f"/clubes/robotica/miembros/{mid}", {"accion": "hacer_capitan"}, desde="/clubes/robotica/miembros")
+        self.assertEqual(jorge.get("/gestion").estado, 200)
+        self.assertEqual(jorge.get("/clubes/robotica/editar").estado, 200)
 
-    def test_estudiante_no_borra_lo_ajeno_y_lider_en_modo_estudiante_no_gestiona(self):
+    def test_estudiante_no_borra_lo_ajeno(self):
         pid = consulta("SELECT id FROM publicaciones WHERE titulo LIKE '¿Qué sensor%'")[0][0]   # de Luis
-        self.assertEqual(self.cliente(MARIA).post(f"/publicaciones/{pid}/eliminar", desde="/").estado, 403)
-        ana_estudiante = Cliente(self.base)
-        ana_estudiante.entrar(ANA, rol="estudiante")
-        self.assertEqual(ana_estudiante.post(f"/publicaciones/{pid}/eliminar", desde="/").estado, 403)
-        self.assertEqual(ana_estudiante.post("/clubes/robotica/anuncios", {"titulo": "Prueba", "contenido": "x"},
-                                             desde="/").estado, 403)
-        self.assertNotIn(">Eliminar<", ana_estudiante.get(f"/publicaciones/{pid}").cuerpo.split('id="comentarios"')[0])
+        maria = self.cliente(MARIA)                       # líder de Fotografía, miembro simple de Robótica
+        self.assertEqual(maria.post(f"/publicaciones/{pid}/eliminar", desde="/").estado, 403)
+        self.assertEqual(maria.post("/clubes/robotica/anuncios", {"titulo": "Prueba", "contenido": "x"}, desde="/").estado, 403)
+        self.assertNotIn(">Eliminar<", maria.get(f"/publicaciones/{pid}").cuerpo.split('id="comentarios"')[0])
 
     def test_administracion_tiene_permiso_total(self):
         admin = self.cliente(ADMIN)

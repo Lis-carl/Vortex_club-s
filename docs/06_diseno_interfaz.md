@@ -28,7 +28,7 @@ del foro de Reddit**, con un acabado formal: líneas rectas, bordes finos y sin 
 | Tema | Claro, único, para mantener una apariencia uniforme |
 | Identidad UAM | Lema del afiche de Vida Estudiantil «Sé parte de un club» en la cabecera y el acceso; «Universidad Americana (UAM) · Managua, Nicaragua · Dirección de Vida Estudiantil · I Semestre 2026» en el pie; carreras de la UAM en el registro; los 14 clubes oficiales |
 | Movimiento | Animaciones pequeñas de CSS: entrada escalonada de paneles y publicaciones, elevación al pasar el cursor, menús que se despliegan suavemente, campana que se mueve y contador que late cuando hay notificaciones, barra de cupo que se llena. Se desactivan si el sistema pide «reducir movimiento» |
-| Cabecera | Logotipo, lema, campana de notificaciones con contador y menú de cuenta con el rol con que se ingresó. **Sin barra de búsqueda** (la búsqueda queda en el catálogo de clubes) |
+| Cabecera | Logotipo, lema, campana de notificaciones con contador y menú de cuenta con el tipo de usuario (Estudiante, Capitán, Líder o Administración). **Sin barra de búsqueda** (la búsqueda queda en el catálogo de clubes) |
 | JavaScript | **Ninguno.** Todo se resuelve con HTML generado por Python y CSS |
 
 ## 6.3 Principios de interacción humano-computadora aplicados
@@ -80,8 +80,6 @@ flowchart TD
 │ [VC] Vortex Club's · UAM     │                                               │
 │ (panel #009AA9)              │      ┌─────────────────────────────────┐      │
 │ VIDA ESTUDIANTIL · I SEM 2026│      │ Iniciar sesión                  │      │
-│ Sé parte de un club          │      │ Ingresar como: [Estudiante][Cap]│      │
-│                              │      │                [Líder][Admin]   │      │
 │                              │      │ CIF         [_______________]   │      │
 │                              │      │ Contraseña  [_______________]   │      │
 │ ─ Catálogo e inscripción     │      │ [            Acceder          ] │      │
@@ -171,7 +169,7 @@ flowchart TD
 | Formulario | Campos (tipo HTML) | Obligatorios |
 |-----------|--------------------|-------------|
 | Crear cuenta | CIF (`text`, `inputmode=numeric`, `maxlength=8`), nombre, correo (`email`), carrera (`text` + `datalist`), contraseña y confirmación (`password`) | Todos menos carrera |
-| Iniciar sesión | Rol de acceso (`radio`: Estudiante, Capitán, Líder, Administración), CIF, contraseña | Todos |
+| Iniciar sesión | CIF, contraseña (el tipo de usuario se determina por la cuenta) | Todos |
 | Solicitar club | Nombre, categoría (`select`), descripción (`textarea`), justificación (`textarea`), ¿requiere aprobación? (`checkbox`) | Nombre, categoría, descripción |
 | Crear publicación | Título, texto (`textarea`), imagen (`file`) | Título |
 | Comentario / respuesta | Contenido (`textarea`), padre (oculto) | Contenido |
