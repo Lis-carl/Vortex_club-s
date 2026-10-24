@@ -1,4 +1,4 @@
-# Vortex Club's
+# Vortex Clubs
 
 Plataforma web de los **clubes estudiantiles de la Universidad Americana (UAM, Managua)**: únete a clubes, consulta anuncios generales y por club,
 conoce a líderes, capitanes y miembros, propón eventos, conversa en el chat del club y participa en

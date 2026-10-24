@@ -1,6 +1,6 @@
 # Manual de usuario
 
-Vortex Club's es la plataforma de los clubes estudiantiles de la **Universidad Americana (UAM)**.
+Vortex Clubs es la plataforma de los clubes estudiantiles de la **Universidad Americana (UAM)**.
 Funciona en cualquier navegador, en computadora o en celular, y no necesita JavaScript.
 
 ## 1. Crear tu cuenta e iniciar sesión

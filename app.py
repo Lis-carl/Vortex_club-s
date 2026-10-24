@@ -1,4 +1,4 @@
-"""Punto de entrada de Vortex Club's.
+"""Punto de entrada de Vortex Clubs.
 
     python app.py                       # inicia en http://127.0.0.1:8000
     python app.py --puerto 8080         # otro puerto
@@ -13,7 +13,7 @@ from vortex import bd, config, servidor
 def main():
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(errors="replace")
-    analizador = argparse.ArgumentParser(description="Vortex Club's - plataforma de clubes universitarios")
+    analizador = argparse.ArgumentParser(description="Vortex Clubs - plataforma de clubes universitarios")
     analizador.add_argument("--host", default="127.0.0.1", help="dirección donde escucha (por omisión 127.0.0.1)")
     analizador.add_argument("--puerto", type=int, default=8000, help="puerto (por omisión 8000)")
     args = analizador.parse_args()

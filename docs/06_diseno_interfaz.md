@@ -17,7 +17,7 @@ del foro de Reddit**, con un acabado formal: líneas rectas, bordes finos y sin 
 
 | Elemento | Valor |
 |----------|-------|
-| Logotipo | Monograma **VC** (Vortex Club's) trazado en SVG: cuadrado color UAM `#009AA9` con letras blancas (`estatico/img/logo.svg`) y versión en contorno blanco para fondos oscuros (`logo-blanco.svg`) |
+| Logotipo | Vórtice visto desde arriba (Vortex Clubs) trazado en SVG: espiral blanca sobre el cuadrado color UAM `#009AA9` (`estatico/img/logo.svg`) y versión en contorno blanco para fondos oscuros (`logo-blanco.svg`) |
 | Color de marca | **`#009AA9`** (verde azulado institucional de la UAM); hover `#007A87`; profundo `#005C66`; fondo suave `#E1F5F7`; acento cálido `#F2B33D` para el lema y el primer evento destacado |
 | Texto | Títulos `#14212B`, texto `#27343E`, secundario `#5E6C78` |
 | Fondo y tarjetas | Fondo `#F2F4F6`; tarjetas blancas **sin borde**, con sombra sutil y esquinas de **12 px**; botones y campos con esquinas de 8 px |
@@ -84,7 +84,7 @@ flowchart TD
 
 ```text
 ┌──────────────────────────────┬───────────────────────────────────────────────┐
-│ [VC] Vortex Club's · UAM     │                                               │
+│ [VC] Vortex Clubs · UAM     │                                               │
 │ (panel #009AA9)              │      ┌─────────────────────────────────┐      │
 │ VIDA ESTUDIANTIL · I SEM 2026│      │ Iniciar sesión                  │      │
 │                              │      │ CIF         [_______________]   │      │
@@ -101,7 +101,7 @@ flowchart TD
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────────────┐
-│ [VC] Vortex Club's                                  [campana 2]  [AL] Ana · Líder│
+│ [VC] Vortex Clubs                                  [campana 2]  [AL] Ana · Líder│
 ├───────────────┬────────────────────────────────────────────┬─────────────────────┤
 │ GENERAL       │ ┌ Buenas tardes, Ana ─ clubes 2 · confirmados 1 ┐│ PRÓXIMOS EVENTOS    │
 │ ┃ Inicio      │ └ ────────────────────────────────────────────┘│ [08 NOV] Título     │

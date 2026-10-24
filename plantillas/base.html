@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block titulo %}Inicio{% endblock %} | Vortex Club's</title>
+  <title>{% block titulo %}Inicio{% endblock %} | Vortex Clubs</title>
   <link rel="icon" type="image/svg+xml" href="/estatico/img/logo.svg?v=6">
   <link rel="stylesheet" href="/estatico/css/estilo.css?v=27">
 </head>
@@ -18,7 +18,7 @@
       </label>
       <a class="marca" href="/">
         <img src="/estatico/img/logo.svg?v=6" alt="" width="34" height="34">
-        <span class="marca-texto">Vortex Club's<small>UAM · Vida Estudiantil</small></span>
+        <span class="marca-texto">Vortex Clubs<small>UAM · Vida Estudiantil</small></span>
       </a>
       <a class="campana {% if n_notificaciones %}con-pendientes{% endif %} {% if ruta == '/notificaciones' %}activa{% endif %}" href="/notificaciones"
          aria-label="Notificaciones{% if n_notificaciones %}: {{ n_notificaciones }} sin leer{% endif %}" title="Notificaciones">
@@ -45,7 +45,7 @@
     <label for="menu-movil" class="menu-velo" aria-hidden="true"></label>
     <nav class="lateral-nav" aria-label="Navegación principal">
       <div class="nav-movil-cabecera">
-        <span class="marca-texto">Vortex Club's<small>UAM · Vida Estudiantil</small></span>
+        <span class="marca-texto">Vortex Clubs<small>UAM · Vida Estudiantil</small></span>
         <label for="menu-movil" class="nav-cerrar" aria-label="Cerrar menú" title="Cerrar menú">
           <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
         </label>
@@ -76,7 +76,7 @@
     <aside class="complementario">{% block lateral %}{% endblock %}</aside>
   </div>
   <footer class="pie">
-    <span>Vortex Club's</span><span>Universidad Americana (UAM) · Managua, Nicaragua</span><span>Dirección de Vida Estudiantil · I Semestre 2026</span>
+    <span>Vortex Clubs</span><span>Universidad Americana (UAM) · Managua, Nicaragua</span><span>Dirección de Vida Estudiantil · I Semestre 2026</span>
   </footer>
 {% else %}
   <main class="acceso">
