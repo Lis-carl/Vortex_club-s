@@ -1,27 +1,19 @@
-"""Clubes, categorías, membresías y solicitudes de creación de club."""
+"""Clubes, membresías y solicitudes de creación de club."""
 from ..utilidades import slugify, ahora_iso
 
 _ORDEN_ROL = "CASE m.rol WHEN 'lider' THEN 0 WHEN 'capitan' THEN 1 ELSE 2 END"
 
 
 # --- Clubes ----------------------------------------------------------------------------------
-def categorias(bd):
-    return bd.execute("SELECT id, nombre FROM categorias ORDER BY nombre").fetchall()
-
-
-def categoria_existe(bd, categoria_id):
-    return bd.execute("SELECT 1 FROM categorias WHERE id = ?", (categoria_id,)).fetchone() is not None
-
-
 def catalogo(bd, usuario_id):
     sql = """
-        SELECT c.*, cat.nombre AS categoria,
+        SELECT c.*,
           (SELECT COUNT(*) FROM membresias m WHERE m.club_id = c.id AND m.estado = 'activa') AS n_miembros,
           (SELECT m.rol FROM membresias m WHERE m.club_id = c.id AND m.usuario_id = :uid
              AND m.estado = 'activa') AS mi_rol,
           (SELECT 1 FROM membresias m WHERE m.club_id = c.id AND m.usuario_id = :uid
              AND m.estado = 'pendiente') AS mi_pendiente
-        FROM clubes c JOIN categorias cat ON cat.id = c.categoria_id
+        FROM clubes c
         WHERE c.estado = 'activo'"""
     sql += " ORDER BY n_miembros DESC, c.nombre"
     return bd.execute(sql, {"uid": usuario_id}).fetchall()
@@ -29,9 +21,9 @@ def catalogo(bd, usuario_id):
 
 def por_slug(bd, slug):
     return bd.execute(
-        """SELECT c.*, cat.nombre AS categoria,
+        """SELECT c.*,
              (SELECT COUNT(*) FROM membresias m WHERE m.club_id = c.id AND m.estado = 'activa') AS n_miembros
-           FROM clubes c JOIN categorias cat ON cat.id = c.categoria_id WHERE c.slug = ?""",
+           FROM clubes c WHERE c.slug = ?""",
         (slug,)).fetchone()
 
 
@@ -62,16 +54,16 @@ def nombre_ocupado(bd, nombre):
     return bool(en_clubes or en_solicitudes)
 
 
-def crear(bd, nombre, descripcion, categoria_id, requiere_aprobacion):
+def crear(bd, nombre, descripcion, requiere_aprobacion):
     cur = bd.execute(
-        "INSERT INTO clubes (nombre, slug, descripcion, categoria_id, requiere_aprobacion) VALUES (?, ?, ?, ?, ?)",
-        (nombre, slug_libre(bd, nombre), descripcion, categoria_id, 1 if requiere_aprobacion else 0))
+        "INSERT INTO clubes (nombre, slug, descripcion, requiere_aprobacion) VALUES (?, ?, ?, ?)",
+        (nombre, slug_libre(bd, nombre), descripcion, 1 if requiere_aprobacion else 0))
     return cur.lastrowid
 
 
-def actualizar(bd, club_id, descripcion, categoria_id, requiere_aprobacion):
-    bd.execute("UPDATE clubes SET descripcion = ?, categoria_id = ?, requiere_aprobacion = ? WHERE id = ?",
-               (descripcion, categoria_id, 1 if requiere_aprobacion else 0, club_id))
+def actualizar(bd, club_id, descripcion, requiere_aprobacion):
+    bd.execute("UPDATE clubes SET descripcion = ?, requiere_aprobacion = ? WHERE id = ?",
+               (descripcion, 1 if requiere_aprobacion else 0, club_id))
 
 
 def cambiar_estado(bd, club_id, estado):
@@ -165,18 +157,17 @@ def transferir_liderazgo(bd, club_id, membresia_nueva_id):
 
 
 # --- Solicitudes de creación de club -----------------------------------------------------------
-def crear_solicitud(bd, usuario_id, nombre, descripcion, categoria_id, justificacion, requiere_aprobacion):
+def crear_solicitud(bd, usuario_id, nombre, descripcion, justificacion, requiere_aprobacion):
     bd.execute(
-        """INSERT INTO solicitudes_club (usuario_id, nombre, descripcion, categoria_id, justificacion,
-                                         requiere_aprobacion) VALUES (?, ?, ?, ?, ?, ?)""",
-        (usuario_id, nombre, descripcion, categoria_id, justificacion, 1 if requiere_aprobacion else 0))
+        """INSERT INTO solicitudes_club (usuario_id, nombre, descripcion, justificacion,
+                                         requiere_aprobacion) VALUES (?, ?, ?, ?, ?)""",
+        (usuario_id, nombre, descripcion, justificacion, 1 if requiere_aprobacion else 0))
 
 
 def solicitudes_pendientes(bd):
     return bd.execute(
-        """SELECT s.*, u.nombre AS solicitante, u.cif AS solicitante_cif, cat.nombre AS categoria
+        """SELECT s.*, u.nombre AS solicitante, u.cif AS solicitante_cif
            FROM solicitudes_club s JOIN usuarios u ON u.id = s.usuario_id
-           JOIN categorias cat ON cat.id = s.categoria_id
            WHERE s.estado = 'pendiente' ORDER BY s.id""").fetchall()
 
 
@@ -196,7 +187,7 @@ def resolver_solicitud(bd, solicitud_id, admin_id, aprobar, comentario):
         return None
     club_id = None
     if aprobar:
-        club_id = crear(bd, s.nombre, s.descripcion, s.categoria_id, s.requiere_aprobacion)
+        club_id = crear(bd, s.nombre, s.descripcion, s.requiere_aprobacion)
         bd.execute("INSERT INTO membresias (usuario_id, club_id, rol, estado) VALUES (?, ?, 'lider', 'activa')",
                    (s.usuario_id, club_id))
     bd.execute(

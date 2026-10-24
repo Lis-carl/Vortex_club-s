@@ -32,12 +32,11 @@ def cargar(bd):
     ]
     u = {c: usuarios.crear(bd, c, n, e, ca, CLAVE, hash_previo=clave) for c, n, e, ca in gente}
     ana, luis, maria, jorge, sofia, carlos = (u[c] for c in sorted(u))
-    cat = {c.nombre: c.id for c in clubes.categorias(bd)}
 
-    robotica = clubes.crear(bd, "Robótica", "Construimos robots y competimos en torneos.", cat["Académico y debate"], False)
-    ajedrez = clubes.crear(bd, "Ajedrez", "Partidas semanales y torneos relámpago.", cat["Arte y cultura"], False)
-    voluntariado = clubes.crear(bd, "Voluntariado Solidario", "Jornadas de ayuda comunitaria.", cat["Voluntariado"], True)
-    foto = clubes.crear(bd, "Fotografía", "Salidas fotográficas y exposiciones.", cat["Arte y cultura"], False)
+    robotica = clubes.crear(bd, "Robótica", "Construimos robots y competimos en torneos.", False)
+    ajedrez = clubes.crear(bd, "Ajedrez", "Partidas semanales y torneos relámpago.", False)
+    voluntariado = clubes.crear(bd, "Voluntariado Solidario", "Jornadas de ayuda comunitaria.", True)
+    foto = clubes.crear(bd, "Fotografía", "Salidas fotográficas y exposiciones.", False)
 
     def unir(usuario, club, rol="miembro", estado="activa"):
         bd.execute("INSERT INTO membresias (usuario_id, club_id, rol, estado) VALUES (?, ?, ?, ?)",

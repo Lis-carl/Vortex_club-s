@@ -30,18 +30,12 @@ CREATE TABLE IF NOT EXISTS sesiones (
 );
 
 -- D3 Clubes -----------------------------------------------------------
-CREATE TABLE IF NOT EXISTS categorias (
-    id      INTEGER PRIMARY KEY AUTOINCREMENT,
-    nombre  TEXT    NOT NULL UNIQUE
-);
-
 CREATE TABLE IF NOT EXISTS clubes (
     id                  INTEGER PRIMARY KEY AUTOINCREMENT,
     nombre              TEXT    NOT NULL UNIQUE COLLATE NOCASE CHECK (length(nombre) BETWEEN 3 AND 60),
     slug                TEXT    NOT NULL UNIQUE,
     descripcion         TEXT    NOT NULL DEFAULT '',
     foto                TEXT    NOT NULL DEFAULT '',
-    categoria_id        INTEGER NOT NULL REFERENCES categorias(id),
     requiere_aprobacion INTEGER NOT NULL DEFAULT 0 CHECK (requiere_aprobacion IN (0, 1)),
     estado              TEXT    NOT NULL DEFAULT 'activo' CHECK (estado IN ('activo', 'inactivo')),
     creado_en           TEXT    NOT NULL DEFAULT (datetime('now', 'localtime'))
@@ -53,7 +47,6 @@ CREATE TABLE IF NOT EXISTS solicitudes_club (
     usuario_id      INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
     nombre          TEXT    NOT NULL,
     descripcion     TEXT    NOT NULL,
-    categoria_id    INTEGER NOT NULL REFERENCES categorias(id),
     justificacion   TEXT    NOT NULL DEFAULT '',
     requiere_aprobacion INTEGER NOT NULL DEFAULT 0 CHECK (requiere_aprobacion IN (0, 1)),
     estado          TEXT    NOT NULL DEFAULT 'pendiente' CHECK (estado IN ('pendiente', 'aprobada', 'rechazada')),

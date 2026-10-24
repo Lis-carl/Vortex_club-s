@@ -5,7 +5,6 @@
     {% else %}<p class="tenue">El club aún no ha publicado su descripción.</p>{% endif %}
   </div>
   <ul class="datos-club">
-    <li><span>Categoría</span><span>{{ club.categoria }}</span></li>
     <li><span>Miembros</span><span>{{ club.n_miembros }}</span></li>
     <li><span>Líder</span><span>{% if lider %}<a href="/perfil/{{ lider.cif }}">{{ lider.nombre }}</a>{% else %}Sin asignar{% endif %}</span></li>
     <li><span>Ingreso</span><span>{% if club.requiere_aprobacion %}Con aprobación{% else %}Abierto{% endif %}</span></li>

@@ -18,7 +18,7 @@ def catalogo(p):
 @ruta("GET", "/clubes/solicitar")
 @requiere_sesion
 def solicitar_formulario(p):
-    return render(p, "solicitar_club.html", valores={}, errores=frm.Errores(), categorias=clubes.categorias(p.bd),
+    return render(p, "solicitar_club.html", valores={}, errores=frm.Errores(),
                   solicitudes=clubes.solicitudes_de(p.bd, p.usuario.id))
 
 
@@ -29,17 +29,13 @@ def solicitar(p):
     nombre = frm.texto(f, errores, "nombre", "El nombre del club", 3, 60)
     descripcion = frm.texto(f, errores, "descripcion", "La descripción", 10, 1000, una_linea=False)
     justificacion = frm.texto(f, errores, "justificacion", "La justificación", 1, 1000, obligatorio=False, una_linea=False)
-    cat_txt = f.get("categoria") or ""
-    categoria = int(cat_txt) if cat_txt.isdigit() and clubes.categoria_existe(p.bd, int(cat_txt)) else None
-    if not categoria:
-        errores["categoria"] = "Elige una categoría."
     if "nombre" not in errores and clubes.nombre_ocupado(p.bd, nombre):
         errores["nombre"] = "Ya existe un club (o una solicitud pendiente) con ese nombre."
     if errores:
         return render(p, "solicitar_club.html", 400, valores={"nombre": nombre, "descripcion": descripcion,
-                      "justificacion": justificacion, "categoria": cat_txt, "con_aprobacion": f.get("con_aprobacion")},
-                      errores=errores, categorias=clubes.categorias(p.bd), solicitudes=clubes.solicitudes_de(p.bd, p.usuario.id))
-    clubes.crear_solicitud(p.bd, p.usuario.id, nombre, descripcion, categoria, justificacion, f.get("con_aprobacion") == "1")
+                      "justificacion": justificacion, "con_aprobacion": f.get("con_aprobacion")},
+                      errores=errores, solicitudes=clubes.solicitudes_de(p.bd, p.usuario.id))
+    clubes.crear_solicitud(p.bd, p.usuario.id, nombre, descripcion, justificacion, f.get("con_aprobacion") == "1")
     return Respuesta.redirigir("/clubes/solicitar").con_aviso(
         "ok", "Solicitud enviada. La administración la revisará y quedarás como líder del club.")
 
@@ -85,8 +81,8 @@ def editar_formulario(p, slug):
     ctx = contexto_club(p, club, "editar")
     if not ctx["es_responsable"]:
         raise ErrorHttp(403, "Solo el líder, los capitanes o la administración pueden editar el club.")
-    return render(p, "club_editar.html", categorias=clubes.categorias(p.bd), errores=frm.Errores(),
-                  valores={"descripcion": club.descripcion, "categoria": str(club.categoria_id),
+    return render(p, "club_editar.html", errores=frm.Errores(),
+                  valores={"descripcion": club.descripcion,
                            "con_aprobacion": "1" if club.requiere_aprobacion else ""}, **ctx)
 
 
@@ -99,15 +95,11 @@ def editar(p, slug):
         raise ErrorHttp(403, "Solo el líder, los capitanes o la administración pueden editar el club.")
     f, errores = p.formulario, frm.Errores()
     descripcion = frm.texto(f, errores, "descripcion", "La descripción", 10, 1000, una_linea=False)
-    cat_txt = f.get("categoria") or ""
-    categoria = int(cat_txt) if cat_txt.isdigit() and clubes.categoria_existe(p.bd, int(cat_txt)) else None
-    if not categoria:
-        errores["categoria"] = "Elige una categoría."
     if errores:
-        return render(p, "club_editar.html", 400, categorias=clubes.categorias(p.bd), errores=errores,
-                      valores={"descripcion": descripcion, "categoria": cat_txt,
+        return render(p, "club_editar.html", 400, errores=errores,
+                      valores={"descripcion": descripcion,
                                "con_aprobacion": f.get("con_aprobacion")}, **ctx)
-    clubes.actualizar(p.bd, club.id, descripcion, categoria, f.get("con_aprobacion") == "1")
+    clubes.actualizar(p.bd, club.id, descripcion, f.get("con_aprobacion") == "1")
     return Respuesta.redirigir(f"/clubes/{slug}").con_aviso("ok", "Cambios guardados.")
 
 

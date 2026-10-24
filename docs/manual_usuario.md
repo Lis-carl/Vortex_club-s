@@ -43,7 +43,7 @@ En el celular el menú aparece como una franja horizontal que puedes desplazar.
 ## 4. Encontrar y unirte a un club
 
 1. Entra a **Explorar clubes**: ahí están todos los clubes de la UAM.
-2. Cada club muestra su categoría, su descripción, el número de miembros y un botón:
+2. Cada club muestra su foto, su descripción, el número de miembros y un botón:
    - **Unirme**: el club es abierto, entras de inmediato.
    - **Solicitar ingreso**: el club requiere aprobación; el líder o un capitán te aceptará.
 3. Tus clubes aparecen en **Mis clubes** (menú izquierdo).
@@ -105,7 +105,7 @@ y envía. La administración revisará tu solicitud y recibirás una notificaci�
 | Aceptar o rechazar solicitudes de ingreso | Pestaña **Miembros** (el número rojo de la pestaña indica cuántas hay) |
 | Publicar un anuncio del club | Pestaña **Anuncios** |
 | Aprobar o rechazar propuestas de evento y ver asistentes | Pestaña **Eventos** |
-| Editar descripción, categoría, modo de ingreso y **foto del club** | Pestaña **Configuración** |
+| Editar descripción, modo de ingreso y **foto del club** | Pestaña **Configuración** |
 | Eliminar contenido inadecuado | **Eliminar** y confirmar |
 
 ## 8. Si eres líder

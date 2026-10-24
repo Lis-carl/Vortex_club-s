@@ -120,7 +120,7 @@ flowchart TD
 
 ```text
 ┌───────────────────────────────────────────────────────────────┐
-│ [CC]  ARTE Y CULTURA                          [Unirme al club]│
+│ [CC]  CLUB ESTUDIANTIL · UAM                  [Unirme al club]│
 │       Club de Cine                                            │
 │       0 miembros · Ingreso abierto                            │
 ├───────────────────────────────────────────────────────────────┤
@@ -176,7 +176,7 @@ flowchart TD
 |-----------|--------------------|-------------|
 | Crear cuenta | CIF (`text`, `inputmode=numeric`, `maxlength=8`), nombre, correo (`email`), carrera (`text` + `datalist`), contraseña y confirmación (`password`) | Todos menos carrera |
 | Iniciar sesión | CIF, contraseña (el tipo de usuario se determina por la cuenta) | Todos |
-| Solicitar club | Nombre, categoría (`select`), descripción (`textarea`), justificación (`textarea`), ¿requiere aprobación? (`checkbox`) | Nombre, categoría, descripción |
+| Solicitar club | Nombre, descripción (`textarea`), justificación (`textarea`), ¿requiere aprobación? (`checkbox`) | Nombre, descripción |
 | Crear publicación | Título, texto (`textarea`), imagen (`file`) | Título |
 | Comentario / respuesta | Contenido (`textarea`), padre (oculto) | Contenido |
 | Anuncio | Título, contenido, fijar (`checkbox`) | Título, contenido |
@@ -198,7 +198,7 @@ no requieren JavaScript, y **siempre en el servidor con Python**, que es la vali
 | Prueba de longitud | CIF = 8, nombre 3–80, título 3–150, mensaje ≤ 1000, contenido ≤ 10 000 |
 | Prueba de clase / composición | CIF solo dígitos; cupo entero; correo con `@` y dominio con punto |
 | Prueba de rango | Cupo 1–10 000; fecha del evento posterior a ahora; valor de voto ∈ {−1, 1} |
-| Prueba de valores no válidos | Rol ∈ {miembro, capitán, líder}; reacción ∈ 6 emojis; categoría existente |
+| Prueba de valores no válidos | Rol ∈ {miembro, capitán, líder}; reacción ∈ 6 emojis |
 | Prueba de referencias cruzadas | Contraseña = confirmación; CIF y correo no registrados; nombre de club no repetido; CIF del líder existente y activo |
 | Verificación de archivo | Imagen ≤ 5 MB y firma binaria de PNG, JPEG, GIF o WEBP |
 

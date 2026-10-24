@@ -67,7 +67,7 @@ completas están en [`encuesta/respuestas_encuesta.csv`](encuesta/respuestas_enc
 | Hallazgo | Función de la plataforma |
 |----------|-------------------------|
 | Inscripción en línea (función más votada) | Botón «Unirme» / «Solicitar ingreso» en el catálogo y en cada club (RF-06) |
-| Catálogo y buscador | Catálogo de todos los clubes con su categoría, descripción y miembros (RF-04). Por decisión del equipo se retiró el buscador y el filtro: con 15 clubes el catálogo completo cabe en una sola vista |
+| Catálogo y buscador | Catálogo de todos los clubes con su descripción y miembros (RF-04). Por decisión del equipo se retiraron el buscador, el filtro y las categorías: con 15 clubes el catálogo completo cabe en una sola vista |
 | Confirmación de asistencia | Botón «Confirmar asistencia» con cupo y lista de asistentes (RF-32) |
 | Notificaciones, avisos que llegan tarde, eventos perdidos | Bandeja de notificaciones con contador (RF-33) y recordatorios de eventos confirmados en las próximas 48 h (RF-34) |
 | Calendario y horarios mal coordinados | Calendario mensual de actividades de todos los clubes (RF-35) |
@@ -97,14 +97,14 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 ### Clubes y membresías
 | ID | Requerimiento | Prioridad |
 |----|---------------|-----------|
-| RF-04 | El sistema debe mostrar el catálogo completo de clubes activos con su categoría, descripción y número de miembros. | A |
+| RF-04 | El sistema debe mostrar el catálogo completo de clubes activos con su foto, descripción y número de miembros. Los clubes no se clasifican por categorías. | A |
 | RF-05 | Un estudiante debe poder **solicitar la creación** de un club; el administrador la aprueba o rechaza, y quien la pidió queda como líder. | A |
 | RF-06 | Un estudiante debe poder **unirse** a un club. Si el club es abierto entra de inmediato; si requiere aprobación queda pendiente. | A |
 | RF-07 | Líder y capitanes deben poder aceptar o rechazar solicitudes de ingreso pendientes. | A |
 | RF-08 | Un miembro debe poder salir de un club (el líder no puede salir sin transferir el liderazgo). | M |
 | RF-09 | El sistema debe mostrar los integrantes del club agrupados en **líder, capitanes y miembros**. | A |
 | RF-10 | El líder debe poder nombrar o quitar capitanes, expulsar miembros y transferir el liderazgo. | A |
-| RF-11 | El líder **y los capitanes** deben poder editar la descripción, categoría, modo de ingreso y la **foto de perfil del club** (PNG, JPG, GIF o WEBP de hasta 5 MB). | M |
+| RF-11 | El líder **y los capitanes** deben poder editar la descripción, el modo de ingreso y la **foto de perfil del club** (PNG, JPG, GIF o WEBP de hasta 5 MB). | M |
 
 ### Anuncios
 | ID | Requerimiento | Prioridad |
@@ -231,7 +231,6 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 La plataforma se entrega **vacía**: no trae usuarios, publicaciones, anuncios ni eventos de
 ejemplo. Al crearse la base de datos solo se cargan:
 
-- las 8 categorías de clubes;
 - la cuenta de administración;
 - el catálogo oficial de **15 clubes**: los 14 del afiche «Contactos de clubes, I semestre 2026» de la
   Dirección de Vida Estudiantil: Club Empresarial, Club de Debate, Voluntariado por el Autismo,

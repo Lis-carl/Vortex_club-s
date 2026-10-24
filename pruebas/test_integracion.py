@@ -179,19 +179,19 @@ class PruebasClubes(PruebaServidor):
         self.assertEqual(self.cliente(MARIA).get("/clubes/robotica/editar").estado, 403)   # miembro simple de Robótica
         ana = self.cliente(ANA)
         self.assertEqual(ana.get("/clubes/robotica/editar").estado, 200)
-        r = ana.post("/clubes/robotica/editar", {"descripcion": "corta", "categoria": "1"}, desde="/clubes/robotica/editar")
+        r = ana.post("/clubes/robotica/editar", {"descripcion": "corta"}, desde="/clubes/robotica/editar")
         self.assertEqual(r.estado, 400)
-        r = ana.post("/clubes/robotica/editar", {"descripcion": "Nueva descripción del club de robótica.", "categoria": "1",
+        r = ana.post("/clubes/robotica/editar", {"descripcion": "Nueva descripción del club de robótica.",
                                                  "con_aprobacion": "1"}, desde="/clubes/robotica/editar")
         self.assertIn("Cambios guardados", r.cuerpo)
         self.assertIn("Ingreso con aprobación", r.cuerpo)
 
     def test_solicitar_club_y_aprobacion_del_admin(self):
         u = self.cliente(MARIA)
-        r = u.post("/clubes/solicitar", {"nombre": "Ajedrez", "descripcion": "Duplicado de nombre", "categoria": "1"},
+        r = u.post("/clubes/solicitar", {"nombre": "Ajedrez", "descripcion": "Duplicado de nombre"},
                    desde="/clubes/solicitar")
         self.assertIn("Ya existe un club", r.cuerpo)
-        r = u.post("/clubes/solicitar", {"nombre": "Cine Club", "descripcion": "Proyecciones y debates de cine.", "categoria": "3",
+        r = u.post("/clubes/solicitar", {"nombre": "Cine Club", "descripcion": "Proyecciones y debates de cine.",
                                          "justificacion": "No existe uno", "con_aprobacion": "1"}, desde="/clubes/solicitar")
         self.assertIn("Solicitud enviada", r.cuerpo)
         self.assertEqual(u.get("/admin").estado, 403)                     # no es admin

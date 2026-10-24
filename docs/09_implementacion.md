@@ -23,7 +23,6 @@ python app.py
 
 La primera vez se crea `datos/vortex.db` **vacía**, solo con:
 
-- las 8 categorías;
 - la cuenta de administración;
 - los 15 clubes oficiales (los 14 del afiche de la Dirección de Vida Estudiantil y el Club de Esports), sin miembros ni líder.
 

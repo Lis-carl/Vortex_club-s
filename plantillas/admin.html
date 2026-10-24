@@ -20,7 +20,7 @@
   {% for s in solicitudes %}
   <div class="propuesta">
     <h3>{{ s.nombre }}</h3>
-    <p class="evento-datos"><span>Categoría: {{ s.categoria }}</span><span>Solicita: <a href="/perfil/{{ s.solicitante_cif }}">{{ s.solicitante }}</a></span>
+    <p class="evento-datos"><span>Solicita: <a href="/perfil/{{ s.solicitante_cif }}">{{ s.solicitante }}</a></span>
       <span>{{ s.creado_en | rel }}</span><span>{% if s.requiere_aprobacion %}Ingreso con aprobación{% else %}Ingreso abierto{% endif %}</span></p>
     <p>{{ s.descripcion | saltos }}</p>
     {% if s.justificacion %}<p class="tenue">Justificación: {{ s.justificacion }}</p>{% endif %}

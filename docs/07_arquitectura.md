@@ -66,7 +66,7 @@ Vortex_club/
 │   ├── vistas.py           ← render(): contexto común (usuario, CSRF, avisos) + páginas de error
 │   ├── acceso.py           ← decoradores de sesión/admin y permisos por club
 │   ├── bd.py               ← conexión SQLite, creación del esquema
-│   ├── semilla.py          ← datos iniciales (admin, categorías) y datos de ejemplo
+│   ├── semilla.py          ← datos iniciales: administración y catálogo oficial de clubes
 │   ├── seguridad.py        ← contraseñas PBKDF2, sesiones, CSRF, límite de intentos
 │   ├── formularios.py      ← lectura urlencoded/multipart y validaciones
 │   ├── utilidades.py       ← slugs, fechas relativas, iniciales

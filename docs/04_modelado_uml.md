@@ -429,10 +429,6 @@ classDiagram
         +bool activo
         +es_admin() bool
     }
-    class Categoria {
-        +int id
-        +str nombre
-    }
     class Club {
         +int id
         +str nombre
@@ -496,7 +492,6 @@ classDiagram
 
     Usuario "1" -- "0..*" Membresia
     Club "1" -- "1..*" Membresia
-    Categoria "1" -- "0..*" Club
     Usuario "1" -- "0..*" SolicitudClub : solicita
     Club "0..1" -- "0..*" Anuncio : "vacío = general"
     Usuario "1" -- "0..*" Anuncio : publica

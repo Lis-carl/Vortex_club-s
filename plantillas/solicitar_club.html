@@ -12,17 +12,9 @@
   <div class="panel-cabecera"><h2>Datos del club</h2></div>
   <form method="post" action="/clubes/solicitar" class="panel-cuerpo formulario" novalidate>
     <input type="hidden" name="csrf" value="{{ csrf }}">
-    <div class="dos-columnas">
-      <div class="campo {% if errores.nombre %}con-error{% endif %}"><label for="nombre">Nombre del club</label>
+    <div class="campo {% if errores.nombre %}con-error{% endif %}"><label for="nombre">Nombre del club</label>
         <input id="nombre" name="nombre" value="{{ valores.nombre }}" maxlength="60" required>
         {% if errores.nombre %}<p class="error-campo">{{ errores.nombre }}</p>{% endif %}</div>
-      <div class="campo {% if errores.categoria %}con-error{% endif %}"><label for="categoria">Categoría</label>
-        <select id="categoria" name="categoria" required>
-          <option value="">Selecciona una categoría</option>
-          {% for c in categorias %}<option value="{{ c.id }}" {% if valores.categoria == str(c.id) %}selected{% endif %}>{{ c.nombre }}</option>{% endfor %}
-        </select>
-        {% if errores.categoria %}<p class="error-campo">{{ errores.categoria }}</p>{% endif %}</div>
-    </div>
     <div class="campo {% if errores.descripcion %}con-error{% endif %}"><label for="descripcion">Descripción</label>
       <textarea id="descripcion" name="descripcion" rows="4" maxlength="1000" required>{{ valores.descripcion }}</textarea>
       {% if errores.descripcion %}<p class="error-campo">{{ errores.descripcion }}</p>{% else %}<p class="ayuda-campo">Qué hace el club y a quién está dirigido (mínimo 10 caracteres).</p>{% endif %}</div>

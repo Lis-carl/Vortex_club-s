@@ -27,11 +27,7 @@
   <div class="panel-cabecera"><h2>Configuración del club</h2></div>
   <form method="post" action="/clubes/{{ club.slug }}/editar" class="panel-cuerpo formulario" novalidate>
     <input type="hidden" name="csrf" value="{{ csrf }}">
-    <div class="campo {% if errores.categoria %}con-error{% endif %}"><label for="categoria">Categoría</label>
-      <select id="categoria" name="categoria">
-        {% for c in categorias %}<option value="{{ c.id }}" {% if valores.categoria == str(c.id) %}selected{% endif %}>{{ c.nombre }}</option>{% endfor %}
-      </select>
-      {% if errores.categoria %}<p class="error-campo">{{ errores.categoria }}</p>{% endif %}</div>
+    
     <div class="campo {% if errores.descripcion %}con-error{% endif %}"><label for="descripcion">Descripción</label>
       <textarea id="descripcion" name="descripcion" rows="5" maxlength="1000" required>{{ valores.descripcion }}</textarea>
       {% if errores.descripcion %}<p class="error-campo">{{ errores.descripcion }}</p>{% else %}<p class="ayuda-campo">Mínimo 10 caracteres. Se muestra en el catálogo y en la página del club.</p>{% endif %}</div>

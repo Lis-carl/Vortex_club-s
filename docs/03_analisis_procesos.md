@@ -270,7 +270,7 @@ Notación de Kendall (cap. 8): `=` está compuesto de, `+` y, `{ }` repetición,
 |----|--------|-------------|-----------|--------------|
 | D1 | Usuarios | Cuentas registradas | Registro de usuario | `usuarios` |
 | D2 | Sesiones | Sesiones abiertas | `Token + ID usuario + Token CSRF + Expira en + Rol de acceso` | `sesiones` |
-| D3 | Clubes | Clubes aprobados y su categoría | Club | `clubes`, `categorias` |
+| D3 | Clubes | Clubes aprobados | Club | `clubes` |
 | D4 | Solicitudes de club | Peticiones de nuevos clubes | Solicitud de club | `solicitudes_club` |
 | D5 | Membresías | Relación usuario-club con rol | Membresía | `membresias` |
 | D6 | Anuncios | Anuncios generales y por club | Anuncio | `anuncios` |
@@ -287,9 +287,9 @@ Notación de Kendall (cap. 8): `=` está compuesto de, `+` y, `{ }` repetición,
 ```text
 Registro de usuario = CIF + Nombre completo + Correo + Carrera + Contraseña
                       + (Rol global) + (Activo) + (Fecha de creación)
-Club                = ID club + Nombre club + Slug + Descripción + Categoría
+Club                = ID club + Nombre club + Slug + Descripción + (Foto)
                       + Requiere aprobación + Estado club + Fecha de creación
-Solicitud de club   = Nombre club + Descripción + Categoría + Justificación
+Solicitud de club   = Nombre club + Descripción + Justificación
                       + Estado solicitud + (Comentario de revisión)
 Membresía           = ID usuario + ID club + [Miembro | Capitán | Líder]
                       + [Pendiente | Activa] + Fecha de ingreso

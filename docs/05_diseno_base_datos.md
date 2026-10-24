@@ -20,8 +20,6 @@ erDiagram
     CLUBES ||--o{ SOLICITUDES_CAPITAN : "recibe"
     USUARIOS ||--o{ MEMBRESIAS : "tiene"
     CLUBES ||--|{ MEMBRESIAS : "agrupa"
-    CATEGORIAS ||--o{ CLUBES : "clasifica"
-    CATEGORIAS ||--o{ SOLICITUDES_CLUB : "propuesta en"
     USUARIOS ||--o{ SOLICITUDES_CLUB : "solicita"
     CLUBES |o--o| SOLICITUDES_CLUB : "nace de"
     CLUBES |o--o{ ANUNCIOS : "publica (NULL = general)"
@@ -91,17 +89,12 @@ erDiagram
         text creado_en
         text revisado_en
     }
-    CATEGORIAS {
-        int id PK
-        text nombre UK
-    }
     CLUBES {
         int id PK
         text nombre UK
         text slug UK
         text descripcion
         text foto "archivo en subidas/ o vacío"
-        int categoria_id FK
         int requiere_aprobacion
         text estado "activo | inactivo"
         text creado_en
@@ -111,7 +104,6 @@ erDiagram
         int usuario_id FK
         text nombre
         text descripcion
-        int categoria_id FK
         text justificacion
         int requiere_aprobacion
         text estado "pendiente | aprobada | rechazada"
@@ -206,7 +198,7 @@ forma normal (Kendall, cap. 13).
 ### Forma no normalizada (0FN)
 
 ```text
-CLUB (nombre_club, categoria, descripcion, lider_cif, lider_nombre,
+CLUB (nombre_club, descripcion, lider_cif, lider_nombre,
       { miembro_cif, miembro_nombre, miembro_correo, miembro_rol },
       { anuncio_titulo, anuncio_texto, anuncio_fecha },
       { evento_titulo, evento_fecha, evento_lugar, proponente_cif, proponente_nombre })
@@ -218,7 +210,7 @@ club al que pertenece.
 ### Primera forma normal (1FN): quitar grupos repetidos
 
 ```text
-CLUB       (nombre_club, categoria, descripcion, lider_cif, lider_nombre)
+CLUB       (nombre_club, descripcion, lider_cif, lider_nombre)
 MIEMBRO    (nombre_club, miembro_cif, miembro_nombre, miembro_correo, miembro_rol)
 ANUNCIO    (nombre_club, anuncio_titulo, anuncio_fecha, anuncio_texto)
 EVENTO     (nombre_club, evento_titulo, evento_fecha, evento_lugar, proponente_cif, proponente_nombre)
@@ -239,7 +231,6 @@ EVENTO     (nombre_club, evento_titulo, evento_fecha, evento_lugar, proponente_c
 
 - En `CLUB`, `lider_nombre` depende de `lider_cif`, no del club → el líder pasa a ser una fila de
   `MEMBRESIA` con `rol = 'lider'`.
-- `categoria` es un texto repetido en muchos clubes → tabla `CATEGORIAS`.
 - Se agregan **claves sustitutas** (`id INTEGER PRIMARY KEY`) para no usar textos como claves
   foráneas y poder renombrar un club sin romper relaciones.
 
@@ -253,9 +244,8 @@ publicación y la lista de eventos) **no se guardan**: se calculan con las vista
 |-------|---------------|-----------------|--------------------------|
 | `usuarios` | `id` | — | `cif` único de 8 dígitos (`CHECK`), `correo` único sin distinguir mayúsculas, `rol_global ∈ {estudiante, admin}` |
 | `sesiones` | `token` | `usuario_id → usuarios` | Se borra en cascada con el usuario; `rol_acceso` guarda el rol elegido al iniciar sesión |
-| `categorias` | `id` | — | `nombre` único |
-| `clubes` | `id` | `categoria_id → categorias` | `nombre` y `slug` únicos, `estado ∈ {activo, inactivo}` |
-| `solicitudes_club` | `id` | `usuario_id`, `categoria_id`, `revisado_por`, `club_id` | `estado ∈ {pendiente, aprobada, rechazada}` |
+| `clubes` | `id` | — | `nombre` y `slug` únicos, `estado ∈ {activo, inactivo}`, `foto` opcional |
+| `solicitudes_club` | `id` | `usuario_id`, `revisado_por`, `club_id` | `estado ∈ {pendiente, aprobada, rechazada}` |
 | `membresias` | `id` | `usuario_id`, `club_id` | `UNIQUE(usuario_id, club_id)`; índice único parcial: **un solo líder por club** (RN-02) |
 | `anuncios` | `id` | `club_id` (nulo = general), `autor_id` | título de 3 a 150 caracteres |
 | `publicaciones` | `id` | `club_id`, `autor_id` | `eliminado` lógico (0/1) |
@@ -296,6 +286,9 @@ publicación y la lista de eventos) **no se guardan**: se calculan con las vista
   bloqueen entre sí.
 - **Transacciones** en operaciones de varios pasos: aprobar un club (crear club + líder + marcar
   solicitud) y transferir liderazgo.
+- **Sin categorías:** la clasificación de clubes por categorías se retiró. En bases creadas con
+  versiones anteriores, al iniciar se reconstruyen `clubes` y `solicitudes_club` sin la columna
+  `categoria_id` (SQLite no permite borrar una columna con clave foránea) y se borra `categorias`.
 - **Migración automática:** al iniciar, si la base de datos es de una versión anterior y a la
   tabla `sesiones` le falta la columna `rol_acceso`, se agrega con `ALTER TABLE` (las tablas nuevas
   se crean solas con `CREATE TABLE IF NOT EXISTS`).

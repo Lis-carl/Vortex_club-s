@@ -3,7 +3,7 @@
     <div class="club-identidad">
       {{ avatar(club.nombre, club.foto, "avatar-club") }}
       <div>
-        <p class="antetitulo">{{ club.categoria }}</p>
+        <p class="antetitulo">Club estudiantil · UAM</p>
         <h1>{{ club.nombre }}</h1>
         <p class="club-datos">{{ club.n_miembros }} miembro{% if club.n_miembros != 1 %}s{% endif %} · {% if club.requiere_aprobacion %}Ingreso con aprobación{% else %}Ingreso abierto{% endif %}</p>
       </div>
