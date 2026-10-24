@@ -31,7 +31,7 @@ comentarios y en la lista de miembros de tus clubes. Desde el mismo lugar puedes
 | Centro | El contenido de la página |
 | Columna derecha | Próximos eventos y anuncios generales |
 
-En el celular y la tablet el menú izquierdo se esconde: ábrelo con el botón de tres líneas
+En el celular y la tablet, los próximos eventos y anuncios generales están en la pestaña **Agenda** (junto a «Mis clubes» y «Toda la UAM»). El menú izquierdo se esconde: ábrelo con el botón de tres líneas
 (arriba a la izquierda) y ciérralo con la X o tocando fuera. Los próximos eventos y anuncios
 aparecen debajo del contenido.
 

@@ -460,6 +460,15 @@ class PruebasChatYEventos(PruebaServidor):
         self.assertIn("Filtrando:", filtrado)
         self.assertIn("Taller de Arduino", ana.get("/?ver=mis&club=robotica&fecha=mes").cuerpo)
 
+    def test_pestana_agenda(self):
+        ana = self.cliente(ANA)
+        self.assertIn('href="/?ver=agenda">Agenda</a>', ana.get("/").cuerpo)
+        agenda = ana.get("/?ver=agenda").cuerpo.split('class="feed"')[1]
+        self.assertIn('class="feed-agenda"', agenda)
+        self.assertIn("Próximos eventos", agenda)
+        self.assertIn("Anuncios generales", agenda)
+        self.assertNotIn('class="lista-publicaciones"', agenda)
+
     def test_pagina_de_evento(self):
         eid = consulta("SELECT id FROM propuestas_evento WHERE titulo='Hackatón de robots'")[0][0]
         maria, ana = self.cliente(MARIA), self.cliente(ANA)

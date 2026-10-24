@@ -31,7 +31,7 @@ _NOMBRES_PERIODO = {"todo": "Cualquier fecha", "hoy": "Hoy", "semana": "Última 
 def feed(p):
     mis = clubes.mis_clubes(p.bd, p.usuario.id)
     tiene_clubes = bool(mis)
-    ver = p.consulta.get("ver") or ("mis" if tiene_clubes else "todos")
+    ver = p.consulta.get("ver") if p.consulta.get("ver") in ("mis", "todos", "agenda") else ("mis" if tiene_clubes else "todos")
     orden = "populares" if p.consulta.get("orden") == "populares" else "nuevos"
     pagina = int(p.consulta["pagina"]) if (p.consulta.get("pagina") or "").isdigit() else 1
     # Filtros del ícono de embudo: club, fecha y orden
@@ -41,8 +41,9 @@ def feed(p):
     desde = (datetime.now() - _PERIODOS[fecha]).strftime("%Y-%m-%d %H:%M:%S") if _PERIODOS[fecha] else None
     if fecha == "hoy":
         desde = datetime.now().strftime("%Y-%m-%d 00:00:00")
-    pubs = foro.listar(p.bd, p.usuario.id, solo_mis_clubes=(ver == "mis"), club_id=club_filtro.id if club_filtro else None,
-                       orden=orden, limite=21, pagina=pagina, desde=desde)
+    pubs = [] if ver == "agenda" else foro.listar(  # «Agenda» (celular) muestra eventos y anuncios en lugar del feed
+        p.bd, p.usuario.id, solo_mis_clubes=(ver == "mis"), club_id=club_filtro.id if club_filtro else None,
+        orden=orden, limite=21, pagina=pagina, desde=desde)
     hay_mas = len(pubs) > 20
     avisar_eventos_proximos(p)
     return render(p, "inicio.html", publicaciones=marcar_permisos(p, pubs[:20]), ver=ver, orden=orden, pagina=pagina,

@@ -1,0 +1,26 @@
+{# Próximos eventos y anuncios generales: en la columna derecha (computadora) o en la pestaña «Agenda» (celular). #}
+<section class="panel panel-lateral">
+  <div class="panel-cabecera"><h2>Próximos eventos</h2></div>
+  {% for e in proximos %}
+    <a class="lateral-item" href="/eventos/{{ e.id }}">
+      <span class="lateral-item-meta">{{ e.club_nombre }} · {{ e.fecha_inicio | fecha }}</span>
+      <strong>{{ e.titulo }}</strong>
+      <span class="lateral-item-meta">{{ e.lugar }}{% if e.mi_asistencia %} · Asistirás{% endif %}</span>
+    </a>
+  {% else %}
+    <p class="vacio-corto">No hay eventos programados.</p>
+  {% endfor %}
+  <a class="lateral-mas" href="/eventos">Ver calendario</a>
+</section>
+<section class="panel panel-lateral">
+  <div class="panel-cabecera"><h2>Anuncios generales</h2></div>
+  {% for a in anuncios_generales %}
+    <a class="lateral-item" href="/anuncios">
+      <span class="lateral-item-meta">{% if a.fijado %}Fijado · {% endif %}{{ a.creado_en | rel }}</span>
+      <strong>{{ a.titulo }}</strong>
+    </a>
+  {% else %}
+    <p class="vacio-corto">No hay anuncios publicados.</p>
+  {% endfor %}
+  <a class="lateral-mas" href="/anuncios">Ver todos los anuncios</a>
+</section>
