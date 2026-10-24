@@ -59,7 +59,7 @@ python -m unittest discover -s pruebas -t .
 | **Formulario de propuesta de evento** y flujo de aprobación | `/clubes/<club>/eventos` |
 | **Calendario mensual** de actividades y **confirmación de asistencia** con cupo | `/eventos` |
 | **Notificaciones** con contador y **recordatorios** de eventos confirmados (48 h antes) | `/notificaciones` |
-| **Puntos de participación** y niveles | inicio y perfil |
+| **Puntos de participación** y niveles | perfil |
 | **Solicitud para ser capitán**, aprobada por la administración (los líderes también nombran capitanes) | página del club, `/admin` |
 | Panel **Clubes a mi cargo** para líderes y capitanes (los capitanes también editan su club) | `/gestion` |
 | Solicitar la creación de un club | `/clubes/solicitar` |

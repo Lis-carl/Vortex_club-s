@@ -30,7 +30,7 @@ En el celular el menú aparece como una franja horizontal que puedes desplazar.
 
 ## 3. Tu inicio
 
-- **Bienvenida:** saludo, fecha, cuántos clubes tienes, cuántos eventos confirmaste, tus puntos y tu nivel.
+- **Bienvenida:** saludo, fecha, cuántos clubes tienes y cuántos eventos confirmaste.
 - **Recordatorio:** si confirmaste un evento que empieza en las próximas 48 horas, aparece una banda amarilla.
 - **Cómo unirte a un club:** si aún no tienes clubes, verás los 3 pasos para empezar.
 - **Publicaciones:** de tus clubes o de toda la UAM, ordenadas por *Recientes* o *Populares*.
@@ -87,7 +87,7 @@ y envía. La administración revisará tu solicitud y recibirás una notificaci�
   Al abrir la bandeja quedan marcados como leídos.
 - **Puntos:** ganas puntos al participar: publicación 5, comentario 2, asistencia confirmada 3,
   reacción recibida de otra persona 1. Según tus puntos tienes un nivel: *Nuevo* (0), *Participante*
-  (10), *Activo* (30) o *Destacado* (60). Tus puntos y tu nivel aparecen en tu inicio y en tu perfil.
+  (10), *Activo* (30) o *Destacado* (60). Tus puntos y tu nivel aparecen en tu perfil.
 
 ## 7. Si eres capitán
 

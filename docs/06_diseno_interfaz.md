@@ -28,7 +28,7 @@ del foro de Reddit**, con un acabado formal: líneas rectas, bordes finos y sin 
 | Tema | Claro, único, para mantener una apariencia uniforme |
 | Menú lateral | El ítem activo usa el color principal al 10 % de opacidad y una línea de acento vertical a la izquierda |
 | Filtros | Control segmentado: pista gris clara compartida y opción activa en blanco con sombra suave |
-| Banner de bienvenida | Degradado del verde UAM a un tono más oscuro, con un brillo suave y una trama de puntos muy tenue |
+| Banner de bienvenida | Saludo y fecha arriba a la izquierda; debajo, en una fila horizontal, «Mis clubes» y «Eventos confirmados». Fondo: foto de la entrada de la UAM bajo un velo en el color institucional |
 | Estados vacíos | Ícono minimalista en gris claro dentro de un círculo (publicaciones, calendario, anuncios, notificaciones, personas) más un texto que explica qué aparecerá ahí |
 | Fondo del acceso | Foto de la entrada de la Universidad Americana (`estatico/img/campus-uam.jpg`) bajo un velo en el color UAM y una trama fina de líneas diagonales; la foto se acerca muy despacio |
 | Identidad UAM | Lema del afiche de Vida Estudiantil «Sé parte de un club» en el acceso; «Universidad Americana (UAM) · Managua, Nicaragua · Dirección de Vida Estudiantil · I Semestre 2026» en el pie; carreras de la UAM en el registro; los 14 clubes oficiales |
@@ -155,7 +155,7 @@ flowchart TD
 
 | Salida | Medio | Contenido | Orden |
 |--------|-------|-----------|-------|
-| Bienvenida | Pantalla | Saludo según la hora, fecha, número de clubes, eventos confirmados, puntos y nivel | — |
+| Bienvenida | Pantalla | Saludo según la hora, fecha, número de clubes y eventos confirmados | — |
 | Recordatorios | Banda amarilla en inicio y Notificaciones | Eventos confirmados que empiezan en 48 h o menos | Fecha ascendente |
 | Notificaciones | Pantalla y contador en la campana | Texto con enlace y fecha relativa; las no leídas resaltadas | Más recientes primero |
 | Calendario | Rejilla mensual (lunes a domingo) | Eventos por día; los confirmados en color sólido | Por día |

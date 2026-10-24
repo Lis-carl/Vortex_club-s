@@ -5,7 +5,7 @@ from .. import formularios as frm
 from ..acceso import requiere_sesion, es_admin, es_responsable_en, modo_gestion, destino_seguro
 from ..enrutador import ruta
 from ..nucleo import ErrorHttp, Respuesta
-from ..repositorios import anuncios, clubes, eventos, foro, notificaciones, participacion
+from ..repositorios import anuncios, clubes, eventos, foro, notificaciones
 from ..utilidades import MESES_LARGOS
 from ..vistas import render
 
@@ -42,7 +42,6 @@ def feed(p):
     return render(p, "inicio.html", publicaciones=marcar_permisos(p, pubs[:20]), ver=ver, orden=orden, pagina=pagina,
                   hay_mas=hay_mas, tiene_clubes=tiene_clubes, n_clubes=len(mis),
                   saludo=_saludo(), fecha_hoy=f"{hoy.day} de {MESES_LARGOS[hoy.month - 1]} de {hoy.year}",
-                  participacion=participacion.de_usuario(p.bd, p.usuario.id),
                   confirmados=eventos.confirmados_futuros(p.bd, p.usuario.id),
                   recordatorios=eventos.recordatorios(p.bd, p.usuario.id),
                   anuncios_generales=anuncios.listar(p.bd, None, 3), proximos=eventos.proximos(p.bd, p.usuario.id, 3))

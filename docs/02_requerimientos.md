@@ -72,7 +72,7 @@ completas están en [`encuesta/respuestas_encuesta.csv`](encuesta/respuestas_enc
 | Notificaciones, avisos que llegan tarde, eventos perdidos | Bandeja de notificaciones con contador (RF-33) y recordatorios de eventos confirmados en las próximas 48 h (RF-34) |
 | Calendario y horarios mal coordinados | Calendario mensual de actividades de todos los clubes (RF-35) |
 | Información dispersa, demasiados mensajes en chats | Tablón de anuncios por club y general, foro ordenado y chat por club, todo en un solo lugar |
-| «Algo que incentive el uso» | Puntos de participación y niveles visibles en el inicio y el perfil (RF-36) |
+| «Algo que incentive el uso» | Puntos de participación y niveles visibles en el perfil (RF-36) |
 | No sé cómo inscribirme | Guía «Cómo unirte a un club» en 3 pasos en el inicio de quien aún no tiene clubes |
 | 13 de 15 usarían el celular | Diseño adaptable a pantallas de 360 px (RNF-05) |
 
@@ -155,7 +155,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | RF-33 | El sistema debe generar **notificaciones** (anuncio nuevo, evento aprobado, propuesta revisada, solicitud aceptada o rechazada, comentario o respuesta, asignación de rol) y mostrar el número de no leídas. | A |
 | RF-34 | El sistema debe mostrar **recordatorios** de los eventos confirmados que empiezan en las próximas 48 horas. | M |
 | RF-35 | El sistema debe ofrecer un **calendario mensual** de actividades, con filtro «mis clubes y confirmados». | A |
-| RF-36 | El sistema debe calcular **puntos de participación** (publicación 5, comentario 2, asistencia 3, reacción recibida 1), y un nivel (Nuevo, Participante, Activo, Destacado), visibles en el inicio y en el perfil. | B |
+| RF-36 | El sistema debe calcular **puntos de participación** (publicación 5, comentario 2, asistencia 3, reacción recibida 1), y un nivel (Nuevo, Participante, Activo, Destacado), visibles en el perfil. | B |
 
 ## 2.4 Requerimientos no funcionales
 
