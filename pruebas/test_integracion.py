@@ -739,8 +739,14 @@ class PruebasRolesYFuncionesEncuesta(PruebaServidor):
                                desde="/clubes/robotica/anuncios")
         inicio = maria.get("/").cuerpo
         self.assertIn('class="campana-numero">1<', inicio)
+        # el panel de la campana muestra la notificación y permite marcarlas como leídas sin abrir la bandeja
+        panel = inicio.split('class="notif-panel"')[1]
+        self.assertIn("Nuevo anuncio en Robótica: Cambio de aula", panel)
+        self.assertIn("Ver notificación completa", panel)
+        self.assertNotIn("campana-numero", maria.post("/notificaciones/leidas", {"siguiente": "/"}, desde="/").cuerpo)
+        self.cliente(ANA).post("/clubes/robotica/anuncios", {"titulo": "Otro cambio", "contenido": "Lab 6"}, desde="/clubes/robotica/anuncios")
         bandeja = maria.get("/notificaciones").cuerpo
-        self.assertIn("Nuevo anuncio en Robótica: Cambio de aula", bandeja)
+        self.assertIn("Nuevo anuncio en Robótica: Otro cambio", bandeja)
         self.assertIn('class="nueva"', bandeja)
         self.assertNotIn("campana-numero", maria.get("/").cuerpo)   # al abrir la bandeja quedan leídas
         pid = consulta("SELECT id FROM publicaciones WHERE titulo LIKE 'Taller de Arduino%'")[0][0]

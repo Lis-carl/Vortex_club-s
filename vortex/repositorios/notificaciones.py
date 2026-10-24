@@ -30,10 +30,11 @@ def recordar_eventos(bd, usuario_id, eventos, describir):
     """Guarda un recordatorio (una sola vez por evento) de cada evento confirmado que se acerca."""
     for e in eventos:
         enlace = f"/eventos/{e.id}"
-        ya_existe = bd.execute("SELECT 1 FROM notificaciones WHERE usuario_id = ? AND enlace = ? AND texto LIKE 'Recordatorio:%'",
-                               (usuario_id, enlace)).fetchone()
+        texto = f"Recordatorio: «{e.titulo}» es el {describir(e.fecha_inicio)} en {e.lugar}."
+        ya_existe = bd.execute("SELECT 1 FROM notificaciones WHERE usuario_id = ? AND texto LIKE 'Recordatorio:%' "
+                               "AND (enlace = ? OR texto = ?)", (usuario_id, enlace, texto)).fetchone()
         if not ya_existe:
-            crear(bd, usuario_id, f"Recordatorio: «{e.titulo}» es el {describir(e.fecha_inicio)} en {e.lugar}.", enlace)
+            crear(bd, usuario_id, texto, enlace)
 
 
 def recordatorios_sin_leer(bd, usuario_id):

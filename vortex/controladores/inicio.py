@@ -77,6 +77,14 @@ def eliminar_anuncio(p, id):
 
 
 # --- Notificaciones ----------------------------------------------------------------------------
+@ruta("POST", "/notificaciones/leidas")
+@requiere_sesion
+def marcar_notificaciones_leidas(p):
+    """Botón del panel de la campana: deja todas las notificaciones como leídas."""
+    notificaciones.marcar_leidas(p.bd, p.usuario.id)
+    return Respuesta.redirigir(destino_seguro(p.formulario.get("siguiente"), "/"))
+
+
 @ruta("GET", "/notificaciones")
 @requiere_sesion
 def ver_notificaciones(p):

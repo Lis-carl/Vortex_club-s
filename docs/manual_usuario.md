@@ -118,7 +118,7 @@ y envía. La administración revisará tu solicitud y recibirás una notificaci�
 
 ## 6. Notificaciones
 
-- **Notificaciones:** la campana muestra cuántos avisos tienes sin leer (anuncios, eventos aprobados,
+- **Notificaciones:** al pulsar la campana se abre un panel con tus últimas notificaciones (con «Ver notificación completa», el botón para marcarlas todas como leídas y «Ver todo»). La campana muestra cuántos avisos tienes sin leer (anuncios, eventos aprobados,
   respuestas a tus propuestas y solicitudes, comentarios a tus publicaciones, asignaciones de rol).
   Al abrir la bandeja quedan marcados como leídos.
 
