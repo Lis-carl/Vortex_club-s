@@ -1248,3 +1248,12 @@ body:has(.feed) .marco-app { flex: 1; width: 100%; padding-bottom: 0; }
 .notif-quitar button { width: 24px; height: 24px; border: 0; border-radius: 6px; background: transparent; color: #9CA3AF;
   font-size: 1.1rem; line-height: 1; cursor: pointer; transition: all var(--transicion); }
 .notif-quitar button:hover { background: rgba(255, 255, 255, .12); color: #FFFFFF; }
+
+/* Primera diapositiva: foto del campus difuminada con el color de la marca; en el círculo, estudiantes con el jaguar */
+.slide-general { position: relative; isolation: isolate; overflow: hidden; background: #00707C; }
+.slide-general::before { content: ""; position: absolute; inset: -24px; z-index: -2;
+  background: url("/estatico/img/campus-uam.jpg") 50% 45% / cover no-repeat; filter: blur(7px) saturate(1.1); }
+.slide-general::after { content: ""; position: absolute; inset: 0; z-index: -1;
+  background: repeating-radial-gradient(circle at 108% 50%, rgba(255, 255, 255, .07) 0 2px, transparent 2px 24px),
+    linear-gradient(110deg, rgba(0, 90, 102, .86) 0%, rgba(0, 130, 145, .68) 50%, rgba(0, 154, 169, .45) 100%); }
+.collage-foto { background: url("/estatico/img/estudiantes-uam.png") 50% 22% / cover no-repeat; }
