@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block titulo %}Inicio{% endblock %} | Vortex Club's</title>
   <link rel="icon" type="image/svg+xml" href="/estatico/img/logo.svg?v=3">
-  <link rel="stylesheet" href="/estatico/css/estilo.css?v=11">
+  <link rel="stylesheet" href="/estatico/css/estilo.css?v=12">
 </head>
 <body>
 {% if usuario %}
@@ -51,7 +51,7 @@
       <p class="nav-titulo">Mis clubes</p>
       {% for c in mis_clubes %}
         <a class="nav-enlace nav-club {% if ruta.startswith('/clubes/' + c.slug) %}activo{% endif %}" href="/clubes/{{ c.slug }}">
-          <span class="avatar avatar-mini" style="background:{{ c.nombre | color }}">{{ c.nombre | iniciales }}</span>{{ c.nombre }}</a>
+          {{ avatar(c.nombre, c.foto, "avatar-mini") }}{{ c.nombre }}</a>
       {% else %}
         <p class="nav-vacio">Aún no perteneces a ningún club.</p>
       {% endfor %}

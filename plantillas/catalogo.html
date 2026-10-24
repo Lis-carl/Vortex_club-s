@@ -14,7 +14,7 @@
 {% for c in lista %}
   <article class="panel club-tarjeta">
     <div class="club-tarjeta-cabecera">
-      <span class="avatar avatar-club" style="background:{{ c.nombre | color }}">{{ c.nombre | iniciales }}</span>
+      {{ avatar(c.nombre, c.foto, "avatar-club") }}
       <div>
         <p class="antetitulo">{{ c.categoria }}</p>
         <h2><a href="/clubes/{{ c.slug }}">{{ c.nombre }}</a></h2>

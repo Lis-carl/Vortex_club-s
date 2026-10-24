@@ -391,11 +391,6 @@ input[type=file] { font: inherit; font-size: .88rem; }
 .pasos-lista b { color: var(--tinta); }
 .pasos-lista span { font-size: .86rem; color: var(--gris); }
 
-.insignia { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: .72rem; font-weight: 700; background: var(--marca-claro); color: var(--marca-oscuro); white-space: nowrap; }
-.insignia-destacado { background: var(--acento-calido); color: #4A3200; }
-.insignia-activo { background: var(--marca); color: #fff; }
-.perfil-puntos { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 2px; text-align: right; }
-.perfil-puntos b { font-size: 1.8rem; color: var(--marca-oscuro); line-height: 1; }
 
 .notificaciones { list-style: none; margin: 0; padding: 0; }
 .notificaciones li { display: flex; justify-content: space-between; gap: 12px; padding: 12px 16px; border-top: 1px solid var(--linea-suave); transition: background .15s; }
@@ -470,7 +465,7 @@ input[type=file] { font: inherit; font-size: .88rem; }
 @media (max-width: 760px) {
   .pasos-lista { grid-template-columns: 1fr; }
   .calendario-celda { min-height: 54px; padding: 4px; }
-  .perfil { flex-wrap: wrap; } .perfil-puntos { margin-left: 0; align-items: flex-start; text-align: left; }
+  .perfil { flex-wrap: wrap; }
 }
 
 
@@ -668,3 +663,10 @@ input[type=datetime-local], select, textarea, .ficha, .voto, .emoji { border-rad
 .destacado-texto small, .destacado-votos small { color: var(--gris); font-size: .74rem; }
 .destacado-votos { display: flex; flex-direction: column; align-items: center; font-weight: 800; color: var(--marca-profundo); font-size: 1.1rem; line-height: 1.1; }
 .votos-solo { gap: 4px; padding: 0 12px; font-size: .82rem; color: var(--gris); }
+
+
+/* Foto del club: los avatares de club conservan esquinas cuadradas */
+.avatar-club.avatar-foto, .nav-club .avatar-foto { border-radius: 10px; }
+.avatar-club-grande { width: 88px; height: 88px; font-size: 1.6rem; }
+.foto-club { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.foto-club-formularios { flex: 1; min-width: 240px; display: flex; flex-direction: column; gap: 8px; }

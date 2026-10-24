@@ -227,8 +227,8 @@ class PruebasForoYAnuncios(PruebaServidor):
         self.assertEqual(malo.estado, 400)
         self.assertIn("PNG, JPG, GIF o WEBP", malo.cuerpo)
         enorme = ana.post_multipart("/clubes/robotica/publicar", {"titulo": "Imagen enorme"},
-                                    {"imagen": ("x.png", PNG + b"0" * (2 * 1024 * 1024))}, desde="/clubes/robotica/publicar")
-        self.assertIn("2 MB", enorme.cuerpo)
+                                    {"imagen": ("x.png", PNG + b"0" * (5 * 1024 * 1024))}, desde="/clubes/robotica/publicar")
+        self.assertIn("5 MB", enorme.cuerpo)
 
     def test_no_miembro_no_publica_ni_comenta_pero_si_lee_y_vota(self):
         carlos = self.cliente(CARLOS)         # no es miembro de Robótica
@@ -651,14 +651,14 @@ class PruebasRolesYFuncionesEncuesta(PruebaServidor):
         self.cliente(JORGE).post(f"/publicaciones/{pid}/comentar", {"contenido": "Me apunto también"}, desde="/")
         self.assertIn("Jorge Díaz comentó tu publicación", self.cliente(ANA).get("/notificaciones").cuerpo)
 
-    def test_calendario_y_participacion(self):
+    def test_calendario_y_sin_puntos(self):
         mes = consulta("SELECT substr(fecha_inicio, 1, 7) FROM propuestas_evento WHERE titulo='Torneo relámpago de ajedrez'")[0][0]
         r = self.cliente(SOFIA).get(f"/eventos?mes={mes}")
         self.assertIn('class="calendario-rejilla"', r.cuerpo)
         self.assertIn("Torneo relámpago de ajedrez", r.cuerpo)
         self.assertEqual(self.cliente(SOFIA).get("/eventos?mes=2026-99").estado, 200)   # mes inválido: usa el actual
         perfil = self.cliente(SOFIA).get(f"/perfil/{ANA}").cuerpo
-        self.assertIn("puntos de participación", perfil)
+        self.assertNotIn("puntos", perfil)                          # se retiró el sistema de puntos y niveles
         self.assertNotIn("Más participativos", self.cliente(SOFIA).get("/").cuerpo)
 
     def test_sin_buscador_en_la_cabecera(self):
@@ -752,6 +752,23 @@ class PruebasPosicionDeEventos(PruebaServidor):
         mes = sofia.get(f"/eventos?mes={hack[1]}&orden=votos").cuerpo
         self.assertIn("Me interesa", mes)
         self.assertIn('class="activo" href="/eventos?mes=', mes)
+
+
+class PruebasFotoDelClub(PruebaServidor):
+    def test_lider_y_capitan_cambian_la_foto_del_club(self):
+        luis = self.cliente(LUIS)                                      # capitán de Robótica
+        self.assertIn("Foto del club", luis.get("/clubes/robotica/editar").cuerpo)
+        self.assertEqual(self.cliente(MARIA).post_multipart("/clubes/robotica/foto", {}, {"foto": ("c.png", PNG)}).estado, 403)
+        malo = luis.post_multipart("/clubes/robotica/foto", {}, {"foto": ("c.png", b"texto")}, desde="/clubes/robotica/editar")
+        self.assertIn("PNG, JPG, GIF o WEBP", malo.cuerpo)
+        r = luis.post_multipart("/clubes/robotica/foto", {}, {"foto": ("club.png", PNG)}, desde="/clubes/robotica/editar")
+        self.assertIn("Foto del club actualizada", r.cuerpo)
+        foto = consulta("SELECT foto FROM clubes WHERE slug='robotica'")[0][0]
+        self.assertRegex(foto, r"^[0-9a-f]{32}\.png$")
+        self.assertIn(f'src="/subidas/{foto}"', self.cliente(JORGE).get("/clubes").cuerpo)      # en el catálogo
+        self.assertIn("Quitaste la foto del club", self.cliente(ANA).post("/clubes/robotica/foto/quitar", desde="/clubes/robotica/editar").cuerpo)
+        self.assertEqual(consulta("SELECT foto FROM clubes WHERE slug='robotica'"), [("",)])
+        self.assertEqual(luis.get(f"/subidas/{foto}").estado, 404)                             # el archivo se borra
 
 
 if __name__ == "__main__":

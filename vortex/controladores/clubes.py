@@ -1,5 +1,7 @@
 """Catálogo, solicitud de clubes, membresías, anuncios del club y miembros."""
-from .. import formularios as frm
+import secrets
+
+from .. import config, formularios as frm
 from ..acceso import (requiere_sesion, club_o_404, contexto_club, exigir_responsable, es_lider_en, es_admin)
 from ..enrutador import ruta
 from ..nucleo import ErrorHttp, Respuesta
@@ -213,3 +215,40 @@ def solicitar_capitan(p, slug):
     clubes.crear_solicitud_capitan(p.bd, p.usuario.id, club.id, motivo)
     notificaciones.crear_para_admins(p.bd, f"{p.usuario.nombre} pidió ser capitán de {club.nombre}.")
     return volver.con_aviso("ok", "Solicitud enviada. La administración la revisará.")
+
+
+# --- Foto del club -------------------------------------------------------------------------------
+def _borrar_archivo(nombre):
+    if nombre:
+        ruta = config.DIR_SUBIDAS / nombre
+        if ruta.is_file():
+            ruta.unlink()
+
+
+@ruta("POST", "/clubes/<slug>/foto")
+@requiere_sesion
+def cambiar_foto_club(p, slug):
+    """El líder, los capitanes o la administración cambian la foto de perfil del club."""
+    club = club_o_404(p, slug)
+    exigir_responsable(p, club)
+    volver = Respuesta.redirigir(f"/clubes/{slug}/editar")
+    archivo = p.archivos.get("foto")
+    if not archivo or not archivo.datos:
+        return volver.con_aviso("error", "Elige una imagen para la foto del club.")
+    errores = frm.Errores()
+    extension = frm.validar_imagen(archivo, errores, "foto")
+    if errores:
+        return volver.con_aviso("error", errores["foto"])
+    nombre = f"{secrets.token_hex(16)}.{extension}"
+    (config.DIR_SUBIDAS / nombre).write_bytes(archivo.datos)
+    _borrar_archivo(clubes.cambiar_foto(p.bd, club.id, nombre))
+    return volver.con_aviso("ok", "Foto del club actualizada.")
+
+
+@ruta("POST", "/clubes/<slug>/foto/quitar")
+@requiere_sesion
+def quitar_foto_club(p, slug):
+    club = club_o_404(p, slug)
+    exigir_responsable(p, club)
+    _borrar_archivo(clubes.cambiar_foto(p.bd, club.id, ""))
+    return Respuesta.redirigir(f"/clubes/{slug}/editar").con_aviso("ok", "Quitaste la foto del club.")

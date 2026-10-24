@@ -12,7 +12,7 @@
           <input type="hidden" name="csrf" value="{{ csrf }}">
           <label for="foto">Nueva foto de perfil</label>
           <input id="foto" type="file" name="foto" accept="image/png,image/jpeg,image/gif,image/webp" required>
-          <p class="ayuda-campo">PNG, JPG, GIF o WEBP de hasta 2 MB. Se recorta en forma cuadrada.</p>
+          <p class="ayuda-campo">PNG, JPG, GIF o WEBP de hasta 5 MB. Se recorta en forma cuadrada.</p>
           <button class="boton boton-primario boton-pequeno">Guardar foto</button>
         </form>
         {% if persona.foto %}
@@ -29,11 +29,6 @@
     <p class="antetitulo">{% if persona.rol_global == 'admin' %}Administración{% else %}Estudiante{% endif %}</p>
     <h1>{{ persona.nombre }}</h1>
     <p class="tenue">CIF {{ persona.cif }}{% if persona.carrera %} · {{ persona.carrera }}{% endif %} · Registrado desde {{ persona.creado_en | fecha_corta }}</p>
-  </div>
-  <div class="perfil-puntos">
-    <span class="insignia insignia-{{ participacion.insignia.lower() }}">{{ participacion.insignia }}</span>
-    <b>{{ participacion.puntos }}</b><span class="tenue">puntos de participación</span>
-    {% if participacion.siguiente %}<span class="tenue">Faltan {{ participacion.faltan }} para el siguiente nivel</span>{% endif %}
   </div>
 </section>
 <section class="panel">

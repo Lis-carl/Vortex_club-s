@@ -14,8 +14,8 @@ DURACION_SESION_DIAS = 7
 # Iteraciones de PBKDF2. Solo las pruebas automáticas lo reducen para ir más rápido.
 ITERACIONES_PBKDF2 = int(os.environ.get("VORTEX_ITERACIONES") or 200_000)
 
-LIMITE_CUERPO = 3 * 1024 * 1024    # bytes por petición
-LIMITE_IMAGEN = 2 * 1024 * 1024    # bytes por imagen subida
+LIMITE_CUERPO = 6 * 1024 * 1024    # bytes por petición (una imagen de 5 MB más el formulario)
+LIMITE_IMAGEN = 5 * 1024 * 1024    # bytes por imagen subida (fotos de celular)
 
 # Contraseña inicial del administrador (se puede cambiar con VORTEX_ADMIN_CLAVE antes del primer arranque).
 ADMIN_CIF = "00000001"

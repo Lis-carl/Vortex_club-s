@@ -1,7 +1,7 @@
 <section class="club-cabecera">
   <div class="club-cabecera-superior">
     <div class="club-identidad">
-      <span class="avatar avatar-club" style="background:{{ club.nombre | color }}">{{ club.nombre | iniciales }}</span>
+      {{ avatar(club.nombre, club.foto, "avatar-club") }}
       <div>
         <p class="antetitulo">{{ club.categoria }}</p>
         <h1>{{ club.nombre }}</h1>

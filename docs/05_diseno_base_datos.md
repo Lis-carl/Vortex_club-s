@@ -100,6 +100,7 @@ erDiagram
         text nombre UK
         text slug UK
         text descripcion
+        text foto "archivo en subidas/ o vacío"
         int categoria_id FK
         int requiere_aprobacion
         text estado "activo | inactivo"
@@ -298,6 +299,4 @@ publicación y la lista de eventos) **no se guardan**: se calculan con las vista
 - **Migración automática:** al iniciar, si la base de datos es de una versión anterior y a la
   tabla `sesiones` le falta la columna `rol_acceso`, se agrega con `ALTER TABLE` (las tablas nuevas
   se crean solas con `CREATE TABLE IF NOT EXISTS`).
-- **Puntos de participación calculados, no guardados:** se obtienen con subconsultas sobre
-  publicaciones, comentarios, asistencias y reacciones, así nunca quedan desactualizados.
 - **Respaldo:** basta con copiar el archivo `datos/vortex.db` con el servidor detenido.

@@ -19,7 +19,7 @@ Para salir: pulsa tu nombre (arriba a la derecha) → **Cerrar sesión**.
 
 ### Foto de perfil
 Pulsa tu nombre → **Mi perfil y foto** → **Cambiar foto**, elige una imagen (PNG, JPG, GIF o WEBP de
-hasta 2 MB) y pulsa **Guardar foto**. Tu foto aparece en la barra superior, en tus publicaciones y
+hasta 5 MB) y pulsa **Guardar foto**. Tu foto aparece en la barra superior, en tus publicaciones y
 comentarios y en la lista de miembros de tus clubes. Desde el mismo lugar puedes **Quitar foto**.
 
 ## 2. Moverte por la plataforma
@@ -57,7 +57,7 @@ Cada club tiene las pestañas **Foro · Anuncios · Eventos · Miembros · Chat*
 para líder, capitanes y administración).
 
 ### Foro
-- **Crear publicación:** título, texto opcional e imagen opcional (PNG, JPG, GIF o WEBP de hasta 2 MB).
+- **Crear publicación:** título, texto opcional e imagen opcional (PNG, JPG, GIF o WEBP de hasta 5 MB).
 - **Votar:** pulsa **Útil** si la publicación te sirvió (sube en *Populares*) o la flecha hacia abajo si es poco útil (baja). Pulsar de nuevo tu voto lo retira.
 - **Reaccionar:** pulsa **Reaccionar** y elige *Apoyo*, *Me encanta*, *Me divierte*, *Me sorprende*, *Me entristece* o *Increíble*. Cada una tiene su color; pulsa una ficha ya contada para sumarte o quitar la tuya.
 - **Comentar:** abre la publicación y escribe; usa **Responder** para contestar a un comentario.
@@ -91,14 +91,11 @@ actualiza solo cada 5 segundos.
 Si eres miembro, en la cabecera del club pulsa **Solicitar ser capitán**, escribe un motivo opcional
 y envía. La administración revisará tu solicitud y recibirás una notificación con la respuesta.
 
-## 6. Notificaciones y puntos de participación
+## 6. Notificaciones
 
 - **Notificaciones:** la campana muestra cuántos avisos tienes sin leer (anuncios, eventos aprobados,
   respuestas a tus propuestas y solicitudes, comentarios a tus publicaciones, asignaciones de rol).
   Al abrir la bandeja quedan marcados como leídos.
-- **Puntos:** ganas puntos al participar: publicación 5, comentario 2, asistencia confirmada 3,
-  reacción recibida de otra persona 1. Según tus puntos tienes un nivel: *Nuevo* (0), *Participante*
-  (10), *Activo* (30) o *Destacado* (60). Tus puntos y tu nivel aparecen en tu perfil.
 
 ## 7. Si eres capitán
 
@@ -108,7 +105,7 @@ y envía. La administración revisará tu solicitud y recibirás una notificaci�
 | Aceptar o rechazar solicitudes de ingreso | Pestaña **Miembros** (el número rojo de la pestaña indica cuántas hay) |
 | Publicar un anuncio del club | Pestaña **Anuncios** |
 | Aprobar o rechazar propuestas de evento y ver asistentes | Pestaña **Eventos** |
-| Editar descripción, categoría y modo de ingreso | Pestaña **Configuración** |
+| Editar descripción, categoría, modo de ingreso y **foto del club** | Pestaña **Configuración** |
 | Eliminar contenido inadecuado | **Eliminar** y confirmar |
 
 ## 8. Si eres líder

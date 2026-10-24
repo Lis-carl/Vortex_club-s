@@ -3,6 +3,27 @@
 {% block contenido %}
 {% include "parciales/club_cabecera.html" %}
 <section class="panel">
+  <div class="panel-cabecera"><h2>Foto del club</h2></div>
+  <div class="panel-cuerpo foto-club">
+    {{ avatar(club.nombre, club.foto, "avatar-club avatar-club-grande") }}
+    <div class="foto-club-formularios">
+      <form method="post" action="/clubes/{{ club.slug }}/foto" enctype="multipart/form-data" class="formulario-linea">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <label for="foto-club" class="oculto">Foto del club</label>
+        <input id="foto-club" type="file" name="foto" accept="image/png,image/jpeg,image/gif,image/webp" required>
+        <button class="boton boton-primario">Guardar foto</button>
+      </form>
+      <p class="ayuda-campo">PNG, JPG, GIF o WEBP de hasta 5 MB. Se muestra en el catálogo, la cabecera del club y el menú.</p>
+      {% if club.foto %}
+      <form method="post" action="/clubes/{{ club.slug }}/foto/quitar">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <button class="accion accion-peligro">Quitar foto</button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</section>
+<section class="panel">
   <div class="panel-cabecera"><h2>Configuración del club</h2></div>
   <form method="post" action="/clubes/{{ club.slug }}/editar" class="panel-cuerpo formulario" novalidate>
     <input type="hidden" name="csrf" value="{{ csrf }}">

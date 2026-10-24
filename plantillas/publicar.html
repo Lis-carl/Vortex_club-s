@@ -14,7 +14,7 @@
       {% if errores.contenido %}<p class="error-campo">{{ errores.contenido }}</p>{% endif %}</div>
     <div class="campo {% if errores.imagen %}con-error{% endif %}"><label for="imagen">Imagen (opcional)</label>
       <input id="imagen" type="file" name="imagen" accept="image/png,image/jpeg,image/gif,image/webp">
-      {% if errores.imagen %}<p class="error-campo">{{ errores.imagen }}</p>{% else %}<p class="ayuda-campo">PNG, JPG, GIF o WEBP de hasta 2 MB.</p>{% endif %}</div>
+      {% if errores.imagen %}<p class="error-campo">{{ errores.imagen }}</p>{% else %}<p class="ayuda-campo">PNG, JPG, GIF o WEBP de hasta 5 MB.</p>{% endif %}</div>
     <div class="acciones-formulario">
       <a class="boton boton-secundario" href="/clubes/{{ club.slug }}">Cancelar</a>
       <button class="boton boton-primario">Publicar</button>

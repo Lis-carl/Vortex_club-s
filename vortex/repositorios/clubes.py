@@ -99,7 +99,7 @@ def membresia_por_id(bd, membresia_id):
 
 def mis_clubes(bd, usuario_id):
     return bd.execute(
-        """SELECT c.id, c.nombre, c.slug, m.rol FROM membresias m JOIN clubes c ON c.id = m.club_id
+        """SELECT c.id, c.nombre, c.slug, c.foto, m.rol FROM membresias m JOIN clubes c ON c.id = m.club_id
            WHERE m.usuario_id = ? AND m.estado = 'activa' AND c.estado = 'activo' ORDER BY c.nombre""",
         (usuario_id,)).fetchall()
 
@@ -252,7 +252,7 @@ def roles_de(bd, usuario_id):
 
 def clubes_a_cargo(bd, usuario_id):
     return bd.execute(
-        """SELECT c.id, c.nombre, c.slug, m.rol,
+        """SELECT c.id, c.nombre, c.slug, c.foto, m.rol,
              (SELECT COUNT(*) FROM membresias x WHERE x.club_id = c.id AND x.estado = 'activa') AS n_miembros,
              (SELECT COUNT(*) FROM membresias x WHERE x.club_id = c.id AND x.estado = 'pendiente') AS pend_miembros,
              (SELECT COUNT(*) FROM propuestas_evento e WHERE e.club_id = c.id AND e.estado = 'pendiente') AS pend_eventos
@@ -268,3 +268,10 @@ def ids_miembros_activos(bd, club_id):
 
 def solicitud_club(bd, solicitud_id):
     return bd.execute("SELECT * FROM solicitudes_club WHERE id = ?", (solicitud_id,)).fetchone()
+
+
+def cambiar_foto(bd, club_id, foto):
+    """Guarda la foto del club ('' = sin foto) y devuelve la anterior."""
+    anterior = bd.execute("SELECT foto FROM clubes WHERE id = ?", (club_id,)).fetchone().foto
+    bd.execute("UPDATE clubes SET foto = ? WHERE id = ?", (foto, club_id))
+    return anterior

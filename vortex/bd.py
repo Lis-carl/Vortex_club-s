@@ -41,4 +41,7 @@ def _migrar(bd):
     columnas = {c.name for c in bd.execute("PRAGMA table_info(usuarios)").fetchall()}
     if "foto" not in columnas:
         bd.execute("ALTER TABLE usuarios ADD COLUMN foto TEXT NOT NULL DEFAULT ''")
+    columnas = {c.name for c in bd.execute("PRAGMA table_info(clubes)").fetchall()}
+    if "foto" not in columnas:
+        bd.execute("ALTER TABLE clubes ADD COLUMN foto TEXT NOT NULL DEFAULT ''")
     bd.commit()

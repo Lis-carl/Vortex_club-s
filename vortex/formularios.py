@@ -89,7 +89,7 @@ def validar_imagen(archivo, errores, clave="imagen"):
     if not archivo or not archivo.datos:
         return None
     if len(archivo.datos) > config.LIMITE_IMAGEN:
-        errores[clave] = "La imagen no puede pesar más de 2 MB."
+        errores[clave] = "La imagen no puede pesar más de 5 MB."
         return None
     extension = tipo_imagen(archivo.datos)
     if not extension:

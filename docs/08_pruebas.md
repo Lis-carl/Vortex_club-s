@@ -70,7 +70,7 @@ OK
 | RF-32 Confirmación de asistencia y cupo | `test_confirmacion_de_asistencia_y_cupo` |
 | RF-33 Notificaciones | `test_notificaciones`, `test_flujo_de_propuesta_y_aprobacion`, `test_solicitud_de_capitan_aprobada_por_la_administracion` |
 | RF-34 Recordatorios | `test_recordatorio_de_eventos_proximos` |
-| RF-35 Calendario mensual / RF-36 Participación | `test_calendario_y_participacion` |
+| RF-35 Calendario mensual | `test_calendario_y_sin_puntos` |
 | RF-39 Votación de propuestas | `PruebasVotacionDePropuestas.test_propuesta_aprobada_por_votacion`, `test_votos_en_contra_impiden_aprobar` |
 | RF-40 Posición de eventos por votos | `PruebasPosicionDeEventos.test_votos_posicionan_los_eventos_de_todos_los_clubes` |
 | RF-37 Solicitud de capitán | `test_solicitud_de_capitan_aprobada_por_la_administracion` |
@@ -99,7 +99,7 @@ OK
 | XSS almacenado | Título `<script>alert(1)</script>` y contenido `<img onerror=…>` en publicaciones, comentarios y chat | Se muestra como texto (`&lt;script&gt;`) |
 | Inyección SQL | `ver=' OR 1=1 --`, `orden=x;DROP TABLE usuarios` y `mes=1;DROP TABLE usuarios` | Sin resultados / sin efecto; la tabla sigue existiendo |
 | Recorrido de carpetas | `/estatico/../vortex/config.py`, `/estatico/%2e%2e/…`, `/subidas/../app.py` | 404 |
-| Archivo malicioso | Subir HTML con extensión `.png`, o una imagen de más de 2 MB | Rechazado con mensaje |
+| Archivo malicioso | Subir HTML con extensión `.png`, o una imagen de más de 5 MB | Rechazado con mensaje |
 | Fuerza bruta | 5 intentos fallidos seguidos | Bloqueo temporal con mensaje |
 | Redirección abierta | `siguiente=//evil.com` al iniciar sesión | Se ignora, redirige a `/` |
 | Escalada de privilegios | Miembro intenta aprobar propuestas, publicar anuncios del club, cambiar roles, abrir `/admin` | 403 |

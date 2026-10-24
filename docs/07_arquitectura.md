@@ -152,6 +152,7 @@ integradas de Python), sobre los datos que entrega el controlador.
 | GET | `/gestion` | inicio.gestion (clubes a mi cargo) | Capitán / Líder / Admin |
 | POST | `/clubes/<slug>/solicitar-capitan` | clubes.solicitar_capitan | Miembro |
 | POST | `/perfil/foto` · `/perfil/foto/quitar` | cuentas.cambiar_foto · cuentas.quitar_foto | Sesión |
+| POST | `/clubes/<slug>/foto` · `/clubes/<slug>/foto/quitar` | clubes.cambiar_foto_club · clubes.quitar_foto_club | Responsable |
 | GET | `/clubes` | clubes.catalogo | Sesión |
 | GET/POST | `/clubes/solicitar` | clubes.solicitar | Sesión |
 | GET | `/clubes/<slug>` | foro.foro_club | Sesión |
@@ -211,5 +212,5 @@ Un estudiante (o un líder en un club que no es el suyo) solo puede eliminar lo 
 | XSS | El motor de plantillas escapa todo por defecto; los textos de usuario nunca se marcan como `seguro` |
 | Inyección SQL | Siempre consultas con `?` (parámetros), nunca concatenación |
 | Recorrido de carpetas | Las rutas estáticas se resuelven y se verifica que queden dentro de su carpeta |
-| Archivos maliciosos | Lista blanca de tipos por firma binaria, tamaño máximo 2 MB, nombre aleatorio generado por el servidor |
-| Cuerpos enormes | Límite de 3 MB por petición |
+| Archivos maliciosos | Lista blanca de tipos por firma binaria, tamaño máximo 5 MB, nombre aleatorio generado por el servidor |
+| Cuerpos enormes | Límite de 6 MB por petición (imagen de hasta 5 MB más el formulario) |

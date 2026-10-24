@@ -18,7 +18,7 @@ del foro de Reddit**, con un acabado formal: líneas rectas, bordes finos y sin 
 | Elemento | Valor |
 |----------|-------|
 | Logotipo | Monograma **VC** (Vortex Club's) trazado en SVG: cuadrado color UAM `#009AA9` con letras blancas (`estatico/img/logo.svg`) y versión en contorno blanco para fondos oscuros (`logo-blanco.svg`) |
-| Color de marca | **`#009AA9`** (verde azulado institucional de la UAM); hover `#007A87`; profundo `#005C66`; fondo suave `#E1F5F7`; acento cálido `#F2B33D` para niveles y el lema |
+| Color de marca | **`#009AA9`** (verde azulado institucional de la UAM); hover `#007A87`; profundo `#005C66`; fondo suave `#E1F5F7`; acento cálido `#F2B33D` para el lema y el primer evento destacado |
 | Texto | Títulos `#14212B`, texto `#27343E`, secundario `#5E6C78` |
 | Fondo y tarjetas | Fondo `#F2F4F6`; tarjetas blancas **sin borde**, con sombra sutil y esquinas de **12 px**; botones y campos con esquinas de 8 px |
 | Estados | Peligro `#A8261C`, éxito `#1D6B45`, pendiente `#7A5300`, siempre con su fondo claro |
@@ -104,7 +104,7 @@ flowchart TD
 │ [VC] Vortex Club's                                  [campana 2]  [AL] Ana · Líder│
 ├───────────────┬────────────────────────────────────────────┬─────────────────────┤
 │ GENERAL       │ ┌ Buenas tardes, Ana ─ clubes 2 · confirmados 1 ┐│ PRÓXIMOS EVENTOS    │
-│ ┃ Inicio      │ └ puntos 15 · nivel Participante ─────────────┘│ [08 NOV] Título     │
+│ ┃ Inicio      │ └ ────────────────────────────────────────────┘│ [08 NOV] Título     │
 │   Explorar    │ ───────────────────────────────────────────│ Fijado · hace 2 h   │
 │   Anuncios    │ [Recientes|Populares]                      │ Ver todos           │
 │   Eventos     │ ┌──┬──────────────────────────────────────┐├─────────────────────┤
@@ -161,7 +161,6 @@ flowchart TD
 | Recordatorios | Banda amarilla en inicio y Notificaciones | Eventos confirmados que empiezan en 48 h o menos | Fecha ascendente |
 | Notificaciones | Pantalla y contador en la campana | Texto con enlace y fecha relativa; las no leídas resaltadas | Más recientes primero |
 | Calendario | Rejilla mensual (lunes a domingo) | Eventos por día; los confirmados en color sólido | Por día |
-| Ranking | Panel lateral | Los 5 estudiantes con más puntos y su nivel | Puntos descendente |
 | Inicio | Pantalla | Publicaciones de mis clubes con club, autor, fecha relativa, título, extracto, imagen, puntaje, comentarios y reacciones | Recientes o Populares |
 | Foro del club | Pantalla | Igual que el inicio, filtrado por club | Recientes o Populares (puntaje + reacciones + comentarios) |
 | Anuncios | Pantalla | Título, autor, fecha, texto; rótulo «Fijado» | Fijados primero, luego fecha |
@@ -201,7 +200,7 @@ no requieren JavaScript, y **siempre en el servidor con Python**, que es la vali
 | Prueba de rango | Cupo 1–10 000; fecha del evento posterior a ahora; valor de voto ∈ {−1, 1} |
 | Prueba de valores no válidos | Rol ∈ {miembro, capitán, líder}; reacción ∈ 6 emojis; categoría existente |
 | Prueba de referencias cruzadas | Contraseña = confirmación; CIF y correo no registrados; nombre de club no repetido; CIF del líder existente y activo |
-| Verificación de archivo | Imagen ≤ 2 MB y firma binaria de PNG, JPEG, GIF o WEBP |
+| Verificación de archivo | Imagen ≤ 5 MB y firma binaria de PNG, JPEG, GIF o WEBP |
 
 Cuando hay errores, el formulario se vuelve a mostrar **con lo que el usuario escribió**, el campo
 con problema resaltado en rojo y el mensaje debajo.

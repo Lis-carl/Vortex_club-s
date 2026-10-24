@@ -72,7 +72,7 @@ completas están en [`encuesta/respuestas_encuesta.csv`](encuesta/respuestas_enc
 | Notificaciones, avisos que llegan tarde, eventos perdidos | Bandeja de notificaciones con contador (RF-33) y recordatorios de eventos confirmados en las próximas 48 h (RF-34) |
 | Calendario y horarios mal coordinados | Calendario mensual de actividades de todos los clubes (RF-35) |
 | Información dispersa, demasiados mensajes en chats | Tablón de anuncios por club y general, foro ordenado y chat por club, todo en un solo lugar |
-| «Algo que incentive el uso» | Puntos de participación y niveles visibles en el perfil (RF-36) |
+| «Algo que incentive el uso» | Votación de propuestas de evento y eventos destacados por votos de todos los clubes (RF-39, RF-40). Se probó un sistema de puntos y niveles, pero el equipo decidió retirarlo |
 | No sé cómo inscribirme | Guía «Cómo unirte a un club» en 3 pasos en el inicio de quien aún no tiene clubes |
 | 13 de 15 usarían el celular | Diseño adaptable a pantallas de 360 px (RNF-05) |
 
@@ -92,7 +92,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 |----|---------------|-----------|
 | RF-01 | El sistema debe permitir registrarse con CIF, nombre completo, correo, carrera y contraseña. | A |
 | RF-02 | El sistema debe permitir iniciar sesión con CIF y contraseña, y cerrar sesión. El **tipo de usuario lo determina la cuenta**: administración, líder o capitán si alguien lo nombró en un club, o estudiante. | A |
-| RF-03 | El sistema debe mostrar un perfil con los clubes y publicaciones del usuario. Cada usuario puede **cambiar o quitar su foto de perfil** (PNG, JPG, GIF o WEBP de hasta 2 MB), que se muestra en la cabecera, sus publicaciones, comentarios y la lista de miembros. | M |
+| RF-03 | El sistema debe mostrar un perfil con los clubes y publicaciones del usuario. Cada usuario puede **cambiar o quitar su foto de perfil** (PNG, JPG, GIF o WEBP de hasta 5 MB), que se muestra en la cabecera, sus publicaciones, comentarios y la lista de miembros. | M |
 
 ### Clubes y membresías
 | ID | Requerimiento | Prioridad |
@@ -104,7 +104,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | RF-08 | Un miembro debe poder salir de un club (el líder no puede salir sin transferir el liderazgo). | M |
 | RF-09 | El sistema debe mostrar los integrantes del club agrupados en **líder, capitanes y miembros**. | A |
 | RF-10 | El líder debe poder nombrar o quitar capitanes, expulsar miembros y transferir el liderazgo. | A |
-| RF-11 | El líder **y los capitanes** deben poder editar la descripción, categoría y modo de ingreso de su club. | M |
+| RF-11 | El líder **y los capitanes** deben poder editar la descripción, categoría, modo de ingreso y la **foto de perfil del club** (PNG, JPG, GIF o WEBP de hasta 5 MB). | M |
 
 ### Anuncios
 | ID | Requerimiento | Prioridad |
@@ -157,7 +157,6 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | RF-35 | El sistema debe ofrecer un **calendario mensual** de actividades, con filtro «mis clubes y confirmados». | A |
 | RF-39 | Los miembros del club deben poder **votar las propuestas de evento** (apoyar o en contra). Una propuesta se **aprueba automáticamente** cuando alcanza los apoyos de la mitad de los miembros activos (mínimo 2) y tiene más apoyos que votos en contra. Líder y capitanes pueden seguir aprobando o rechazando directamente. | A |
 | RF-40 | Los votos también **posicionan los eventos aprobados de todos los clubes**: cualquier estudiante puede marcar «Me interesa» (o «No me interesa»); el calendario general muestra los **eventos destacados** (los más votados) y permite ordenar por «Más votados» (puntaje, luego asistentes confirmados, luego fecha). | M |
-| RF-36 | El sistema debe calcular **puntos de participación** (publicación 5, comentario 2, asistencia 3, reacción recibida 1), y un nivel (Nuevo, Participante, Activo, Destacado), visibles en el perfil. | B |
 
 ## 2.4 Requerimientos no funcionales
 
@@ -172,7 +171,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | RNF-07 | Seguridad | Todo formulario que modifique datos debe llevar un **token CSRF** ligado a la sesión. |
 | RNF-08 | Seguridad | Todo texto escrito por usuarios se **escapa** al mostrarse (prevención de XSS) y todas las consultas SQL usan **parámetros** (prevención de inyección SQL). |
 | RNF-09 | Seguridad | La cookie de sesión debe ser `HttpOnly` y `SameSite=Lax`; la sesión expira a los 7 días. |
-| RNF-10 | Seguridad | Las imágenes subidas se limitan a PNG, JPG, GIF o WEBP de máximo 2 MB, verificando su firma binaria. |
+| RNF-10 | Seguridad | Las imágenes subidas se limitan a PNG, JPG, GIF o WEBP de máximo 5 MB, verificando su firma binaria. |
 | RNF-11 | Rendimiento | Las páginas deben responder en menos de 500 ms con 50 usuarios simultáneos en una computadora de laboratorio. |
 | RNF-12 | Disponibilidad | El sistema debe iniciar con un solo comando (`python app.py`) y crear la base de datos automáticamente si no existe. |
 | RNF-13 | Mantenibilidad | El código se organiza por capas (servidor, controladores, repositorios de datos, plantillas) y se documenta en español. |

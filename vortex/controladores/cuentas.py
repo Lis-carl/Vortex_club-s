@@ -4,7 +4,7 @@ from .. import config, seguridad, formularios as frm
 from ..acceso import requiere_sesion, destino_seguro
 from ..enrutador import ruta
 from ..nucleo import ErrorHttp, Respuesta
-from ..repositorios import usuarios, clubes, foro, participacion
+from ..repositorios import usuarios, clubes, foro
 from ..vistas import render
 
 # Carreras de la Universidad Americana (UAM) que aparecen en la oferta de clubes.
@@ -111,7 +111,6 @@ def perfil(p, cif):
     publicaciones = foro.listar(p.bd, p.usuario.id, autor_id=persona.id, limite=10)
     solicitudes = clubes.solicitudes_de(p.bd, persona.id) if persona.id == p.usuario.id else []
     return render(p, "perfil.html", persona=persona, clubes_persona=mis, publicaciones=publicaciones,
-                  participacion=participacion.de_usuario(p.bd, persona.id),
                   solicitudes=solicitudes, es_yo=persona.id == p.usuario.id)
 
 

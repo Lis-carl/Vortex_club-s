@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS clubes (
     nombre              TEXT    NOT NULL UNIQUE COLLATE NOCASE CHECK (length(nombre) BETWEEN 3 AND 60),
     slug                TEXT    NOT NULL UNIQUE,
     descripcion         TEXT    NOT NULL DEFAULT '',
+    foto                TEXT    NOT NULL DEFAULT '',
     categoria_id        INTEGER NOT NULL REFERENCES categorias(id),
     requiere_aprobacion INTEGER NOT NULL DEFAULT 0 CHECK (requiere_aprobacion IN (0, 1)),
     estado              TEXT    NOT NULL DEFAULT 'activo' CHECK (estado IN ('activo', 'inactivo')),

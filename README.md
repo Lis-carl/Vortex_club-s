@@ -59,7 +59,6 @@ python -m unittest discover -s pruebas -t .
 | **Formulario de propuesta de evento** y flujo de aprobación | `/clubes/<club>/eventos` |
 | **Calendario mensual** de actividades y **confirmación de asistencia** con cupo | `/eventos` |
 | **Notificaciones** con contador y **recordatorios** de eventos confirmados (48 h antes) | `/notificaciones` |
-| **Puntos de participación** y niveles | perfil |
 | **Solicitud para ser capitán**, aprobada por la administración (los líderes también nombran capitanes) | página del club, `/admin` |
 | Panel **Clubes a mi cargo** para líderes y capitanes (los capitanes también editan su club) | `/gestion` |
 | Solicitar la creación de un club | `/clubes/solicitar` |
@@ -70,8 +69,8 @@ python -m unittest discover -s pruebas -t .
 Se encuestó a 15 personas de la UAM ([respuestas](docs/encuesta/respuestas_encuesta.csv)). Nadie
 encontró «fácil» informarse sobre los clubes, 8 de 15 se han perdido actividades por no enterarse a
 tiempo y 14 de 15 usarían la aplicación. Las funciones más pedidas (inscripción en línea, catálogo,
-confirmación de asistencia, notificaciones, calendario y algo que incentive el uso) están
-implementadas; el análisis completo está en [`docs/02_requerimientos.md`](docs/02_requerimientos.md).
+confirmación de asistencia, notificaciones, calendario y algo que incentive el uso, resuelto con la
+votación de propuestas y los eventos destacados) están implementadas; el análisis completo está en [`docs/02_requerimientos.md`](docs/02_requerimientos.md).
 
 ## Documentación
 

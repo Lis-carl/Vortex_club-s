@@ -66,7 +66,7 @@ class Manejador(BaseHTTPRequestHandler):
         if metodo == "POST":
             largo = int(self.headers.get("Content-Length") or 0)
             if largo > config.LIMITE_CUERPO:
-                raise ErrorHttp(413, "El contenido enviado es demasiado grande.")
+                raise ErrorHttp(413, "El archivo es demasiado grande. Las imágenes pueden pesar hasta 5 MB.")
             cuerpo = self.rfile.read(largo) if largo else b""
             tipo = self.headers.get("Content-Type", "")
             if tipo.startswith("multipart/form-data"):

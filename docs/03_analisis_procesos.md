@@ -322,7 +322,7 @@ Propuesta de evento = ID club + ID proponente + Título + Descripción + Fecha i
 | Estado membresía | Texto | — | `pendiente` \| `activa` | — |
 | Título | Texto | 3–150 | — | — |
 | Contenido | Texto | 1–10 000 | — | — |
-| Imagen | Texto (ruta) | ≤ 100 | PNG/JPG/GIF/WEBP ≤ 2 MB | vacío |
+| Imagen | Texto (ruta) | ≤ 100 | PNG/JPG/GIF/WEBP ≤ 5 MB | vacío |
 | Tipo reacción | Texto | — | uno de los 6 emojis permitidos | — |
 | Valor voto | Entero | 1 | `1` \| `-1` | — |
 | Fecha inicio | Fecha-hora ISO | 16 | `AAAA-MM-DDTHH:MM`, posterior a ahora | — |
