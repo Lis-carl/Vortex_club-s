@@ -71,10 +71,14 @@ Cada anuncio nuevo te llega también como notificación.
 ### Eventos, calendario y asistencia
 1. En la pestaña **Eventos** del club pulsa **Proponer un evento** y llena: nombre, descripción,
    fecha y hora (futura), lugar, cupo (opcional) y recursos (opcional).
-2. Verás el estado en **Mis propuestas** y recibirás una notificación cuando lo revisen.
-3. Los eventos aprobados aparecen en el club y en el **Calendario** mensual (menú izquierdo). Usa
+2. Tu propuesta aparece en **Propuestas en votación**. Los demás miembros pueden **Apoyar** o votar
+   **En contra**; una barra muestra cuántos apoyos lleva. Cuando la apoya la **mitad de los miembros**
+   (mínimo 2) y hay más apoyos que votos en contra, se **aprueba sola**. El líder o un capitán también
+   pueden aprobarla o rechazarla directamente.
+3. Verás el estado en **Mis propuestas** y recibirás una notificación cuando se apruebe o rechace.
+4. Los eventos aprobados aparecen en el club y en el **Calendario** mensual (menú izquierdo). Usa
    «Mis clubes y confirmados» para ver solo los tuyos.
-4. Pulsa **Confirmar asistencia** para apartar tu lugar (se respeta el cupo). Verás «Asistirás» y
+5. Pulsa **Confirmar asistencia** para apartar tu lugar (se respeta el cupo). Verás «Asistirás» y
    podrás **Cancelar asistencia** cuando quieras. Te lo recordaremos 48 horas antes.
 
 ### Miembros y chat

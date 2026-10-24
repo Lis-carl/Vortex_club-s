@@ -28,11 +28,42 @@ def por_id(bd, propuesta_id):
     return bd.execute("SELECT * FROM propuestas_evento WHERE id = ?", (propuesta_id,)).fetchone()
 
 
-def pendientes(bd, club_id):
-    return bd.execute(
-        """SELECT e.*, u.nombre AS proponente_nombre, u.cif AS proponente_cif
+def umbral_votacion(bd, club_id):
+    """Apoyos necesarios para aprobar una propuesta por votación: la mitad de los miembros activos (mínimo 2)."""
+    n = bd.execute("SELECT COUNT(*) AS n FROM membresias WHERE club_id = ? AND estado = 'activa'", (club_id,)).fetchone().n
+    return max(2, -(-n // 2))
+
+
+def pendientes(bd, club_id, usuario_id=None):
+    filas = bd.execute(
+        """SELECT e.*, u.nombre AS proponente_nombre, u.cif AS proponente_cif,
+                  (SELECT COUNT(*) FROM votos_propuesta v WHERE v.propuesta_id = e.id AND v.valor = 1) AS apoyos,
+                  (SELECT COUNT(*) FROM votos_propuesta v WHERE v.propuesta_id = e.id AND v.valor = -1) AS contras,
+                  (SELECT v.valor FROM votos_propuesta v WHERE v.propuesta_id = e.id AND v.usuario_id = ?) AS mi_voto
            FROM propuestas_evento e JOIN usuarios u ON u.id = e.proponente_id
-           WHERE e.club_id = ? AND e.estado = 'pendiente' ORDER BY e.fecha_inicio""", (club_id,)).fetchall()
+           WHERE e.club_id = ? AND e.estado = 'pendiente' ORDER BY e.fecha_inicio""", (usuario_id, club_id)).fetchall()
+    umbral = umbral_votacion(bd, club_id)
+    for f in filas:
+        f["umbral"] = umbral
+        f["avance"] = min(100, f.apoyos * 100 // umbral)
+    return filas
+
+
+def votar_propuesta(bd, usuario_id, propuesta_id, valor):
+    """Alterna el voto (+1 apoyo / -1 en contra). Devuelve (apoyos, contras)."""
+    actual = bd.execute("SELECT valor FROM votos_propuesta WHERE usuario_id = ? AND propuesta_id = ?",
+                        (usuario_id, propuesta_id)).fetchone()
+    if actual and actual.valor == valor:
+        bd.execute("DELETE FROM votos_propuesta WHERE usuario_id = ? AND propuesta_id = ?", (usuario_id, propuesta_id))
+    elif actual:
+        bd.execute("UPDATE votos_propuesta SET valor = ? WHERE usuario_id = ? AND propuesta_id = ?",
+                   (valor, usuario_id, propuesta_id))
+    else:
+        bd.execute("INSERT INTO votos_propuesta (usuario_id, propuesta_id, valor) VALUES (?, ?, ?)",
+                   (usuario_id, propuesta_id, valor))
+    fila = bd.execute("""SELECT COALESCE(SUM(valor = 1), 0) AS apoyos, COALESCE(SUM(valor = -1), 0) AS contras
+                         FROM votos_propuesta WHERE propuesta_id = ?""", (propuesta_id,)).fetchone()
+    return fila.apoyos, fila.contras
 
 
 def contar_pendientes(bd, club_id):

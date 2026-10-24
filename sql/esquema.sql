@@ -159,6 +159,14 @@ CREATE TABLE IF NOT EXISTS propuestas_evento (
     revisado_en         TEXT
 );
 
+-- D14 Votos de los miembros sobre propuestas de evento ---------------------
+CREATE TABLE IF NOT EXISTS votos_propuesta (
+    usuario_id    INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    propuesta_id  INTEGER NOT NULL REFERENCES propuestas_evento(id) ON DELETE CASCADE,
+    valor         INTEGER NOT NULL CHECK (valor IN (-1, 1)),
+    PRIMARY KEY (usuario_id, propuesta_id)
+);
+
 -- D11 Asistencias a eventos (confirmación de asistencia) -------------------
 CREATE TABLE IF NOT EXISTS asistencias (
     usuario_id  INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,

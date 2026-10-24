@@ -155,6 +155,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | RF-33 | El sistema debe generar **notificaciones** (anuncio nuevo, evento aprobado, propuesta revisada, solicitud aceptada o rechazada, comentario o respuesta, asignación de rol) y mostrar el número de no leídas. | A |
 | RF-34 | El sistema debe mostrar **recordatorios** de los eventos confirmados que empiezan en las próximas 48 horas. | M |
 | RF-35 | El sistema debe ofrecer un **calendario mensual** de actividades, con filtro «mis clubes y confirmados». | A |
+| RF-39 | Los miembros del club deben poder **votar las propuestas de evento** (apoyar o en contra). Una propuesta se **aprueba automáticamente** cuando alcanza los apoyos de la mitad de los miembros activos (mínimo 2) y tiene más apoyos que votos en contra. Líder y capitanes pueden seguir aprobando o rechazando directamente. | A |
 | RF-36 | El sistema debe calcular **puntos de participación** (publicación 5, comentario 2, asistencia 3, reacción recibida 1), y un nivel (Nuevo, Participante, Activo, Destacado), visibles en el perfil. | B |
 
 ## 2.4 Requerimientos no funcionales
@@ -195,6 +196,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | RN-11 | Un estudiante solo puede eliminar sus propias publicaciones y comentarios. |
 | RN-12 | No se puede confirmar asistencia a un evento lleno o que ya ocurrió. |
 | RN-13 | Un miembro puede tener como máximo una solicitud de capitán pendiente por club. |
+| RN-14 | Cada miembro tiene un voto por propuesta (repetirlo lo retira); quien propone no vota su propia propuesta; solo se aprueba por votación si la fecha sigue siendo futura. |
 
 ## 2.6 Matriz de permisos por rol
 

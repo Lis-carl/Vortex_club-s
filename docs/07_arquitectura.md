@@ -164,6 +164,7 @@ integradas de Python), sobre los datos que entrega el controlador.
 | GET | `/clubes/<slug>/eventos` | eventos.eventos_club | Sesión |
 | GET/POST | `/clubes/<slug>/eventos/proponer` | eventos.proponer | Miembro |
 | POST | `/propuestas/<id>/revisar` | eventos.revisar | Responsable |
+| POST | `/propuestas/<id>/votar` | eventos.votar_propuesta (aprobación automática al alcanzar el umbral) | Miembro |
 | GET | `/clubes/<slug>/chat` | chat.sala | Miembro |
 | GET | `/clubes/<slug>/chat/mensajes` | chat.mensajes (HTML del marco, se recarga cada 5 s) | Miembro |
 | POST | `/clubes/<slug>/chat` | chat.enviar | Miembro |

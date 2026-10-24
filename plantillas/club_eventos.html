@@ -12,11 +12,11 @@
   {% endfor %}
 </section>
 
-{% if es_responsable %}
+{% if es_miembro %}
 <section class="panel">
-  <div class="panel-cabecera"><h2>Propuestas por revisar</h2></div>
+  <div class="panel-cabecera"><h2>Propuestas en votación</h2><span class="tenue">Se aprueban con la mitad de los miembros a favor</span></div>
   {% for e in pendientes %}
-  <div class="propuesta">
+  <div class="propuesta" id="propuesta-{{ e.id }}">
     <h3>{{ e.titulo }}</h3>
     <p class="evento-datos">
       <span>Propone: <a href="/perfil/{{ e.proponente_cif }}">{{ e.proponente_nombre }}</a></span>
@@ -25,16 +25,35 @@
     </p>
     <p>{{ e.descripcion | saltos }}</p>
     {% if e.recursos %}<p class="tenue">Recursos: {{ e.recursos }}</p>{% endif %}
-    <form method="post" action="/propuestas/{{ e.id }}/revisar" class="formulario-linea">
+    <div class="votacion">
+      <div class="votacion-avance">
+        <div class="votacion-barra" role="progressbar" aria-valuemin="0" aria-valuemax="{{ e.umbral }}" aria-valuenow="{{ e.apoyos }}"><span style="width:{{ e.avance }}%"></span></div>
+        <span class="votacion-texto"><b>{{ e.apoyos }}</b> de {{ e.umbral }} apoyos{% if e.contras %} · {{ e.contras }} en contra{% endif %}</span>
+      </div>
+      {% if e.proponente_id == usuario.id %}
+        <span class="etiqueta">Tu propuesta</span>
+      {% else %}
+      <form method="post" action="/propuestas/{{ e.id }}/votar" class="votacion-botones">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <button class="voto voto-mas {% if e.mi_voto == 1 %}voto-arriba{% endif %}" name="valor" value="1" aria-pressed="{% if e.mi_voto == 1 %}true{% else %}false{% endif %}">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="currentColor"/></svg>{% if e.mi_voto == 1 %}Apoyas{% else %}Apoyar{% endif %}</button>
+        <button class="voto voto-menos {% if e.mi_voto == -1 %}voto-abajo{% endif %}" name="valor" value="-1" aria-pressed="{% if e.mi_voto == -1 %}true{% else %}false{% endif %}">
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 20l-7-8h4.5V4h5v8H19z" fill="currentColor"/></svg>En contra</button>
+      </form>
+      {% endif %}
+    </div>
+    {% if es_responsable %}
+    <form method="post" action="/propuestas/{{ e.id }}/revisar" class="formulario-linea revision-directa">
       <input type="hidden" name="csrf" value="{{ csrf }}">
       <label for="comentario-{{ e.id }}" class="oculto">Comentario</label>
-      <input id="comentario-{{ e.id }}" type="text" name="comentario" placeholder="Comentario para el proponente (opcional)" maxlength="500">
+      <input id="comentario-{{ e.id }}" type="text" name="comentario" placeholder="Decisión directa del líder o capitán (comentario opcional)" maxlength="500">
       <button class="boton boton-primario" name="decision" value="aprobar">Aprobar</button>
       <button class="boton boton-peligro" name="decision" value="rechazar">Rechazar</button>
     </form>
+    {% endif %}
   </div>
   {% else %}
-    <p class="vacio-corto">No hay propuestas pendientes.</p>
+    <p class="vacio-corto">No hay propuestas en votación.</p>
   {% endfor %}
 </section>
 {% endif %}

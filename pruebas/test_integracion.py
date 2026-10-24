@@ -399,7 +399,7 @@ class PruebasChatYEventos(PruebaServidor):
         self.assertIn("Propuesta enviada", r.cuerpo)
         self.assertIn("pendiente", r.cuerpo)                                   # en «Mis propuestas»
         pid = consulta("SELECT id FROM propuestas_evento WHERE titulo='Evento para aprobar'")[0][0]
-        self.assertNotIn("Evento para aprobar</h3>", self.cliente(JORGE).get("/clubes/robotica/eventos").cuerpo.split("Próximos eventos")[1].split("Propuestas pendientes")[0])
+        self.assertNotIn("Evento para aprobar</h3>", self.cliente(JORGE).get("/clubes/robotica/eventos").cuerpo.split("Próximos eventos")[1].split("Propuestas en votación")[0])
         # un miembro sin rol no puede revisar
         self.assertEqual(maria.post(f"/propuestas/{pid}/revisar", {"decision": "aprobar"}, desde="/").estado, 403)
         self.assertIn("Evento para aprobar", luis.get("/clubes/robotica/eventos").cuerpo)   # bandeja de pendientes
@@ -691,6 +691,45 @@ class PruebasFotoDePerfil(PruebaServidor):
         r = luis.post("/perfil/foto/quitar", desde=f"/perfil/{LUIS}")
         self.assertIn("Quitaste tu foto de perfil", r.cuerpo)
         self.assertEqual(consulta("SELECT foto FROM usuarios WHERE cif=?", LUIS), [("",)])
+
+
+class PruebasVotacionDePropuestas(PruebaServidor):
+    def test_propuesta_aprobada_por_votacion(self):
+        maria, jorge, luis = self.cliente(MARIA), self.cliente(JORGE), self.cliente(LUIS)
+        url = "/clubes/robotica/eventos/proponer"
+        futuro = (datetime.now() + timedelta(days=12)).strftime("%Y-%m-%dT%H:%M")
+        maria.post(url, {"titulo": "Feria de robots", "descripcion": "Exhibición abierta de robots del club.",
+                         "fecha_inicio": futuro, "lugar": "Patio central"}, desde=url)
+        pid = consulta("SELECT id FROM propuestas_evento WHERE titulo='Feria de robots'")[0][0]
+        pagina = jorge.get("/clubes/robotica/eventos").cuerpo
+        self.assertIn("Propuestas en votación", pagina)
+        self.assertIn("0</b> de 2 apoyos", pagina)                      # 4 miembros: la mitad son 2
+        self.assertIn("No puedes votar tu propia propuesta", maria.post(f"/propuestas/{pid}/votar", {"valor": "1"}, desde="/").cuerpo)
+        self.assertEqual(self.cliente(CARLOS).post(f"/propuestas/{pid}/votar", {"valor": "1"}, desde="/").estado, 403)
+        r = jorge.post(f"/propuestas/{pid}/votar", {"valor": "1"}, desde="/clubes/robotica/eventos")
+        self.assertIn("Faltan 1 apoyo para aprobarla", r.cuerpo)
+        self.assertIn("1</b> de 2 apoyos", r.cuerpo)
+        self.assertEqual(consulta("SELECT estado FROM propuestas_evento WHERE id=?", pid), [("pendiente",)])
+        jorge.post(f"/propuestas/{pid}/votar", {"valor": "1"}, desde="/")   # repetir retira el voto
+        self.assertEqual(consulta("SELECT COUNT(*) FROM votos_propuesta WHERE propuesta_id=?", pid), [(0,)])
+        jorge.post(f"/propuestas/{pid}/votar", {"valor": "1"}, desde="/")
+        r = luis.post(f"/propuestas/{pid}/votar", {"valor": "1"}, desde="/clubes/robotica/eventos")
+        self.assertIn("quedó aprobada", r.cuerpo)
+        self.assertEqual(consulta("SELECT estado FROM propuestas_evento WHERE id=?", pid), [("aprobada",)])
+        self.assertIn("aprobada por votación de los miembros", maria.get("/notificaciones").cuerpo)
+        self.assertIn("ya fue revisada", jorge.post(f"/propuestas/{pid}/votar", {"valor": "-1"}, desde="/").cuerpo)
+
+    def test_votos_en_contra_impiden_aprobar(self):
+        maria, jorge, luis, ana = self.cliente(MARIA), self.cliente(JORGE), self.cliente(LUIS), self.cliente(ANA)
+        url = "/clubes/robotica/eventos/proponer"
+        futuro = (datetime.now() + timedelta(days=15)).strftime("%Y-%m-%dT%H:%M")
+        maria.post(url, {"titulo": "Evento discutido", "descripcion": "Una propuesta con opiniones divididas.",
+                         "fecha_inicio": futuro, "lugar": "Aula 1"}, desde=url)
+        pid = consulta("SELECT id FROM propuestas_evento WHERE titulo='Evento discutido'")[0][0]
+        jorge.post(f"/propuestas/{pid}/votar", {"valor": "-1"}, desde="/")
+        ana.post(f"/propuestas/{pid}/votar", {"valor": "-1"}, desde="/")
+        luis.post(f"/propuestas/{pid}/votar", {"valor": "1"}, desde="/")
+        self.assertEqual(consulta("SELECT estado FROM propuestas_evento WHERE id=?", pid), [("pendiente",)])
 
 
 if __name__ == "__main__":

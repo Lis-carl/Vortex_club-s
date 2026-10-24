@@ -68,7 +68,7 @@ def eventos_club(p, slug):
         for e in proximos_club:
             e["asistentes"] = eventos.asistentes(p.bd, e.id)
     return render(p, "club_eventos.html", proximos=proximos_club, pasados=pasados,
-                  pendientes=eventos.pendientes(p.bd, club.id) if ctx["es_responsable"] else [],
+                  pendientes=eventos.pendientes(p.bd, club.id, p.usuario.id) if ctx["es_miembro"] else [],
                   mias=eventos.mias(p.bd, club.id, p.usuario.id) if ctx["es_miembro"] else [], **ctx)
 
 
@@ -138,3 +138,39 @@ def revisar(p, id):
         notificaciones.crear_para_club(p.bd, club.id, f"Nuevo evento en {club.nombre}: {propuesta.titulo}. "
                                        "Confirma tu asistencia.", enlace, excepto=propuesta.proponente_id)
     return volver.con_aviso("ok", "Propuesta aprobada." if decision == "aprobar" else "Propuesta rechazada.")
+
+
+@ruta("POST", "/propuestas/<id>/votar")
+@requiere_sesion
+def votar_propuesta(p, id):
+    """Los miembros apoyan o rechazan una propuesta. Si alcanza el umbral de apoyos, se aprueba sola."""
+    propuesta = eventos.por_id(p.bd, id)
+    if not propuesta:
+        raise ErrorHttp(404, "Esa propuesta no existe.")
+    club = clubes.por_id_simple(p.bd, propuesta.club_id)
+    m = clubes.membresia(p.bd, p.usuario.id, club.id)
+    if not m or m.estado != "activa":
+        raise ErrorHttp(403, "Solo los miembros del club pueden votar sus propuestas.")
+    volver = Respuesta.redirigir(f"/clubes/{club.slug}/eventos#propuesta-{id}")
+    if propuesta.estado != "pendiente":
+        return volver.con_aviso("error", "Esa propuesta ya fue revisada.")
+    if propuesta.proponente_id == p.usuario.id:
+        return volver.con_aviso("error", "No puedes votar tu propia propuesta.")
+    valor = p.formulario.get("valor")
+    if valor not in ("1", "-1"):
+        raise ErrorHttp(400, "Voto no válido.")
+    apoyos, contras = eventos.votar_propuesta(p.bd, p.usuario.id, id, int(valor))
+    umbral = eventos.umbral_votacion(p.bd, club.id)
+    futura = datetime.strptime(propuesta.fecha_inicio, "%Y-%m-%d %H:%M") > datetime.now()
+    if apoyos >= umbral and apoyos > contras and futura:
+        eventos.revisar(p.bd, id, p.usuario.id, True, f"Aprobada por votación de los miembros ({apoyos} apoyos).")
+        enlace = f"/clubes/{club.slug}/eventos"
+        notificaciones.crear(p.bd, propuesta.proponente_id,
+                             f"Tu propuesta «{propuesta.titulo}» fue aprobada por votación de los miembros.", enlace)
+        notificaciones.crear_para_club(p.bd, club.id, f"Nuevo evento en {club.nombre}: {propuesta.titulo}. "
+                                       "Confirma tu asistencia.", enlace, excepto=propuesta.proponente_id)
+        return Respuesta.redirigir(f"/clubes/{club.slug}/eventos").con_aviso(
+            "ok", f"¡La propuesta alcanzó {apoyos} apoyos y quedó aprobada!")
+    faltan = max(0, umbral - apoyos)
+    return volver.con_aviso("ok", f"Voto registrado. Faltan {faltan} apoyo{'s' if faltan != 1 else ''} para aprobarla."
+                            if faltan else "Voto registrado.")
