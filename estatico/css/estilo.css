@@ -1156,3 +1156,14 @@ body { background:
 .anuncio-pie { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px; }
 .anuncio-editar { flex: 1 1 100%; order: 2; }
 .anuncio-editar form { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+
+/* Inicio: las publicaciones van cuadradas, pegadas al carrusel y llegan hasta el pie de página */
+body:has(.feed) { display: flex; flex-direction: column; min-height: 100vh; }
+body:has(.feed) .marco-app { flex: 1; width: 100%; padding-bottom: 0; }
+.principal > .carrusel { border-radius: 12px 12px 0 0; }
+.principal > .carrusel + .feed { margin-top: -20px; }
+.principal > .feed { flex: 1; border-radius: 0; border-top: 0; border-bottom: 0; }
+.feed .feed-pestanas, .feed .feed-origen a:first-child, .feed .lista-publicaciones > .publicacion:last-child, .feed .vacio { border-radius: 0; }
+.feed .recordatorio { margin: 0; border: 0; border-bottom: 1px solid var(--linea); border-left: 3px solid var(--marca); border-radius: 0;
+  box-shadow: none; animation-name: recordatorio-salida-feed; }
+@keyframes recordatorio-salida-feed { to { opacity: 0; max-height: 0; padding-top: 0; padding-bottom: 0; border-width: 0; visibility: hidden; } }

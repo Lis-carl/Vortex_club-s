@@ -4,9 +4,6 @@
 
 {% include "parciales/carrusel.html" %}
 
-{% if recordatorios %}
-{% include "parciales/recordatorio.html" %}
-{% endif %}
 
 {# Feed en una sola columna continua: pestañas, cuadro para publicar y publicaciones. #}
 <section class="feed" aria-label="Publicaciones">
@@ -66,6 +63,9 @@
     {% set vacio_url = None %}
   {% endif %}
   {% set base_consulta = "ver=" + ver + "&orden=" + orden + "&" %}
+  {% if recordatorios %}
+  {% include "parciales/recordatorio.html" %}
+  {% endif %}
   {% include "parciales/lista_publicaciones.html" %}
 </section>
 {% endblock %}
