@@ -1140,3 +1140,10 @@ body { background:
 .slide-motivos li { position: relative; padding: 0 0 8px; border: 0; border-radius: 0; background: none; font-size: .88rem; }
 .slide-motivos li::before { content: none; }
 .slide-motivos li::after { content: ""; position: absolute; left: 0; bottom: 0; width: 22px; height: 3px; border-radius: 2px; background: var(--acento-calido); }
+.slide-motivos { flex-wrap: nowrap; gap: 22px; }
+.slide-motivos li { white-space: nowrap; font-size: .86rem; }
+@media (max-width: 760px) { .slide-motivos { flex-wrap: wrap; gap: 10px 18px; } }
+.slide-general { gap: 16px; padding-right: 56px; }
+.slide-general .slide-collage { flex-basis: 180px; transform: scale(.88); transform-origin: right center; }
+.slide-motivos { gap: 16px; }
+.slide-motivos li { font-size: .82rem; }
