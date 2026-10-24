@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block titulo %}Inicio{% endblock %} | Vortex Clubs</title>
   <link rel="icon" type="image/svg+xml" href="/estatico/img/logo.svg?v=6">
-  <link rel="stylesheet" href="/estatico/css/estilo.css?v=33">
+  <link rel="stylesheet" href="/estatico/css/estilo.css?v=34">
 </head>
 <body>
 {% if usuario %}
@@ -22,7 +22,7 @@
       </a>
       {% include "parciales/panel_notificaciones.html" %}
       {% include "parciales/panel_chats.html" %}
-      <details class="cuenta">
+      <details class="cuenta" name="menu-cabecera">
         <summary>
           {{ avatar(usuario.nombre, usuario.foto) }}
           <span class="cuenta-nombre">{{ usuario.nombre }}<small>{{ rol_acceso_nombre }}</small></span>

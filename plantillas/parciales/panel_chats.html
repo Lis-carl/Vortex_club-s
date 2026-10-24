@@ -1,5 +1,5 @@
 {# Ícono de chats junto a la campana: muestra los mensajes recientes y permite contestar desde ahí. #}
-<details class="notif panel-chats">
+<details class="notif panel-chats" name="menu-cabecera">
   <summary class="campana {% if n_mensajes %}con-pendientes{% endif %} {% if ruta.startswith('/mensajes') %}activa{% endif %}"
            aria-label="Chats{% if n_mensajes %}: {{ n_mensajes }} sin leer{% endif %}" title="Chats">
     <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 5.5h11v8H8.5L5 16.5v-3H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 9h5v8h-1v3l-3.5-3H10v-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
