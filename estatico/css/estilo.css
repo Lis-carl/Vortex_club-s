@@ -820,3 +820,13 @@ h1, h2, h3, .pub-titulo a, .club-tarjeta-cabecera h2 a { color: var(--tinta); }
 .chat-privado-cabecera .celda-persona { display: flex; align-items: center; gap: 12px; }
 .chat-privado-cabecera .celda-persona > div { display: flex; flex-direction: column; line-height: 1.35; }
 .chat-privado-cabecera .tenue { font-size: .82rem; font-weight: 400; letter-spacing: 0; }
+
+/* Barra superior gris y más baja (como el campus virtual de la UAM) */
+.cabecera { background: #D6D5D8; box-shadow: 0 1px 0 #C9C8CC; }
+.cabecera-interior { height: 52px; }
+.marca img { width: 30px; height: 30px; }
+.campana { width: 34px; height: 34px; background: rgba(255, 255, 255, .45); }
+.campana:hover, .campana.activa { background: rgba(255, 255, 255, .75); }
+.complementario { top: 80px; }
+.lateral-nav { top: 76px; }
+@media (max-width: 1024px) { .lateral-nav { top: 0; } .hamburguesa:hover { background: rgba(255, 255, 255, .45); } }
