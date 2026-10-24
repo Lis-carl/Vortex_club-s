@@ -1,5 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Vortex Club's">
-  <rect x="1" y="1" width="62" height="62" rx="4" fill="none" stroke="#FFFFFF" stroke-width="2"/>
-  <path d="M11 19 L20.5 45 L30 19" fill="none" stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="square" stroke-linejoin="miter"/>
-  <path d="M53 23.5 A11 11 0 1 0 53 40.5" fill="none" stroke="#FFFFFF" stroke-width="5.5" stroke-linecap="square"/>
+  <!-- Versión para fondos oscuros o fotos: trazos blancos y el mismo punto dorado. -->
+  <rect x="1" y="1" width="62" height="62" rx="15" fill="#FFFFFF" fill-opacity=".08" stroke="#FFFFFF" stroke-opacity=".55" stroke-width="2"/>
+  <path d="M46.1 17.9 A20 20 0 1 0 46.1 46.1" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+  <path d="M40.8 23.2 A12.5 12.5 0 1 0 44.5 32" fill="none" stroke="#FFFFFF" stroke-opacity=".4" stroke-width="2" stroke-linecap="round"/>
+  <path d="M23.5 25 L32 40.5 L40.5 25" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="46.1" cy="17.9" r="3.6" fill="#F2B33D"/>
 </svg>
