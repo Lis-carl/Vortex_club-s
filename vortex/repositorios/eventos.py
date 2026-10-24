@@ -146,11 +146,6 @@ def recordatorios(bd, usuario_id, horas=48):
                       {"uid": usuario_id, "ahora": _ahora(), "hasta": hasta}).fetchall()
 
 
-def confirmados_futuros(bd, usuario_id):
-    return bd.execute("""SELECT COUNT(*) AS n FROM asistencias a JOIN propuestas_evento e ON e.id = a.evento_id
-                         WHERE a.usuario_id = ? AND e.fecha_inicio >= ?""", (usuario_id, _ahora())).fetchone().n
-
-
 def revisar(bd, propuesta_id, revisor_id, aprobar, comentario):
     bd.execute(
         """UPDATE propuestas_evento SET estado = ?, revisado_por = ?, comentario_revision = ?, revisado_en = ?

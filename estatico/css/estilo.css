@@ -977,3 +977,26 @@ body { background:
 @keyframes recordatorio-salida {
   to { opacity: 0; max-height: 0; padding-top: 0; padding-bottom: 0; border-width: 0; margin-bottom: -20px; visibility: hidden; }
 }
+
+/* Primera diapositiva: texto e imágenes que invitan a unirse a un club */
+.slide-general { justify-content: space-between; }
+.slide-texto-largo { -webkit-line-clamp: 3; max-width: 470px; }
+.slide-motivos { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 0; padding: 0; }
+.slide-motivos li { padding: 5px 12px; border-radius: 999px; font-size: .8rem; font-weight: 600; color: #FFFFFF;
+  background: rgba(255, 255, 255, .14); border: 1px solid rgba(255, 255, 255, .28); }
+.slide-motivos li::before { content: ""; display: inline-block; width: 6px; height: 6px; margin-right: 7px; border-radius: 50%;
+  background: var(--acento-calido); vertical-align: middle; }
+.slide-collage { position: relative; flex: 0 0 210px; height: 170px; }
+.collage-foto { position: absolute; left: 30px; top: 5px; width: 160px; height: 160px; border-radius: 50%;
+  background: url("/estatico/img/campus-uam.jpg") 50% 45% / cover no-repeat; border: 4px solid rgba(255, 255, 255, .85);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, .25); }
+.collage-icono { position: absolute; display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px;
+  border-radius: 14px; background: #FFFFFF; color: var(--marca-profundo); box-shadow: 0 8px 18px rgba(0, 0, 0, .18);
+  animation: flotar 4s ease-in-out infinite; }
+.collage-1 { left: 0; top: 18px; }
+.collage-2 { right: 0; top: 0; color: #B26A00; animation-delay: -1s; }
+.collage-3 { right: -6px; bottom: 6px; animation-delay: -2s; }
+.collage-4 { left: 12px; bottom: 0; color: #C0392B; animation-delay: -3s; }
+.collage-5 { left: 92px; bottom: -14px; width: 40px; height: 40px; border-radius: 12px; color: #2E7D32; animation-delay: -1.5s; }
+@keyframes flotar { 50% { transform: translateY(-6px); } }
+@media (max-width: 1180px) { .slide-collage { display: none; } }

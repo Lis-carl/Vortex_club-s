@@ -9,16 +9,24 @@
     <div class="carrusel-pista">
       <article class="slide slide-general" aria-label="Diapositiva 1 de {{ n_slides }}">
         <div class="slide-contenido">
-          <p class="slide-antetitulo">UAM · Vida Estudiantil · {{ fecha_hoy }}</p>
+          <p class="slide-antetitulo">UAM · Vida Estudiantil</p>
           <h1>Sé parte de un club</h1>
-          <dl class="slide-datos">
-            <div><dt>Mis clubes</dt><dd>{{ n_clubes }}</dd></div>
-            <div><dt>Eventos confirmados</dt><dd>{{ confirmados }}</dd></div>
-          </dl>
-          <div class="slide-botones">
-            <a class="boton slide-boton" href="/clubes">Explorar clubes</a>
-            <a class="boton slide-boton-secundario" href="/eventos">Ver calendario</a>
-          </div>
+          <p class="slide-texto slide-texto-largo">Deporte, arte, tecnología, voluntariado y mucho más. En un club haces amigos, aprendes algo
+            nuevo y vives la UAM más allá de las aulas.</p>
+          <ul class="slide-motivos">
+            <li>Conoce gente nueva</li>
+            <li>Desarrolla tu talento</li>
+            <li>Representa a la UAM</li>
+          </ul>
+        </div>
+        {# Composición: foto del campus con íconos de actividades alrededor #}
+        <div class="slide-collage" aria-hidden="true">
+          <div class="collage-foto"></div>
+          <span class="collage-icono collage-1"><svg viewBox="0 0 24 24" width="24" height="24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 3.5v17M3.5 12h17M6 6c3 3 3 9 0 12M18 6c-3 3-3 9 0 12" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></span>
+          <span class="collage-icono collage-2"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M9 18V6l11-2v12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="6.5" cy="18" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.5" cy="16" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span>
+          <span class="collage-icono collage-3"><svg viewBox="0 0 24 24" width="24" height="24"><rect x="5" y="8" width="14" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 4v4M9 13h.01M15 13h.01M9.5 16h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="3.5" r="1.2" fill="currentColor"/></svg></span>
+          <span class="collage-icono collage-4"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span>
+          <span class="collage-icono collage-5"><svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 20l5-12 4 7 2-4 5 9z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="16.5" cy="6.5" r="2" fill="none" stroke="currentColor" stroke-width="1.8"/></svg></span>
         </div>
       </article>
       {% for e in slides %}

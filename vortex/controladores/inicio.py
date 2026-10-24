@@ -1,12 +1,10 @@
 """Inicio, anuncios generales, notificaciones y panel de gestión de líderes y capitanes."""
-from datetime import datetime
 
 from .. import formularios as frm
 from ..acceso import requiere_sesion, es_admin, es_responsable_en, modo_gestion, destino_seguro
 from ..enrutador import ruta
 from ..nucleo import ErrorHttp, Respuesta
 from ..repositorios import anuncios, clubes, eventos, foro, notificaciones
-from ..utilidades import MESES_LARGOS
 from ..vistas import avisar_eventos_proximos, render
 
 
@@ -33,12 +31,9 @@ def feed(p):
     pagina = int(p.consulta["pagina"]) if (p.consulta.get("pagina") or "").isdigit() else 1
     pubs = foro.listar(p.bd, p.usuario.id, solo_mis_clubes=(ver == "mis"), orden=orden, limite=21, pagina=pagina)
     hay_mas = len(pubs) > 20
-    hoy = datetime.now()
     avisar_eventos_proximos(p)
     return render(p, "inicio.html", publicaciones=marcar_permisos(p, pubs[:20]), ver=ver, orden=orden, pagina=pagina,
-                  hay_mas=hay_mas, tiene_clubes=tiene_clubes, n_clubes=len(mis),
-                  fecha_hoy=f"{hoy.day} de {MESES_LARGOS[hoy.month - 1]} de {hoy.year}",
-                  confirmados=eventos.confirmados_futuros(p.bd, p.usuario.id),
+                  hay_mas=hay_mas, tiene_clubes=tiene_clubes,
                   recordatorios=notificaciones.recordatorios_sin_leer(p.bd, p.usuario.id),
                   anuncios_generales=anuncios.listar(p.bd, None, 3), proximos=eventos.proximos(p.bd, p.usuario.id, 3),
                   slides=eventos.proximos(p.bd, p.usuario.id, 5))

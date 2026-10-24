@@ -37,7 +37,7 @@ aparecen debajo del contenido.
 
 ## 3. Tu inicio
 
-- **Carrusel:** la primera diapositiva es general (fecha, cuántos clubes tienes y cuántos eventos confirmaste); las siguientes muestran los próximos eventos con los botones **Unirme al evento** y **Ver completo**. Cambia de diapositiva con las flechas o los puntos.
+- **Carrusel:** la primera diapositiva invita a unirte a un club con un texto e imágenes; las siguientes muestran los próximos eventos con los botones **Unirme al evento** y **Ver completo**. Cambia de diapositiva con las flechas o los puntos.
 - **Recordatorio:** si confirmaste un evento que empieza en las próximas 48 horas, se guarda un recordatorio en **Notificaciones** y en tu inicio aparece unos segundos una franja pequeña con el evento, la fecha y el lugar (se deja de mostrar cuando abres tus notificaciones).
 - **Cómo unirte a un club:** si aún no tienes clubes, verás los 3 pasos para empezar.
 - **Publicaciones:** de tus clubes o de toda la UAM, ordenadas por *Recientes* o *Populares*.
