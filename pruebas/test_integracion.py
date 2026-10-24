@@ -665,7 +665,7 @@ class PruebasRolesYFuncionesEncuesta(PruebaServidor):
         inicio = self.cliente(ANA).get("/").cuerpo
         self.assertNotIn('class="buscador"', inicio)
         self.assertNotIn('name="q"', inicio)
-        self.assertIn("Sé parte de un club", inicio)
+        self.assertNotIn("lema-cabecera", inicio)            # sin texto en cursiva en la barra superior
         self.assertIn("Universidad Americana (UAM)", inicio)
 
 

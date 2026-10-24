@@ -3,7 +3,7 @@
   {% set completa = False %}
   {% include "parciales/publicacion.html" %}
 {% else %}
-  <section class="panel vacio">
+  <section class="panel vacio vacio-publicaciones">
     <h3>{{ vacio_titulo }}</h3>
     <p>{{ vacio_texto }}</p>
     {% if vacio_url %}<a class="boton boton-primario" href="{{ vacio_url }}">{{ vacio_boton }}</a>{% endif %}

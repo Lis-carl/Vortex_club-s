@@ -8,7 +8,7 @@
   {% for e in proximos %}
     {% include "parciales/evento.html" %}
   {% else %}
-    <div class="vacio"><h3>Sin eventos programados</h3><p>{% if es_miembro %}Propón el primer evento del club.{% else %}Únete al club para proponer eventos.{% endif %}</p></div>
+    <div class="vacio vacio-calendario"><h3>Sin eventos programados</h3><p>{% if es_miembro %}Propón el primer evento del club.{% else %}Únete al club para proponer eventos.{% endif %}</p></div>
   {% endfor %}
 </section>
 

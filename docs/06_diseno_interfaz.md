@@ -20,16 +20,20 @@ del foro de Reddit**, con un acabado formal: líneas rectas, bordes finos y sin 
 | Logotipo | Monograma **VC** (Vortex Club's) trazado en SVG: cuadrado color UAM `#009AA9` con letras blancas (`estatico/img/logo.svg`) y versión en contorno blanco para fondos oscuros (`logo-blanco.svg`) |
 | Color de marca | **`#009AA9`** (verde azulado institucional de la UAM); hover `#007A87`; profundo `#005C66`; fondo suave `#E1F5F7`; acento cálido `#F2B33D` para niveles y el lema |
 | Texto | Títulos `#14212B`, texto `#27343E`, secundario `#5E6C78` |
-| Fondo y paneles | Fondo `#F2F4F6`; paneles blancos con borde de 1 px `#D7DDE3` y esquinas de **3 px** (casi rectas), sin sombras |
+| Fondo y tarjetas | Fondo `#F2F4F6`; tarjetas blancas **sin borde**, con sombra sutil y esquinas de **12 px**; botones y campos con esquinas de 8 px |
 | Estados | Peligro `#A8261C`, éxito `#1D6B45`, pendiente `#7A5300`, siempre con su fondo claro |
-| Tipografía | Una sola familia del sistema: `"Segoe UI", "Helvetica Neue", Arial` (no se descargan fuentes) |
+| Tipografía | **Una sola familia sans-serif**: Inter, Poppins o Roboto si están instaladas, con respaldo en Segoe UI / system-ui (no se descargan fuentes). Sin cursivas ni fuentes clásicas: el contraste se logra solo con grosores (800, 700, 600, 400) |
 | Rótulos de sección | Mayúsculas pequeñas con espaciado amplio (p. ej. «ANUNCIOS GENERALES») |
 | Íconos y emojis | **Ninguno** en títulos, menús ni botones. Los únicos emojis visibles son las seis reacciones del foro, porque son el contenido de esa función |
 | Tema | Claro, único, para mantener una apariencia uniforme |
+| Menú lateral | El ítem activo usa el color principal al 10 % de opacidad y una línea de acento vertical a la izquierda |
+| Filtros | Control segmentado: pista gris clara compartida y opción activa en blanco con sombra suave |
+| Banner de bienvenida | Degradado del verde UAM a un tono más oscuro, con un brillo suave y una trama de puntos muy tenue |
+| Estados vacíos | Ícono minimalista en gris claro dentro de un círculo (publicaciones, calendario, anuncios, notificaciones, personas) más un texto que explica qué aparecerá ahí |
 | Fondo del acceso | Foto de la entrada de la Universidad Americana (`estatico/img/campus-uam.jpg`) bajo un velo en el color UAM y una trama fina de líneas diagonales; la foto se acerca muy despacio |
-| Identidad UAM | Lema del afiche de Vida Estudiantil «Sé parte de un club» en la cabecera y el acceso; «Universidad Americana (UAM) · Managua, Nicaragua · Dirección de Vida Estudiantil · I Semestre 2026» en el pie; carreras de la UAM en el registro; los 14 clubes oficiales |
+| Identidad UAM | Lema del afiche de Vida Estudiantil «Sé parte de un club» en el acceso; «Universidad Americana (UAM) · Managua, Nicaragua · Dirección de Vida Estudiantil · I Semestre 2026» en el pie; carreras de la UAM en el registro; los 14 clubes oficiales |
 | Movimiento | Animaciones pequeñas de CSS: entrada escalonada de paneles y publicaciones, elevación al pasar el cursor, menús que se despliegan suavemente, campana que se mueve y contador que late cuando hay notificaciones, barra de cupo que se llena. Se desactivan si el sistema pide «reducir movimiento» |
-| Cabecera | Logotipo, lema, campana de notificaciones con contador y menú de cuenta con el tipo de usuario (Estudiante, Capitán, Líder o Administración). **Sin barra de búsqueda** (la búsqueda queda en el catálogo de clubes) |
+| Cabecera | Logotipo, campana de notificaciones con contador y menú de cuenta con el tipo de usuario (Estudiante, Capitán, Líder o Administración). **Sin barra de búsqueda** (la búsqueda queda en el catálogo de clubes) |
 | JavaScript | **Ninguno.** Todo se resuelve con HTML generado por Python y CSS |
 
 ## 6.3 Principios de interacción humano-computadora aplicados
@@ -95,7 +99,7 @@ flowchart TD
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────────────┐
-│ [VC] Vortex Club's          Sé parte de un club     [campana 2]  [AL] Ana · Líder│
+│ [VC] Vortex Club's                                  [campana 2]  [AL] Ana · Líder│
 ├───────────────┬────────────────────────────────────────────┬─────────────────────┤
 │ GENERAL       │ ┌ Buenas tardes, Ana ─ clubes 2 · confirmados 1 ┐│ PRÓXIMOS EVENTOS    │
 │ ┃ Inicio      │ └ puntos 15 · nivel Participante ─────────────┘│ [08 NOV] Título     │
