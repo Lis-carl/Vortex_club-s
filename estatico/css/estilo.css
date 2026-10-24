@@ -1377,3 +1377,11 @@ body:has(.feed) .marco-app { flex: 1; width: 100%; padding-bottom: 0; }
   .notif-panel, .panel-chats .notif-panel, .cuenta-menu { top: 64px; }
   .feed-pestanas { top: 58px; }
 }
+/* Logo cuadrado y la línea azul sale justo del borde inferior del logo */
+.marca-v2 { position: relative; }
+.marca-v2 .marca-logo { border-radius: 0; }
+.marca-v2 .marca-nombre { align-self: end; padding-bottom: 7px; }
+.marca-v2 .marca-nombre::after { content: none; }
+.marca-v2::after { content: ""; position: absolute; left: 0; top: 37.5px; width: calc(100% + 8px); height: 2.5px;
+  background: linear-gradient(90deg, var(--marca-oscuro) 0%, var(--marca) 60%, rgba(0, 154, 169, 0) 100%); pointer-events: none; }
+@media (max-width: 760px) { .marca-v2::after { top: 31.5px; } }
