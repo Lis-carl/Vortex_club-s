@@ -38,4 +38,7 @@ def _migrar(bd):
     if "rol_acceso" not in columnas:
         bd.execute("ALTER TABLE sesiones ADD COLUMN rol_acceso TEXT NOT NULL DEFAULT 'estudiante' "
                    "CHECK (rol_acceso IN ('estudiante', 'capitan', 'lider', 'admin'))")
-        bd.commit()
+    columnas = {c.name for c in bd.execute("PRAGMA table_info(usuarios)").fetchall()}
+    if "foto" not in columnas:
+        bd.execute("ALTER TABLE usuarios ADD COLUMN foto TEXT NOT NULL DEFAULT ''")
+    bd.commit()

@@ -669,5 +669,29 @@ class PruebasRolesYFuncionesEncuesta(PruebaServidor):
         self.assertIn("Universidad Americana (UAM)", inicio)
 
 
+class PruebasFotoDePerfil(PruebaServidor):
+    def test_cambiar_y_quitar_foto(self):
+        luis = self.cliente(LUIS)
+        self.assertIn("Cambiar foto", luis.get(f"/perfil/{LUIS}").cuerpo)
+        self.assertNotIn("Cambiar foto", luis.get(f"/perfil/{ANA}").cuerpo)          # solo en tu propio perfil
+        malo = luis.post_multipart("/perfil/foto", {}, {"foto": ("x.png", b"<html>no es imagen</html>")}, desde=f"/perfil/{LUIS}")
+        self.assertIn("PNG, JPG, GIF o WEBP", malo.cuerpo)
+        r = luis.post_multipart("/perfil/foto", {}, {"foto": ("yo.png", PNG)}, desde=f"/perfil/{LUIS}")
+        self.assertIn("Foto de perfil actualizada", r.cuerpo)
+        foto = consulta("SELECT foto FROM usuarios WHERE cif=?", LUIS)[0][0]
+        self.assertRegex(foto, r"^[0-9a-f]{32}\.png$")
+        self.assertIn(f'src="/subidas/{foto}"', r.cuerpo)
+        self.assertEqual(luis.get(f"/subidas/{foto}").estado, 200)
+        pid = consulta("SELECT id FROM publicaciones WHERE titulo LIKE '¿Qué sensor%'")[0][0]      # publicación de Luis
+        self.assertIn(f'src="/subidas/{foto}"', self.cliente(ANA).get(f"/publicaciones/{pid}").cuerpo)
+        r = luis.post_multipart("/perfil/foto", {}, {"foto": ("otra.png", PNG)}, desde=f"/perfil/{LUIS}")
+        nueva = consulta("SELECT foto FROM usuarios WHERE cif=?", LUIS)[0][0]
+        self.assertNotEqual(nueva, foto)
+        self.assertEqual(luis.get(f"/subidas/{foto}").estado, 404)                # la anterior se borra
+        r = luis.post("/perfil/foto/quitar", desde=f"/perfil/{LUIS}")
+        self.assertIn("Quitaste tu foto de perfil", r.cuerpo)
+        self.assertEqual(consulta("SELECT foto FROM usuarios WHERE cif=?", LUIS), [("",)])
+
+
 if __name__ == "__main__":
     unittest.main()

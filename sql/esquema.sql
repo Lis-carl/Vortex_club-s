@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     nombre          TEXT    NOT NULL CHECK (length(nombre) BETWEEN 3 AND 80),
     correo          TEXT    NOT NULL UNIQUE COLLATE NOCASE,
     carrera         TEXT    NOT NULL DEFAULT '',
+    foto            TEXT    NOT NULL DEFAULT '',
     hash_contrasena TEXT    NOT NULL,
     sal             TEXT    NOT NULL,
     rol_global      TEXT    NOT NULL DEFAULT 'estudiante' CHECK (rol_global IN ('estudiante', 'admin')),

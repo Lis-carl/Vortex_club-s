@@ -46,6 +46,7 @@ erDiagram
         text nombre
         text correo UK
         text carrera
+        text foto "archivo en subidas/ o vacío"
         text hash_contrasena "PBKDF2-SHA256"
         text sal
         text rol_global "estudiante | admin"

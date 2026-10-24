@@ -53,9 +53,21 @@ FILTROS = {
     "extracto": utilidades.extracto,
 }
 
+_RE_FOTO = re.compile(r"^[0-9a-f]{32}\.(png|jpg|gif|webp)$")
+
+
+def avatar(nombre, foto="", clase=""):
+    """Foto de perfil si existe; si no, las iniciales sobre un color estable."""
+    clases = escapar(("avatar " + (clase or "")).strip())
+    if foto and _RE_FOTO.match(str(foto)):
+        return Seguro(f'<img class="{clases} avatar-foto" src="/subidas/{foto}" alt="Foto de {escapar(nombre)}">')
+    return Seguro(f'<span class="{clases}" style="background:{utilidades.color(nombre)}" aria-hidden="true">'
+                  f'{escapar(utilidades.iniciales(nombre))}</span>')
+
+
 # Entorno restringido para evaluar expresiones: sin open, __import__, eval, etc.
 _GLOBALES = {"__builtins__": {"len": len, "str": str, "int": int, "min": min, "max": max,
-                              "abs": abs, "sum": sum, "range": range, "bool": bool}}
+                              "abs": abs, "sum": sum, "range": range, "bool": bool, "avatar": avatar}}
 
 _PATRON = re.compile(r"(\{\{.*?\}\}|\{%.*?%\}|\{#.*?#\})", re.S)
 _PATRON_FOR = re.compile(r"^for\s+(\w+(?:\s*,\s*\w+)*)\s+in\s+(.+)$", re.S)

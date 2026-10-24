@@ -42,3 +42,10 @@ def estadisticas(bd):
         "publicaciones": consulta("SELECT COUNT(*) AS n FROM publicaciones WHERE eliminado = 0"),
         "eventos": consulta("SELECT COUNT(*) AS n FROM propuestas_evento WHERE estado = 'aprobada'"),
     })
+
+
+def cambiar_foto(bd, usuario_id, foto):
+    """Guarda el nombre del archivo de la foto de perfil ('' = sin foto) y devuelve el anterior."""
+    anterior = bd.execute("SELECT foto FROM usuarios WHERE id = ?", (usuario_id,)).fetchone().foto
+    bd.execute("UPDATE usuarios SET foto = ? WHERE id = ?", (foto, usuario_id))
+    return anterior

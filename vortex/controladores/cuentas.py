@@ -1,4 +1,5 @@
-"""Registro, acceso, cierre de sesión y perfil."""
+"""Registro, acceso, cierre de sesión, perfil y foto de perfil."""
+import secrets
 from .. import config, seguridad, formularios as frm
 from ..acceso import requiere_sesion, destino_seguro
 from ..enrutador import ruta
@@ -112,3 +113,35 @@ def perfil(p, cif):
     return render(p, "perfil.html", persona=persona, clubes_persona=mis, publicaciones=publicaciones,
                   participacion=participacion.de_usuario(p.bd, persona.id),
                   solicitudes=solicitudes, es_yo=persona.id == p.usuario.id)
+
+
+def _borrar_foto(nombre):
+    if nombre:
+        ruta = config.DIR_SUBIDAS / nombre
+        if ruta.is_file():
+            ruta.unlink()
+
+
+@ruta("POST", "/perfil/foto")
+@requiere_sesion
+def cambiar_foto(p):
+    """Sube una nueva foto de perfil (misma validación que las imágenes del foro)."""
+    volver = Respuesta.redirigir(f"/perfil/{p.usuario.cif}")
+    archivo = p.archivos.get("foto")
+    errores = frm.Errores()
+    extension = frm.validar_imagen(archivo, errores, "foto")
+    if not archivo or not archivo.datos:
+        return volver.con_aviso("error", "Elige una imagen para tu foto de perfil.")
+    if errores:
+        return volver.con_aviso("error", errores["foto"])
+    nombre = f"{secrets.token_hex(16)}.{extension}"
+    (config.DIR_SUBIDAS / nombre).write_bytes(archivo.datos)
+    _borrar_foto(usuarios.cambiar_foto(p.bd, p.usuario.id, nombre))
+    return volver.con_aviso("ok", "Foto de perfil actualizada.")
+
+
+@ruta("POST", "/perfil/foto/quitar")
+@requiere_sesion
+def quitar_foto(p):
+    _borrar_foto(usuarios.cambiar_foto(p.bd, p.usuario.id, ""))
+    return Respuesta.redirigir(f"/perfil/{p.usuario.cif}").con_aviso("ok", "Quitaste tu foto de perfil.")

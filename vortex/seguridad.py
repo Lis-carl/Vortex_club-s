@@ -43,7 +43,7 @@ def obtener_sesion(bd, token):
     if not token:
         return None, None
     fila = bd.execute(
-        """SELECT s.token, s.csrf, s.rol_acceso, u.id, u.cif, u.nombre, u.correo, u.carrera, u.rol_global
+        """SELECT s.token, s.csrf, s.rol_acceso, u.id, u.cif, u.nombre, u.correo, u.carrera, u.rol_global, u.foto, u.foto
            FROM sesiones s JOIN usuarios u ON u.id = s.usuario_id
            WHERE s.token = ? AND s.expira_en > ? AND u.activo = 1""",
         (token, _formato(datetime.now()))).fetchone()

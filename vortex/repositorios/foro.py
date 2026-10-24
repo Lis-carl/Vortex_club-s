@@ -7,7 +7,7 @@ TIPOS_REACCION = ["\U0001F44D", "❤️", "\U0001F602", "\U0001F62E", "\U0001F62
 _BASE = """
 SELECT p.id, p.club_id, p.autor_id, p.titulo, p.contenido, p.imagen, p.creado_en,
        c.nombre AS club_nombre, c.slug AS club_slug,
-       u.nombre AS autor_nombre, u.cif AS autor_cif,
+       u.nombre AS autor_nombre, u.cif AS autor_cif, u.foto AS autor_foto,
        COALESCE((SELECT SUM(v.valor) FROM votos_publicacion v WHERE v.publicacion_id = p.id), 0) AS puntaje,
        (SELECT v.valor FROM votos_publicacion v WHERE v.publicacion_id = p.id AND v.usuario_id = :uid) AS mi_voto,
        (SELECT COUNT(*) FROM comentarios k WHERE k.publicacion_id = p.id AND k.eliminado = 0) AS n_comentarios,
@@ -76,7 +76,7 @@ def comentarios(bd, publicacion_id, usuario_id):
     """Comentarios en orden de árbol (cada respuesta justo debajo de su comentario padre)."""
     filas = bd.execute(
         """SELECT k.id, k.publicacion_id, k.autor_id, k.padre_id, k.contenido, k.eliminado, k.creado_en,
-                  u.nombre AS autor_nombre, u.cif AS autor_cif,
+                  u.nombre AS autor_nombre, u.cif AS autor_cif, u.foto AS autor_foto,
                   COALESCE((SELECT SUM(v.valor) FROM votos_comentario v WHERE v.comentario_id = k.id), 0) AS puntaje,
                   (SELECT v.valor FROM votos_comentario v WHERE v.comentario_id = k.id AND v.usuario_id = ?) AS mi_voto
            FROM comentarios k JOIN usuarios u ON u.id = k.autor_id

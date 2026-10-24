@@ -2,7 +2,29 @@
 {% block titulo %}{{ persona.nombre }}{% endblock %}
 {% block contenido %}
 <section class="panel perfil">
-  <span class="avatar avatar-grande" style="background:{{ persona.nombre | color }}">{{ persona.nombre | iniciales }}</span>
+  <div class="perfil-foto">
+    {{ avatar(persona.nombre, persona.foto, "avatar-grande") }}
+    {% if es_yo %}
+    <details class="confirmar cambiar-foto">
+      <summary class="accion">Cambiar foto</summary>
+      <div class="confirmar-caja">
+        <form method="post" action="/perfil/foto" enctype="multipart/form-data" class="formulario">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <label for="foto">Nueva foto de perfil</label>
+          <input id="foto" type="file" name="foto" accept="image/png,image/jpeg,image/gif,image/webp" required>
+          <p class="ayuda-campo">PNG, JPG, GIF o WEBP de hasta 2 MB. Se recorta en forma cuadrada.</p>
+          <button class="boton boton-primario boton-pequeno">Guardar foto</button>
+        </form>
+        {% if persona.foto %}
+        <form method="post" action="/perfil/foto/quitar">
+          <input type="hidden" name="csrf" value="{{ csrf }}">
+          <button class="accion accion-peligro">Quitar foto</button>
+        </form>
+        {% endif %}
+      </div>
+    </details>
+    {% endif %}
+  </div>
   <div>
     <p class="antetitulo">{% if persona.rol_global == 'admin' %}Administración{% else %}Estudiante{% endif %}</p>
     <h1>{{ persona.nombre }}</h1>

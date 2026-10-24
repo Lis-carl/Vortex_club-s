@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block titulo %}Inicio{% endblock %} | Vortex Club's</title>
   <link rel="icon" type="image/svg+xml" href="/estatico/img/logo.svg?v=3">
-  <link rel="stylesheet" href="/estatico/css/estilo.css?v=6">
+  <link rel="stylesheet" href="/estatico/css/estilo.css?v=8">
 </head>
 <body>
 {% if usuario %}
@@ -22,12 +22,12 @@
       </a>
       <details class="cuenta">
         <summary>
-          <span class="avatar" style="background:{{ usuario.nombre | color }}">{{ usuario.nombre | iniciales }}</span>
+          {{ avatar(usuario.nombre, usuario.foto) }}
           <span class="cuenta-nombre">{{ usuario.nombre }}<small>{{ rol_acceso_nombre }}</small></span>
         </summary>
         <div class="cuenta-menu">
           <div class="cuenta-datos"><strong>{{ usuario.nombre }}</strong><span class="tenue">CIF {{ usuario.cif }} · Ingresó como {{ rol_acceso_nombre }}</span></div>
-          <a href="/perfil/{{ usuario.cif }}">Mi perfil</a>
+          <a href="/perfil/{{ usuario.cif }}">Mi perfil y foto</a>
           <form method="post" action="/salir">
             <input type="hidden" name="csrf" value="{{ csrf }}">
             <button>Cerrar sesión</button>

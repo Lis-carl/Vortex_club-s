@@ -22,7 +22,7 @@
   {% for c in comentarios %}
     <div class="comentario nivel-{{ c.nivel }}" id="comentario-{{ c.id }}">
       <p class="pub-meta">
-        <span class="avatar avatar-mini" style="background:{{ c.autor_nombre | color }}">{{ c.autor_nombre | iniciales }}</span>
+        {{ avatar(c.autor_nombre, c.autor_foto, "avatar-mini") }}
         <a href="/perfil/{{ c.autor_cif }}"><strong>{{ c.autor_nombre }}</strong></a>
         <span class="separador">·</span><time>{{ c.creado_en | rel }}</time>
       </p>

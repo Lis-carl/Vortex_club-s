@@ -12,7 +12,7 @@
     <p class="pub-meta">
       <a class="pub-club" href="/clubes/{{ pub.club_slug }}">{{ pub.club_nombre }}</a>
       <span class="separador">·</span>
-      <span>Publicado por <a href="/perfil/{{ pub.autor_cif }}">{{ pub.autor_nombre }}</a></span>
+      <span class="pub-autor">{{ avatar(pub.autor_nombre, pub.autor_foto, "avatar-mini") }}Publicado por <a href="/perfil/{{ pub.autor_cif }}">{{ pub.autor_nombre }}</a></span>
       <span class="separador">·</span>
       <time>{{ pub.creado_en | rel }}</time>
     </p>

@@ -151,6 +151,7 @@ integradas de Python), sobre los datos que entrega el controlador.
 | GET | `/notificaciones` | inicio.ver_notificaciones | Sesión |
 | GET | `/gestion` | inicio.gestion (clubes a mi cargo) | Capitán / Líder / Admin |
 | POST | `/clubes/<slug>/solicitar-capitan` | clubes.solicitar_capitan | Miembro |
+| POST | `/perfil/foto` · `/perfil/foto/quitar` | cuentas.cambiar_foto · cuentas.quitar_foto | Sesión |
 | GET | `/clubes` | clubes.catalogo | Sesión |
 | GET/POST | `/clubes/solicitar` | clubes.solicitar | Sesión |
 | GET | `/clubes/<slug>` | foro.foro_club | Sesión |

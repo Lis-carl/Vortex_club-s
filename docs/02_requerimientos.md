@@ -92,7 +92,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 |----|---------------|-----------|
 | RF-01 | El sistema debe permitir registrarse con CIF, nombre completo, correo, carrera y contraseña. | A |
 | RF-02 | El sistema debe permitir iniciar sesión con CIF y contraseña, y cerrar sesión. El **tipo de usuario lo determina la cuenta**: administración, líder o capitán si alguien lo nombró en un club, o estudiante. | A |
-| RF-03 | El sistema debe mostrar un perfil con los clubes y publicaciones del usuario. | M |
+| RF-03 | El sistema debe mostrar un perfil con los clubes y publicaciones del usuario. Cada usuario puede **cambiar o quitar su foto de perfil** (PNG, JPG, GIF o WEBP de hasta 2 MB), que se muestra en la cabecera, sus publicaciones, comentarios y la lista de miembros. | M |
 
 ### Clubes y membresías
 | ID | Requerimiento | Prioridad |

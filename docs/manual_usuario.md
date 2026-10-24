@@ -17,6 +17,11 @@ Si fallas la contraseña 5 veces seguidas, el acceso se bloquea unos minutos.
 
 Para salir: pulsa tu nombre (arriba a la derecha) → **Cerrar sesión**.
 
+### Foto de perfil
+Pulsa tu nombre → **Mi perfil y foto** → **Cambiar foto**, elige una imagen (PNG, JPG, GIF o WEBP de
+hasta 2 MB) y pulsa **Guardar foto**. Tu foto aparece en la barra superior, en tus publicaciones y
+comentarios y en la lista de miembros de tus clubes. Desde el mismo lugar puedes **Quitar foto**.
+
 ## 2. Moverte por la plataforma
 
 | Zona | Qué hay |

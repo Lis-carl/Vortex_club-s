@@ -106,7 +106,7 @@ def mis_clubes(bd, usuario_id):
 
 def integrantes(bd, club_id):
     return bd.execute(
-        f"""SELECT m.id AS membresia_id, m.rol, m.unido_en, u.id AS usuario_id, u.cif, u.nombre, u.carrera
+        f"""SELECT m.id AS membresia_id, m.rol, m.unido_en, u.id AS usuario_id, u.cif, u.nombre, u.carrera, u.foto
             FROM membresias m JOIN usuarios u ON u.id = m.usuario_id
             WHERE m.club_id = ? AND m.estado = 'activa' ORDER BY {_ORDEN_ROL}, u.nombre""",
         (club_id,)).fetchall()
@@ -114,7 +114,7 @@ def integrantes(bd, club_id):
 
 def pendientes(bd, club_id):
     return bd.execute(
-        """SELECT m.id AS membresia_id, m.unido_en, u.id AS usuario_id, u.cif, u.nombre, u.carrera
+        """SELECT m.id AS membresia_id, m.unido_en, u.id AS usuario_id, u.cif, u.nombre, u.carrera, u.foto
            FROM membresias m JOIN usuarios u ON u.id = m.usuario_id
            WHERE m.club_id = ? AND m.estado = 'pendiente' ORDER BY m.id""", (club_id,)).fetchall()
 
