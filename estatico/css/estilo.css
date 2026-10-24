@@ -1305,3 +1305,10 @@ body:has(.feed) .marco-app { flex: 1; width: 100%; padding-bottom: 0; }
   body:has(.feed) .complementario > .panel:last-child { flex: 1; }
   .principal > .carrusel { border-radius: 12px 0 0 0; }
 }
+
+/* La información de la columna derecha acompaña al usuario mientras baja por la página */
+@media (min-width: 1025px) {
+  body:has(.feed) .complementario { background: #FFFFFF; border: 1px solid var(--linea); border-left: 0; border-bottom: 0; }
+  body:has(.feed) .complementario > .lateral-fijo { position: sticky; top: 52px; display: flex; flex-direction: column; }
+  body:has(.feed) .lateral-fijo > .panel { border: 0; border-bottom: 1px solid var(--linea); border-radius: 0; box-shadow: none; margin: 0; }
+}
