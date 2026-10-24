@@ -9,12 +9,7 @@
   </div>
 </header>
 {% if recordatorios %}
-<section class="recordatorio" role="status">
-  <strong>Eventos en las próximas 48 horas</strong>
-  {% for e in recordatorios %}
-    <span><a href="/clubes/{{ e.club_slug }}/eventos">{{ e.titulo }}</a> · {{ e.fecha_inicio | fecha }} · {{ e.lugar }}</span>
-  {% endfor %}
-</section>
+{% include "parciales/recordatorio.html" %}
 {% endif %}
 <section class="panel">
   {% if lista %}

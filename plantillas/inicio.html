@@ -4,12 +4,7 @@
 {% include "parciales/carrusel.html" %}
 
 {% if recordatorios %}
-<section class="recordatorio" role="status">
-  <strong>Recordatorio</strong>
-  {% for e in recordatorios %}
-    <span><a href="/clubes/{{ e.club_slug }}/eventos">{{ e.titulo }}</a> · {{ e.club_nombre }} · {{ e.fecha_inicio | fecha }} · {{ e.lugar }}</span>
-  {% endfor %}
-</section>
+{% include "parciales/recordatorio.html" %}
 {% endif %}
 
 {% if not tiene_clubes %}

@@ -920,3 +920,47 @@ h1, h2, h3, .pub-titulo a, .club-tarjeta-cabecera h2 a { color: var(--tinta); }
 /* Pestañas «Mis clubes / Toda la UAM / Recientes / Populares»: la elegida en azul */
 .segmentos a.activo { background: var(--marca); color: #FFFFFF; box-shadow: 0 2px 8px rgba(0, 154, 169, .3); }
 .segmentos a.activo:hover { background: var(--marca-oscuro); color: #FFFFFF; }
+
+/* =====================================================================
+   Personalidad v9: recordatorio formal, líneas del menú y detalles de marca
+   ===================================================================== */
+/* Fondo con un leve resplandor turquesa en la esquina, como luz sobre el campus */
+body { background:
+  radial-gradient(900px 380px at 100% 0, rgba(0, 154, 169, .07), transparent 65%),
+  radial-gradient(700px 300px at 0 100%, rgba(245, 166, 35, .05), transparent 60%),
+  var(--fondo); background-attachment: fixed; }
+.cuerpo-marco { background: var(--fondo); }
+
+/* Títulos de las tarjetas con una pequeña marca turquesa */
+.panel-cabecera h2, .panel-cabecera h3 { display: inline-flex; align-items: center; gap: 10px; }
+.panel-cabecera h2::before, .panel-cabecera h3::before { content: ""; width: 4px; height: 14px; border-radius: 2px;
+  background: linear-gradient(180deg, var(--marca), #22B5C1); }
+.antetitulo { display: inline-flex; align-items: center; gap: 8px; color: var(--marca-profundo); }
+.antetitulo::before { content: ""; width: 18px; height: 2px; border-radius: 1px; background: var(--acento-calido); }
+.encabezado-pagina h1 { letter-spacing: -.02em; }
+
+/* Club de cada publicación como etiqueta */
+.pub-club { display: inline-flex; align-items: center; padding: 2px 9px; border-radius: 999px; background: var(--marca-claro);
+  color: var(--marca-profundo) !important; font-weight: 700; font-size: .74rem; text-decoration: none; }
+.pub-club:hover { background: rgba(0, 154, 169, .18); text-decoration: none; }
+
+/* Recordatorio formal */
+.recordatorio { display: flex; align-items: flex-start; gap: 16px; padding: 18px 22px; background: #FFFFFF; border: 1px solid var(--linea);
+  border-left: 4px solid var(--marca); border-radius: var(--radio-tarjeta); box-shadow: var(--sombra-tarjeta); font-size: .92rem; }
+.recordatorio-icono { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px;
+  border-radius: 10px; background: var(--marca-claro); color: var(--marca-profundo); }
+.recordatorio-cuerpo { min-width: 0; }
+.recordatorio-titulo { margin: 0 0 6px; font-size: .74rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--tinta); }
+.recordatorio-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.recordatorio-lista a { font-weight: 600; color: var(--tinta); }
+.recordatorio-lista a:hover { color: var(--marca-profundo); }
+.recordatorio-lista span { display: block; color: var(--gris); font-size: .85rem; }
+.recordatorio-nota { margin: 10px 0 0; color: var(--gris); font-size: .8rem; }
+
+/* Líneas que agrupan las secciones del menú izquierdo (gris, como sus títulos) */
+@media (min-width: 1025px) {
+  .lateral-nav::before { content: ""; position: absolute; left: 0; top: 22px; bottom: 4px; width: 1.5px; background: var(--gris-claro); border-radius: 1px; }
+  .nav-titulo { align-self: flex-start; min-width: 72%; margin: 22px 0 6px 0; padding: 0 0 6px 12px; border-bottom: 1.5px solid var(--gris-claro); }
+  .nav-titulo:first-child { margin-top: 0; min-width: 100%; }
+  .nav-enlace, .nav-vacio { margin-left: 10px; }
+}
