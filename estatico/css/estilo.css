@@ -1257,3 +1257,7 @@ body:has(.feed) .marco-app { flex: 1; width: 100%; padding-bottom: 0; }
   background: repeating-radial-gradient(circle at 108% 50%, rgba(255, 255, 255, .07) 0 2px, transparent 2px 24px),
     linear-gradient(110deg, rgba(0, 90, 102, .86) 0%, rgba(0, 130, 145, .68) 50%, rgba(0, 154, 169, .45) 100%); }
 .collage-foto { background: url("/estatico/img/estudiantes-uam.png") 50% 22% / cover no-repeat; }
+/* La foto del campus se ve nítida y se funde con el azul de izquierda a derecha, sin anillos */
+.slide-general::before { inset: 0; filter: none; background-position: 70% 45%; }
+.slide-general::after { background: linear-gradient(90deg, rgba(0, 104, 116, .97) 0%, rgba(0, 128, 142, .9) 35%,
+  rgba(0, 154, 169, .55) 62%, rgba(0, 154, 169, .1) 100%); }
