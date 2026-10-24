@@ -1,13 +1,15 @@
 """Propuestas de evento y calendario de eventos aprobados."""
 import calendar
+import secrets
 from datetime import date, datetime
 
-from .. import formularios as frm
-from ..acceso import requiere_sesion, club_o_404, contexto_club, exigir_miembro, exigir_responsable, destino_seguro
+from .. import config, formularios as frm
+from ..acceso import (requiere_sesion, club_o_404, contexto_club, exigir_miembro, exigir_responsable, destino_seguro,
+                      es_responsable_en)
 from ..enrutador import ruta
 from ..nucleo import ErrorHttp, Respuesta
 from ..nucleo import Fila
-from ..repositorios import clubes, eventos, notificaciones
+from ..repositorios import clubes, eventos, notificaciones, usuarios
 from ..utilidades import MESES_LARGOS
 from ..vistas import render
 
@@ -39,6 +41,49 @@ def proximos(p):
                   mes_anterior=f"{anterior[0]:04d}-{anterior[1]:02d}", mes_siguiente=f"{siguiente[0]:04d}-{siguiente[1]:02d}",
                   mes_actual=f"{anio:04d}-{mes:02d}", vista="mios" if solo_mios else "todos", orden=orden,
                   destacados=eventos.destacados(p.bd, p.usuario.id), eventos_mes=del_mes)
+
+
+def _guardar_imagen(archivo, extension):
+    nombre = f"{secrets.token_hex(16)}.{extension}"
+    (config.DIR_SUBIDAS / nombre).write_bytes(archivo.datos)
+    return nombre
+
+
+@ruta("GET", "/eventos/<id>")
+@requiere_sesion
+def detalle(p, id):
+    """Página propia de cada evento aprobado: portada, ficha, descripción y asistentes."""
+    e = eventos.evento(p.bd, id, p.usuario.id)
+    if not e:
+        raise ErrorHttp(404, "Ese evento no existe o no está aprobado.")
+    proximos_club, _ = eventos.del_club(p.bd, e.club_id, p.usuario.id)
+    return render(p, "evento.html", e=e, club=clubes.por_id_simple(p.bd, e.club_id),
+                  proponente=usuarios.por_id(p.bd, e.proponente_id), asistentes=eventos.asistentes(p.bd, id),
+                  otros=[o for o in proximos_club if o.id != e.id][:3],
+                  pasado=e.fecha_inicio < datetime.now().strftime("%Y-%m-%d %H:%M"),
+                  puede_editar=es_responsable_en(p, e.club_id) or e.proponente_id == p.usuario.id)
+
+
+@ruta("POST", "/eventos/<id>/imagen")
+@requiere_sesion
+def imagen_evento(p, id):
+    """El proponente, el líder, los capitanes o la administración ponen o quitan la portada."""
+    e = eventos.evento(p.bd, id, p.usuario.id)
+    if not e:
+        raise ErrorHttp(404, "Ese evento no existe o no está aprobado.")
+    if not (es_responsable_en(p, e.club_id) or e.proponente_id == p.usuario.id):
+        raise ErrorHttp(403, "Solo quien propuso el evento o los responsables del club pueden cambiar su imagen.")
+    volver = Respuesta.redirigir(f"/eventos/{id}")
+    if p.formulario.get("quitar") == "1":
+        eventos.cambiar_imagen(p.bd, id, "")
+        return volver.con_aviso("ok", "Imagen quitada.")
+    errores = frm.Errores()
+    archivo = p.archivos.get("imagen")
+    extension = frm.validar_imagen(archivo, errores)
+    if errores or not extension:
+        return volver.con_aviso("error", errores.get("imagen") or "Elige una imagen.")
+    eventos.cambiar_imagen(p.bd, id, _guardar_imagen(archivo, extension))
+    return volver.con_aviso("ok", "Imagen del evento actualizada.")
 
 
 @ruta("POST", "/eventos/<id>/asistencia")
@@ -100,12 +145,14 @@ def proponer(p, slug):
         errores["fecha_inicio"] = "Elige una fecha y hora válidas."
     if fecha and fecha <= datetime.now():
         errores["fecha_inicio"] = "La fecha del evento debe ser posterior a este momento."
+    archivo = p.archivos.get("imagen")
+    extension = frm.validar_imagen(archivo, errores)
     if errores:
         return render(p, "proponer_evento.html", 400, errores=errores, **contexto_club(p, club, "eventos"),
                       valores={"titulo": titulo, "descripcion": descripcion, "lugar": lugar, "recursos": recursos,
                                "cupo": f.get("cupo"), "fecha_inicio": fecha_txt})
     eventos.proponer(p.bd, club.id, p.usuario.id, titulo, descripcion, fecha.strftime("%Y-%m-%d %H:%M"), lugar,
-                     cupo, recursos)
+                     cupo, recursos, _guardar_imagen(archivo, extension) if extension else "")
     responsables = [m.usuario_id for m in clubes.integrantes(p.bd, club.id) if m.rol in ("lider", "capitan")]
     notificaciones.crear_para_varios(p.bd, responsables, f"Nueva propuesta de evento en {club.nombre}: {titulo}",
                                      f"/clubes/{slug}/eventos", excepto=p.usuario.id)

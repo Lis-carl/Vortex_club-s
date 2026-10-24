@@ -381,13 +381,29 @@ class PruebasChatYEventos(PruebaServidor):
         self.assertIn('id="slide-0" class="carrusel-radio" checked', inicio)   # la primera diapositiva es la general
         self.assertIn("Hackatón de robots", inicio)
         self.assertIn("Unirme al evento", inicio)
-        self.assertIn("/clubes/robotica/eventos#evento-", inicio)               # «Ver completo»
+        self.assertRegex(inicio, r'href="/eventos/\d+">Ver completo</a>')      # abre la página del evento
+
+    def test_pagina_de_evento(self):
+        eid = consulta("SELECT id FROM propuestas_evento WHERE titulo='Hackatón de robots'")[0][0]
+        maria, ana = self.cliente(MARIA), self.cliente(ANA)
+        pagina = maria.get(f"/eventos/{eid}").cuerpo
+        self.assertIn("<h1>Hackatón de robots</h1>", pagina)
+        self.assertIn("Competencia interna de robots.", pagina)
+        self.assertIn("Quiénes asistirán", pagina)
+        self.assertNotIn(f'action="/eventos/{eid}/imagen"', pagina)             # María no puede cambiar la portada
+        self.assertEqual(maria.post(f"/eventos/{eid}/imagen", {}, desde=f"/eventos/{eid}").estado, 403)
+        # la líder sube una portada y aparece en la página
+        r = ana.post_multipart(f"/eventos/{eid}/imagen", {}, {"imagen": ("portada.png", PNG)}, desde=f"/eventos/{eid}")
+        self.assertIn("Imagen del evento actualizada", r.cuerpo)
+        self.assertRegex(ana.get(f"/eventos/{eid}").cuerpo, r'<img src="/subidas/[0-9a-f]{32}\.png"')
+        self.assertEqual(maria.get("/eventos/99999").estado, 404)
 
     def test_chat_privado(self):
         ana, luis = self.cliente(ANA), self.cliente(LUIS)
         bandeja = ana.get("/mensajes").cuerpo
         self.assertIn(f'href="/mensajes/{LUIS}"', bandeja)          # Luis comparte Robótica con Ana
         self.assertNotIn(f'href="/mensajes/{CARLOS}"', bandeja)     # Carlos no comparte clubes con Ana
+        self.assertIn('href="/clubes/robotica/chat"', bandeja)       # acceso a los chats de sus clubes
         self.assertIn(f'href="/mensajes/{LUIS}"', ana.get("/clubes/robotica/miembros").cuerpo)   # botón «Mensaje»
         r = ana.post(f"/mensajes/{LUIS}", {"contenido": "Hola <b>Luis</b>"}, desde=f"/mensajes/{LUIS}")
         self.assertTrue(r.url.endswith(f"/mensajes/{LUIS}"))

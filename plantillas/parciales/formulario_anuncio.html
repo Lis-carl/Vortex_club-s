@@ -1,3 +1,6 @@
+{# El formulario queda plegado hasta que se pulsa «Publicar un anuncio» (si hubo errores, se muestra abierto). #}
+<details class="formulario-plegable" {% if errores %}open{% endif %}>
+  <summary class="boton boton-primario"><span class="plegable-abrir">Publicar un anuncio</span><span class="plegable-cerrar">Cerrar formulario</span></summary>
 <section class="panel">
   <div class="panel-cabecera"><h2>{{ formulario_titulo }}</h2></div>
   <form method="post" action="{{ formulario_accion }}" class="panel-cuerpo formulario" novalidate>
@@ -14,3 +17,4 @@
     </div>
   </form>
 </section>
+</details>

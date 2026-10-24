@@ -138,6 +138,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | RF-25 | Líder y capitanes deben poder aprobar o rechazar propuestas con un comentario. | A |
 | RF-26 | El proponente debe poder ver el estado de sus propuestas. | M |
 | RF-27 | El sistema debe mostrar los eventos aprobados en el club y en una lista general de **próximos eventos**. | A |
+| RF-27b | Cada evento aprobado debe tener su **página de detalle** con imagen de portada, fecha y hora, lugar, cupo, proponente, descripción, recursos y asistentes. | A |
 
 ### Administración
 | ID | Requerimiento | Prioridad |

@@ -72,7 +72,7 @@ Cada anuncio nuevo te llega también como notificación.
 
 ### Eventos, calendario y asistencia
 1. En la pestaña **Eventos** del club pulsa **Proponer un evento** y llena: nombre, descripción,
-   fecha y hora (futura), lugar, cupo (opcional) y recursos (opcional).
+   fecha y hora (futura), lugar, cupo (opcional), recursos (opcional) e imagen de portada (opcional).
 2. Tu propuesta aparece en **Propuestas en votación**. Los demás miembros pueden **Apoyar** o votar
    **En contra**; una barra muestra cuántos apoyos lleva. Cuando la apoya la **mitad de los miembros**
    (mínimo 2) y hay más apoyos que votos en contra, se **aprueba sola**. El líder o un capitán también
@@ -82,7 +82,10 @@ Cada anuncio nuevo te llega también como notificación.
    «Mis clubes y confirmados» para ver solo los tuyos.
 5. En los eventos aprobados puedes votar **Me interesa**: los más votados de todos los clubes aparecen
    como **destacados** arriba del calendario, y puedes ordenar la lista por **Más votados**.
-6. Pulsa **Confirmar asistencia** para apartar tu lugar (se respeta el cupo). Verás «Asistirás» y
+6. Pulsa el nombre del evento o **Ver evento** para abrir su página: portada, fecha y hora, lugar,
+   cupo, quién lo propuso, descripción, lo que se necesita y quiénes asistirán. Quien lo propuso, el
+   líder o un capitán pueden subir o cambiar la imagen de portada desde ahí.
+7. Pulsa **Confirmar asistencia** (o **Unirme al evento**) para apartar tu lugar (se respeta el cupo). Verás «Asistirás» y
    podrás **Cancelar asistencia** cuando quieras. Te lo recordaremos 48 horas antes.
 
 ### Miembros y chat
@@ -96,7 +99,8 @@ Puedes conversar en privado con cualquier integrante de tus clubes:
    (menú izquierdo) y elige a alguien en **Nuevo chat**.
 2. Escribe y pulsa **Enviar**. Solo ustedes dos ven la conversación; los mensajes nuevos aparecen
    cada 5 segundos.
-3. En **Mensajes** verás todas tus conversaciones con el último mensaje. El número rojo del menú
+3. En **Mensajes** verás todas tus conversaciones con el último mensaje y, a la derecha, los
+   **chats de tus clubes** para entrar directo al chat grupal de cada uno. El número rojo del menú
    indica cuántos mensajes tienes sin leer.
 
 Si dejan de compartir un club, la conversación queda solo de lectura.
@@ -117,7 +121,7 @@ y envía. La administración revisará tu solicitud y recibirás una notificaci�
 |-------|-------|
 | Ver tus clubes y lo pendiente | **Clubes a mi cargo** |
 | Aceptar o rechazar solicitudes de ingreso | Pestaña **Miembros** (el número rojo de la pestaña indica cuántas hay) |
-| Publicar un anuncio del club | Pestaña **Anuncios** |
+| Publicar un anuncio del club | Pestaña **Anuncios** → botón **Publicar un anuncio** |
 | Aprobar o rechazar propuestas de evento y ver asistentes | Pestaña **Eventos** |
 | Editar descripción, modo de ingreso y **foto del club** | Pestaña **Configuración** |
 | Eliminar contenido inadecuado | **Eliminar** y confirmar |

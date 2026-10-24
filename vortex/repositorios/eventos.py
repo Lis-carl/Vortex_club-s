@@ -20,11 +20,15 @@ FROM v_eventos e
 """
 
 
-def proponer(bd, club_id, proponente_id, titulo, descripcion, fecha_inicio, lugar, cupo, recursos):
+def proponer(bd, club_id, proponente_id, titulo, descripcion, fecha_inicio, lugar, cupo, recursos, imagen=""):
     return bd.execute(
-        """INSERT INTO propuestas_evento (club_id, proponente_id, titulo, descripcion, fecha_inicio, lugar, cupo, recursos)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
-        (club_id, proponente_id, titulo, descripcion, fecha_inicio, lugar, cupo, recursos)).lastrowid
+        """INSERT INTO propuestas_evento (club_id, proponente_id, titulo, descripcion, fecha_inicio, lugar, cupo, recursos, imagen)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+        (club_id, proponente_id, titulo, descripcion, fecha_inicio, lugar, cupo, recursos, imagen)).lastrowid
+
+
+def cambiar_imagen(bd, evento_id, imagen):
+    bd.execute("UPDATE propuestas_evento SET imagen = ? WHERE id = ?", (imagen, evento_id))
 
 
 def por_id(bd, propuesta_id):
@@ -134,7 +138,7 @@ def alternar_asistencia(bd, usuario_id, evento_id):
 
 def asistentes(bd, evento_id):
     return bd.execute(
-        """SELECT u.nombre, u.cif, a.creado_en FROM asistencias a JOIN usuarios u ON u.id = a.usuario_id
+        """SELECT u.nombre, u.cif, u.foto, a.creado_en FROM asistencias a JOIN usuarios u ON u.id = a.usuario_id
            WHERE a.evento_id = ? ORDER BY u.nombre""", (evento_id,)).fetchall()
 
 

@@ -1,7 +1,7 @@
 <article class="evento" id="evento-{{ e.id }}">
   <div class="fecha"><b>{{ e.fecha_inicio | dia }}</b><span>{{ e.fecha_inicio | mes }}</span></div>
   <div>
-    <h3>{{ e.titulo }}</h3>
+    <h3><a href="/eventos/{{ e.id }}">{{ e.titulo }}</a></h3>
     <p class="evento-datos">
       <span>Hora: {{ e.fecha_inicio | hora }}</span>
       <span>Lugar: {{ e.lugar }}</span>
@@ -35,6 +35,7 @@
           <button class="boton boton-primario boton-pequeno">Confirmar asistencia</button>
         {% endif %}
       </form>
+      <a class="accion" href="/eventos/{{ e.id }}">Ver evento</a>
       {% if e.asistentes %}
       <details class="lista-asistentes">
         <summary class="accion">Ver asistentes ({{ len(e.asistentes) }})</summary>

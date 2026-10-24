@@ -4,7 +4,7 @@
 {% include "parciales/club_cabecera.html" %}
 <section class="panel">
   <div class="panel-cabecera"><h2>Formulario de propuesta de evento</h2></div>
-  <form method="post" action="/clubes/{{ club.slug }}/eventos/proponer" class="panel-cuerpo formulario" novalidate>
+  <form method="post" action="/clubes/{{ club.slug }}/eventos/proponer" enctype="multipart/form-data" class="panel-cuerpo formulario" novalidate>
     <input type="hidden" name="csrf" value="{{ csrf }}">
     <p class="tenue">El líder o un capitán revisará la propuesta. Puedes seguir su estado en «Mis propuestas».</p>
     <div class="campo {% if errores.titulo %}con-error{% endif %}"><label for="titulo">Nombre del evento</label>
@@ -27,6 +27,9 @@
     <div class="campo {% if errores.recursos %}con-error{% endif %}"><label for="recursos">Recursos necesarios (opcional)</label>
       <textarea id="recursos" name="recursos" rows="2" maxlength="1000">{{ valores.recursos }}</textarea>
       {% if errores.recursos %}<p class="error-campo">{{ errores.recursos }}</p>{% endif %}</div>
+    <div class="campo {% if errores.imagen %}con-error{% endif %}"><label for="imagen">Imagen de portada (opcional)</label>
+      <input id="imagen" type="file" name="imagen" accept="image/png,image/jpeg,image/gif,image/webp">
+      {% if errores.imagen %}<p class="error-campo">{{ errores.imagen }}</p>{% else %}<p class="ayuda-campo">PNG, JPG, GIF o WEBP de hasta 5 MB. Se muestra en la página del evento.</p>{% endif %}</div>
     <div class="acciones-formulario">
       <a class="boton boton-secundario" href="/clubes/{{ club.slug }}/eventos">Cancelar</a>
       <button class="boton boton-primario">Enviar propuesta</button>

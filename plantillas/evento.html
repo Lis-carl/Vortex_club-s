@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block titulo %}{{ e.titulo }}{% endblock %}
+{% block contenido %}
+<article class="evento-detalle">
+  <div class="evento-portada {% if not e.imagen %}sin-imagen{% endif %}">
+    {% if e.imagen %}<img src="/subidas/{{ e.imagen }}" alt="Imagen del evento {{ e.titulo }}">{% endif %}
+    <div class="evento-portada-velo">
+      <div class="slide-fecha"><b>{{ e.fecha_inicio | dia }}</b><span>{{ e.fecha_inicio | mes }}</span></div>
+      <div>
+        <a class="evento-club" href="/clubes/{{ e.club_slug }}">{{ avatar(e.club_nombre, e.club_foto, "avatar-mini") }}{{ e.club_nombre }}</a>
+        <h1>{{ e.titulo }}</h1>
+        {% if pasado %}<span class="slide-etiqueta slide-etiqueta-llena">Este evento ya ocurrió</span>{% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="evento-cuerpo">
+    <dl class="evento-ficha">
+      <div><dt>Fecha y hora</dt><dd>{{ e.fecha_inicio | fecha }}</dd></div>
+      <div><dt>Lugar</dt><dd>{{ e.lugar }}</dd></div>
+      <div><dt>Asistentes</dt><dd>{{ e.n_asistentes }}{% if e.cupo %} de {{ e.cupo }}{% endif %}</dd></div>
+      <div><dt>Propuesto por</dt><dd>{% if proponente %}<a href="/perfil/{{ proponente.cif }}">{{ proponente.nombre }}</a>{% else %}—{% endif %}</dd></div>
+    </dl>
+    {% if e.cupo %}<div class="barra-cupo" aria-hidden="true"><span style="width:{{ min(100, int(e.n_asistentes * 100 / e.cupo)) }}%"></span></div>{% endif %}
+
+    <div class="evento-acciones evento-acciones-detalle">
+      {% if not pasado %}
+      <form method="post" action="/eventos/{{ e.id }}/asistencia">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <input type="hidden" name="siguiente" value="/eventos/{{ e.id }}">
+        {% if e.mi_asistencia %}
+          <span class="etiqueta etiqueta-aprobada">Asistirás</span>
+          <button class="accion">Cancelar asistencia</button>
+        {% elif e.cupo and e.n_asistentes >= e.cupo %}
+          <span class="etiqueta etiqueta-rechazada">Cupo lleno</span>
+        {% else %}
+          <button class="boton boton-primario">Unirme al evento</button>
+        {% endif %}
+      </form>
+      {% endif %}
+      {% if e.proponente_id != usuario.id %}
+        {% set v_url = "/propuestas/" + str(e.id) + "/votar" %}
+        {% set v_id = "votos-e-" + str(e.id) %}
+        {% set v_puntaje = e.puntaje %}
+        {% set v_mio = e.mi_voto %}
+        {% set v_ancla = "votos-e-" + str(e.id) %}
+        {% set v_texto = "Me interesa" %}
+        {% set v_ayuda = "sube en los destacados" %}
+        {% include "parciales/votos.html" %}
+      {% endif %}
+    </div>
+
+    <section class="evento-seccion">
+      <h2>Descripción</h2>
+      <p>{{ e.descripcion | saltos }}</p>
+    </section>
+    {% if e.recursos %}
+    <section class="evento-seccion">
+      <h2>Qué se necesita</h2>
+      <p>{{ e.recursos | saltos }}</p>
+    </section>
+    {% endif %}
+    <section class="evento-seccion">
+      <h2>Quiénes asistirán ({{ len(asistentes) }})</h2>
+      {% if asistentes %}
+      <ul class="evento-asistentes">
+        {% for a in asistentes %}<li><a href="/perfil/{{ a.cif }}">{{ avatar(a.nombre, a.foto) }}<span>{{ a.nombre }}</span></a></li>{% endfor %}
+      </ul>
+      {% else %}
+      <p class="tenue">Todavía nadie ha confirmado. ¡Sé el primero!</p>
+      {% endif %}
+    </section>
+
+    {% if puede_editar %}
+    <section class="evento-seccion evento-editar">
+      <h2>Imagen del evento</h2>
+      <form method="post" action="/eventos/{{ e.id }}/imagen" enctype="multipart/form-data" class="formulario-foto">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <input type="file" name="imagen" accept="image/png,image/jpeg,image/gif,image/webp" aria-label="Imagen del evento">
+        <button class="boton boton-secundario boton-pequeno">{% if e.imagen %}Cambiar imagen{% else %}Subir imagen{% endif %}</button>
+        {% if e.imagen %}<button class="accion" name="quitar" value="1">Quitar imagen</button>{% endif %}
+      </form>
+      <p class="ayuda-campo">PNG, JPG, GIF o WEBP de hasta 5 MB. Se muestra como portada del evento.</p>
+    </section>
+    {% endif %}
+  </div>
+</article>
+{% endblock %}
+{% block lateral %}
+<section class="panel">
+  <div class="panel-cabecera"><h3>Organiza</h3></div>
+  <div class="panel-cuerpo evento-organiza">
+    <a href="/clubes/{{ e.club_slug }}" class="celda-persona">{{ avatar(e.club_nombre, e.club_foto) }}<strong>{{ e.club_nombre }}</strong></a>
+    {% if club and club.descripcion %}<p class="tenue">{{ club.descripcion | extracto }}</p>{% endif %}
+    <a class="boton boton-secundario boton-pequeno" href="/clubes/{{ e.club_slug }}/eventos">Eventos del club</a>
+  </div>
+</section>
+{% if otros %}
+<section class="panel">
+  <div class="panel-cabecera"><h3>Más eventos del club</h3></div>
+  {% for o in otros %}
+    <div class="evento-lateral">
+      <div class="fecha fecha-pequena"><b>{{ o.fecha_inicio | dia }}</b><span>{{ o.fecha_inicio | mes }}</span></div>
+      <div><a href="/eventos/{{ o.id }}">{{ o.titulo }}</a><span class="tenue">{{ o.fecha_inicio | fecha }}</span></div>
+    </div>
+  {% endfor %}
+</section>
+{% endif %}
+{% endblock %}

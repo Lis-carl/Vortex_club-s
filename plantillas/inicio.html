@@ -47,7 +47,7 @@
   {% for e in proximos %}
     <div class="evento-lateral">
       <div class="fecha fecha-pequena"><b>{{ e.fecha_inicio | dia }}</b><span>{{ e.fecha_inicio | mes }}</span></div>
-      <div><a href="/clubes/{{ e.club_slug }}/eventos">{{ e.titulo }}</a>
+      <div><a href="/eventos/{{ e.id }}">{{ e.titulo }}</a>
         <span class="tenue">{{ e.club_nombre }} · {{ e.fecha_inicio | fecha }}{% if e.mi_asistencia %} · Asistirás{% endif %}</span></div>
     </div>
   {% else %}

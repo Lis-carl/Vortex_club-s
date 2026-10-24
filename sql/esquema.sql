@@ -146,6 +146,7 @@ CREATE TABLE IF NOT EXISTS propuestas_evento (
     lugar               TEXT    NOT NULL,
     cupo                INTEGER CHECK (cupo IS NULL OR cupo BETWEEN 1 AND 10000),
     recursos            TEXT    NOT NULL DEFAULT '',
+    imagen              TEXT    NOT NULL DEFAULT '',
     estado              TEXT    NOT NULL DEFAULT 'pendiente' CHECK (estado IN ('pendiente', 'aprobada', 'rechazada')),
     revisado_por        INTEGER REFERENCES usuarios(id),
     comentario_revision TEXT    NOT NULL DEFAULT '',
@@ -220,8 +221,8 @@ CREATE INDEX IF NOT EXISTS ix_asistencias_evento  ON asistencias(evento_id);
 -- Vistas ----------------------------------------------------------------
 -- Eventos = propuestas aprobadas.
 CREATE VIEW IF NOT EXISTS v_eventos AS
-    SELECT p.id, p.club_id, c.nombre AS club_nombre, c.slug AS club_slug,
-           p.titulo, p.descripcion, p.fecha_inicio, p.lugar, p.cupo
+    SELECT p.id, p.club_id, c.nombre AS club_nombre, c.slug AS club_slug, c.foto AS club_foto,
+           p.titulo, p.descripcion, p.fecha_inicio, p.lugar, p.cupo, p.recursos, p.imagen
     FROM propuestas_evento p
     JOIN clubes c ON c.id = p.club_id
     WHERE p.estado = 'aprobada' AND c.estado = 'activo';

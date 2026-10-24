@@ -44,13 +44,21 @@ def _migrar(bd):
     if "foto" not in columnas:
         bd.execute("ALTER TABLE usuarios ADD COLUMN foto TEXT NOT NULL DEFAULT ''")
     columnas = {c.name for c in bd.execute("PRAGMA table_info(clubes)").fetchall()}
+    recrear_vistas = False
     if "foto" not in columnas:
         bd.execute("ALTER TABLE clubes ADD COLUMN foto TEXT NOT NULL DEFAULT ''")
+    columnas_eventos = {c.name for c in bd.execute("PRAGMA table_info(propuestas_evento)").fetchall()}
+    if "imagen" not in columnas_eventos:
+        bd.execute("ALTER TABLE propuestas_evento ADD COLUMN imagen TEXT NOT NULL DEFAULT ''")
+    vista = bd.execute("SELECT sql FROM sqlite_master WHERE name = 'v_eventos'").fetchone()
+    if vista and "club_foto" not in vista.sql:   # la vista de eventos ganó columnas: se vuelve a crear
+        bd.execute("DROP VIEW v_eventos")
+        recrear_vistas = True
     bd.commit()
     if "categoria_id" in columnas:
         _quitar_categorias(bd)
         return True
-    return False
+    return recrear_vistas
 
 
 def _quitar_categorias(bd):

@@ -29,7 +29,7 @@ def crear_para_admins(bd, texto, enlace="/admin"):
 def recordar_eventos(bd, usuario_id, eventos, describir):
     """Guarda un recordatorio (una sola vez por evento) de cada evento confirmado que se acerca."""
     for e in eventos:
-        enlace = f"/clubes/{e.club_slug}/eventos#evento-{e.id}"
+        enlace = f"/eventos/{e.id}"
         ya_existe = bd.execute("SELECT 1 FROM notificaciones WHERE usuario_id = ? AND enlace = ? AND texto LIKE 'Recordatorio:%'",
                                (usuario_id, enlace)).fetchone()
         if not ya_existe:

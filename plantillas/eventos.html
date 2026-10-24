@@ -16,7 +16,7 @@
 {% if destacados %}
 <section class="destacados" aria-label="Eventos destacados">
   {% for e in destacados %}
-  <a class="destacado" href="/eventos?mes={{ e.fecha_inicio[:7] }}&amp;orden=votos#evento-{{ e.id }}">
+  <a class="destacado" href="/eventos/{{ e.id }}">
     <span class="destacado-pos">{{ bucle.indice }}</span>
     <span class="destacado-texto"><b>{{ e.titulo }}</b><small>{{ e.club_nombre }} · {{ e.fecha_inicio | fecha_corta }}</small></span>
     <span class="destacado-votos">{{ e.puntaje }}<small>votos</small></span>
@@ -37,7 +37,7 @@
       <div class="calendario-celda {% if not celda.dia %}vacia{% endif %} {% if celda.hoy %}hoy{% endif %} {% if celda.eventos %}con-eventos{% endif %}">
         {% if celda.dia %}<span class="calendario-numero">{{ celda.dia }}</span>{% endif %}
         {% for e in celda.eventos %}
-          <a class="calendario-evento {% if e.mi_asistencia %}confirmado{% endif %}" href="#evento-{{ e.id }}" title="{{ e.titulo }} · {{ e.club_nombre }}">{{ e.fecha_inicio | hora }} {{ e.titulo }}</a>
+          <a class="calendario-evento {% if e.mi_asistencia %}confirmado{% endif %}" href="/eventos/{{ e.id }}" title="{{ e.titulo }} · {{ e.club_nombre }}">{{ e.fecha_inicio | hora }} {{ e.titulo }}</a>
         {% endfor %}
       </div>
     {% endfor %}{% endfor %}

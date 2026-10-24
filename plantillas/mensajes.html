@@ -15,6 +15,19 @@
 {% endblock %}
 {% block lateral %}
 <section class="panel">
+  <div class="panel-cabecera"><h3>Chats de mis clubes</h3></div>
+  {% if mis_clubes %}
+  <ul class="contactos">
+    {% for c in mis_clubes %}
+    <li><a href="/clubes/{{ c.slug }}/chat">{{ avatar(c.nombre, c.foto) }}
+      <span><strong>{{ c.nombre }}</strong><small>Chat grupal del club</small></span></a></li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="vacio-corto">Únete a un club para entrar a su chat.</p>
+  {% endif %}
+</section>
+<section class="panel">
   <div class="panel-cabecera"><h3>Nuevo chat</h3></div>
   {% if contactos %}
   <ul class="contactos">
