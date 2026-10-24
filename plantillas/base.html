@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block titulo %}Inicio{% endblock %} | Vortex Club's</title>
   <link rel="icon" type="image/svg+xml" href="/estatico/img/logo.svg?v=5">
-  <link rel="stylesheet" href="/estatico/css/estilo.css?v=14">
+  <link rel="stylesheet" href="/estatico/css/estilo.css?v=16">
 </head>
 <body>
 {% if usuario %}
@@ -55,6 +55,7 @@
       <a class="nav-enlace {% if ruta == '/clubes' %}activo{% endif %}" href="/clubes">Explorar clubes</a>
       <a class="nav-enlace {% if ruta == '/anuncios' %}activo{% endif %}" href="/anuncios">Anuncios</a>
       <a class="nav-enlace {% if ruta == '/eventos' %}activo{% endif %}" href="/eventos">Calendario</a>
+      <a class="nav-enlace {% if ruta.startswith('/mensajes') %}activo{% endif %}" href="/mensajes">Mensajes{% if n_mensajes %}<span class="contador">{{ n_mensajes }}</span>{% endif %}</a>
       <a class="nav-enlace {% if ruta == '/notificaciones' %}activo{% endif %}" href="/notificaciones">Notificaciones{% if n_notificaciones %}<span class="contador">{{ n_notificaciones }}</span>{% endif %}</a>
       <p class="nav-titulo">Gestión</p>
       {% if rol_acceso in ('capitan', 'lider') %}<a class="nav-enlace {% if ruta == '/gestion' %}activo{% endif %}" href="/gestion">Clubes a mi cargo</a>{% endif %}

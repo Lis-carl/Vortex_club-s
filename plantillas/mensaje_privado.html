@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block titulo %}Chat con {{ otro.nombre }}{% endblock %}
+{% block contenido %}
+<section class="panel">
+  <div class="panel-cabecera chat-privado-cabecera">
+    <div class="celda-persona">{{ avatar(otro.nombre, otro.foto) }}
+      <div><a href="/perfil/{{ otro.cif }}"><strong>{{ otro.nombre }}</strong></a>
+        <span class="tenue">{% if en_comun %}{% for c in en_comun %}{{ c.nombre }}{% if not bucle.ultimo %} · {% endif %}{% endfor %}{% else %}Ya no comparten clubes{% endif %}</span></div>
+    </div>
+    <a class="accion" href="/mensajes">Todos los mensajes</a>
+  </div>
+  <iframe class="chat-marco" src="/mensajes/{{ otro.cif }}/marco" title="Conversación con {{ otro.nombre }}"></iframe>
+  {% if puede_escribir %}
+  <form method="post" action="/mensajes/{{ otro.cif }}" class="chat-formulario">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <label for="mensaje" class="oculto">Mensaje</label>
+    <input id="mensaje" type="text" name="contenido" placeholder="Escribe a {{ otro.nombre }}" maxlength="1000" autocomplete="off" required autofocus>
+    <button class="boton boton-primario">Enviar</button>
+  </form>
+  <p class="chat-nota">Chat privado: solo lo ven ustedes dos. Los mensajes nuevos aparecen cada 5 segundos.</p>
+  {% else %}
+  <p class="chat-nota">Ya no comparten ningún club, así que esta conversación es solo de lectura.</p>
+  {% endif %}
+</section>
+{% endblock %}
+{% block lateral %}
+<section class="panel">
+  <div class="panel-cabecera"><h3>Conversaciones</h3></div>
+  {% include "parciales/conversaciones.html" %}
+</section>
+{% endblock %}

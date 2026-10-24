@@ -193,12 +193,25 @@ CREATE TABLE IF NOT EXISTS solicitudes_capitan (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS ux_capitan_pendiente ON solicitudes_capitan(usuario_id, club_id) WHERE estado = 'pendiente';
 
+-- D14 Mensajes privados (chat entre dos integrantes de un mismo club) -----
+CREATE TABLE IF NOT EXISTS mensajes_privados (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    emisor_id   INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    receptor_id INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    contenido   TEXT    NOT NULL CHECK (length(contenido) BETWEEN 1 AND 1000),
+    leido       INTEGER NOT NULL DEFAULT 0 CHECK (leido IN (0, 1)),
+    creado_en   TEXT    NOT NULL DEFAULT (datetime('now', 'localtime')),
+    CHECK (emisor_id <> receptor_id)
+);
+
 -- Índices para las consultas más frecuentes -----------------------------
 CREATE INDEX IF NOT EXISTS ix_membresias_club     ON membresias(club_id, estado);
 CREATE INDEX IF NOT EXISTS ix_anuncios_club       ON anuncios(club_id, fijado, creado_en);
 CREATE INDEX IF NOT EXISTS ix_publicaciones_club  ON publicaciones(club_id, creado_en);
 CREATE INDEX IF NOT EXISTS ix_comentarios_pub     ON comentarios(publicacion_id);
 CREATE INDEX IF NOT EXISTS ix_mensajes_club       ON mensajes_chat(club_id, id);
+CREATE INDEX IF NOT EXISTS ix_privados_emisor     ON mensajes_privados(emisor_id, receptor_id, id);
+CREATE INDEX IF NOT EXISTS ix_privados_receptor   ON mensajes_privados(receptor_id, leido);
 CREATE INDEX IF NOT EXISTS ix_propuestas_club     ON propuestas_evento(club_id, estado, fecha_inicio);
 CREATE INDEX IF NOT EXISTS ix_sesiones_usuario    ON sesiones(usuario_id);
 CREATE INDEX IF NOT EXISTS ix_notificaciones      ON notificaciones(usuario_id, leida, id);

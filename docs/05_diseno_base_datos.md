@@ -37,6 +37,8 @@ erDiagram
     USUARIOS ||--o{ REACCIONES : "da"
     CLUBES ||--o{ MENSAJES_CHAT : "tiene"
     USUARIOS ||--o{ MENSAJES_CHAT : "envía"
+    USUARIOS ||--o{ MENSAJES_PRIVADOS : "envía"
+    USUARIOS ||--o{ MENSAJES_PRIVADOS : "recibe"
     CLUBES ||--o{ PROPUESTAS_EVENTO : "recibe"
     USUARIOS ||--o{ PROPUESTAS_EVENTO : "propone"
 
@@ -172,6 +174,14 @@ erDiagram
         text contenido
         text creado_en
     }
+    MENSAJES_PRIVADOS {
+        int id PK
+        int emisor_id FK
+        int receptor_id FK
+        text contenido
+        int leido "0 | 1"
+        text creado_en
+    }
     PROPUESTAS_EVENTO {
         int id PK
         int club_id FK
@@ -254,6 +264,7 @@ publicación y la lista de eventos) **no se guardan**: se calculan con las vista
 | `votos_comentario` | `(usuario_id, comentario_id)` | ambos | `valor ∈ {-1, 1}` |
 | `reacciones` | `(usuario_id, publicacion_id, tipo)` | ambos | `tipo` ∈ 6 emojis: una reacción de cada tipo por persona (RN-05) |
 | `mensajes_chat` | `id` | `club_id`, `autor_id` | 1 a 1000 caracteres |
+| `mensajes_privados` | `id` | `emisor_id`, `receptor_id` (ambos → `usuarios`) | 1 a 1000 caracteres, `leido ∈ {0, 1}`, `emisor_id ≠ receptor_id`; solo se escribe a quien comparte un club activo (se valida en el servidor) |
 | `propuestas_evento` | `id` | `club_id`, `proponente_id`, `revisado_por` | `cupo` entre 1 y 10 000, `estado ∈ {pendiente, aprobada, rechazada}` |
 | `votos_propuesta` | `(usuario_id, propuesta_id)` | ambos | `valor ∈ {-1, 1}`: un voto por miembro y propuesta (RN-14) |
 | `asistencias` | `(usuario_id, evento_id)` | ambos | Una confirmación por persona y evento; el cupo se valida en el servidor (RN-12) |

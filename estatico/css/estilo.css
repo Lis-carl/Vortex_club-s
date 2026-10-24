@@ -795,3 +795,28 @@ h1, h2, h3, .pub-titulo a, .club-tarjeta-cabecera h2 a { color: var(--tinta); }
   .pub-cuerpo, .evento, .propuesta, .anuncio { padding: 18px; }
   .panel-cabecera { padding: 16px 18px; }
 }
+
+/* =====================================================================
+   Chats privados
+   ===================================================================== */
+.conversaciones, .contactos { list-style: none; margin: 0; padding: 6px 0; }
+.conversaciones a, .contactos a { display: flex; align-items: center; gap: 12px; padding: 12px 24px; color: var(--texto);
+  text-decoration: none; transition: background var(--transicion); }
+.conversaciones a:hover, .contactos a:hover { background: rgba(0, 154, 169, .06); }
+.conversaciones a.activa { background: rgba(0, 154, 169, .10); box-shadow: inset 3px 0 0 var(--marca); }
+.conversaciones li + li, .contactos li + li { border-top: 1px solid var(--linea-suave); }
+.conversacion-texto { display: flex; flex-direction: column; flex: 1; min-width: 0; gap: 2px; }
+.conversacion-fila { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-width: 0; }
+.conversacion-fila strong { color: var(--tinta); font-weight: 600; }
+.conversacion-fila time { color: var(--gris); font-size: .78rem; white-space: nowrap; }
+.conversacion-fila small, .contactos small { color: var(--gris); font-size: .85rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.conversaciones a.sin-leer small { color: var(--tinta); font-weight: 600; }
+.contactos span { display: flex; flex-direction: column; min-width: 0; }
+.contactos strong { color: var(--tinta); font-weight: 600; font-size: .92rem; }
+.contador { border-radius: 999px; }
+.chat-privado-cabecera { display: flex; align-items: center; justify-content: space-between; gap: 12px; text-transform: none; }
+.chat-privado-cabecera strong { color: var(--tinta); font-size: 1rem; letter-spacing: 0; }
+.accion-mensaje { color: var(--marca-profundo); font-weight: 600; }
+.chat-privado-cabecera .celda-persona { display: flex; align-items: center; gap: 12px; }
+.chat-privado-cabecera .celda-persona > div { display: flex; flex-direction: column; line-height: 1.35; }
+.chat-privado-cabecera .tenue { font-size: .82rem; font-weight: 400; letter-spacing: 0; }

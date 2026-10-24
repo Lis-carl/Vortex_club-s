@@ -129,6 +129,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 |----|---------------|-----------|
 | RF-22 | Cada club debe tener una sala de chat para sus miembros activos. | A |
 | RF-23 | El panel de mensajes del chat debe actualizarse automáticamente (recarga HTML cada 5 segundos, sin JavaScript). | M |
+| RF-23b | Un usuario debe poder abrir un **chat privado** con cualquier integrante activo de sus clubes, ver sus conversaciones con el último mensaje y cuántos mensajes tiene sin leer. Nadie más puede leer esa conversación. | A |
 
 ### Eventos
 | ID | Requerimiento | Prioridad |

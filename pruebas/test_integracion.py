@@ -375,6 +375,26 @@ class PruebasChatYEventos(PruebaServidor):
         self.assertEqual(sofia.get("/clubes/robotica/chat/mensajes").estado, 403)
         self.assertEqual(sofia.post("/clubes/robotica/chat", {"contenido": "hola"}, desde="/").estado, 403)
 
+    def test_chat_privado(self):
+        ana, luis = self.cliente(ANA), self.cliente(LUIS)
+        bandeja = ana.get("/mensajes").cuerpo
+        self.assertIn(f'href="/mensajes/{LUIS}"', bandeja)          # Luis comparte Robótica con Ana
+        self.assertNotIn(f'href="/mensajes/{CARLOS}"', bandeja)     # Carlos no comparte clubes con Ana
+        self.assertIn(f'href="/mensajes/{LUIS}"', ana.get("/clubes/robotica/miembros").cuerpo)   # botón «Mensaje»
+        r = ana.post(f"/mensajes/{LUIS}", {"contenido": "Hola <b>Luis</b>"}, desde=f"/mensajes/{LUIS}")
+        self.assertTrue(r.url.endswith(f"/mensajes/{LUIS}"))
+        self.assertIn('<span class="contador">1</span>', luis.get("/mensajes").cuerpo)   # sin leer
+        marco = luis.get(f"/mensajes/{ANA}/marco").cuerpo
+        self.assertIn("Hola &lt;b&gt;Luis&lt;/b&gt;", marco)
+        self.assertNotIn('<span class="contador">1</span>', luis.get("/mensajes").cuerpo)   # quedó leído
+        self.assertIn('class="mensaje propio"', ana.get(f"/mensajes/{LUIS}/marco").cuerpo)
+        # nadie más ve la conversación ni puede escribir a alguien fuera de sus clubes
+        self.assertNotIn("Hola &lt;b&gt;Luis", self.cliente(MARIA).get("/mensajes").cuerpo)
+        self.assertEqual(ana.get(f"/mensajes/{CARLOS}").estado, 403)
+        self.assertEqual(ana.post(f"/mensajes/{CARLOS}", {"contenido": "hola"}, desde="/mensajes").estado, 403)
+        self.assertEqual(ana.get(f"/mensajes/{ANA}").estado, 404)
+        self.assertIn("El mensaje es obligatorio", ana.post(f"/mensajes/{LUIS}", {"contenido": "  "}, desde=f"/mensajes/{LUIS}").cuerpo)
+
     def _form(self, **extra):
         datos = {"titulo": "Taller de soldadura", "descripcion": "Aprenderemos a soldar componentes.", "fecha_inicio": FUTURO,
                  "lugar": "Laboratorio 2", "cupo": "20", "recursos": "Cautines"}

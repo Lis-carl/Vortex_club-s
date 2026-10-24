@@ -27,7 +27,7 @@ comentarios y en la lista de miembros de tus clubes. Desde el mismo lugar puedes
 | Zona | Qué hay |
 |------|---------|
 | Barra superior | Logotipo VC, el lema «Sé parte de un club», la **campana de notificaciones** (con el número de avisos sin leer) y tu menú de cuenta con tu tipo de usuario |
-| Menú izquierdo | **General:** Inicio, Explorar clubes, Anuncios, Calendario, Notificaciones · **Gestión:** Clubes a mi cargo (líder/capitán), Crear un club, Administración (si te corresponde) · **Mis clubes** |
+| Menú izquierdo | **General:** Inicio, Explorar clubes, Anuncios, Calendario, Mensajes, Notificaciones · **Gestión:** Clubes a mi cargo (líder/capitán), Crear un club, Administración (si te corresponde) · **Mis clubes** |
 | Centro | El contenido de la página |
 | Columna derecha | Próximos eventos y anuncios generales |
 
@@ -88,6 +88,18 @@ Cada anuncio nuevo te llega también como notificación.
 ### Miembros y chat
 **Miembros** muestra al líder, los capitanes y los miembros. El **chat** es solo para miembros y se
 actualiza solo cada 5 segundos.
+
+### Chats privados
+Puedes conversar en privado con cualquier integrante de tus clubes:
+
+1. En la pestaña **Miembros** de un club pulsa **Mensaje** junto a su nombre, o entra a **Mensajes**
+   (menú izquierdo) y elige a alguien en **Nuevo chat**.
+2. Escribe y pulsa **Enviar**. Solo ustedes dos ven la conversación; los mensajes nuevos aparecen
+   cada 5 segundos.
+3. En **Mensajes** verás todas tus conversaciones con el último mensaje. El número rojo del menú
+   indica cuántos mensajes tienes sin leer.
+
+Si dejan de compartir un club, la conversación queda solo de lectura.
 
 ### Solicitar ser capitán
 Si eres miembro, en la cabecera del club pulsa **Solicitar ser capitán**, escribe un motivo opcional

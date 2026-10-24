@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block titulo %}Mensajes{% endblock %}
+{% block contenido %}
+<header class="encabezado-pagina">
+  <div>
+    <p class="antetitulo">Chats privados</p>
+    <h1>Mensajes</h1>
+    <p class="descripcion">Conversa en privado con los integrantes de tus clubes.</p>
+  </div>
+</header>
+<section class="panel">
+  <div class="panel-cabecera"><h2>Conversaciones</h2></div>
+  {% include "parciales/conversaciones.html" %}
+</section>
+{% endblock %}
+{% block lateral %}
+<section class="panel">
+  <div class="panel-cabecera"><h3>Nuevo chat</h3></div>
+  {% if contactos %}
+  <ul class="contactos">
+    {% for c in contactos %}
+    <li><a href="/mensajes/{{ c.cif }}">{{ avatar(c.nombre, c.foto) }}
+      <span><strong>{{ c.nombre }}</strong><small>{{ c.clubes }}</small></span></a></li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="vacio-corto">Únete a un club para poder escribir a sus integrantes.</p>
+  {% endif %}
+</section>
+{% endblock %}

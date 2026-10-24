@@ -2,7 +2,7 @@
 from .nucleo import Fila, Respuesta
 from .plantillas import motor
 from .acceso import es_admin, ROLES_ACCESO
-from .repositorios import clubes as repo_clubes, notificaciones as repo_notificaciones
+from .repositorios import clubes as repo_clubes, notificaciones as repo_notificaciones, privados as repo_privados
 
 
 def render(p, nombre, estado=200, **contexto):
@@ -12,6 +12,7 @@ def render(p, nombre, estado=200, **contexto):
         "rol_acceso": p.usuario.rol_acceso if p.usuario else None,
         "rol_acceso_nombre": ROLES_ACCESO.get(p.usuario.rol_acceso) if p.usuario else None,
         "n_notificaciones": repo_notificaciones.no_leidas(p.bd, p.usuario.id) if p.usuario and p.bd else 0,
+        "n_mensajes": repo_privados.no_leidos(p.bd, p.usuario.id) if p.usuario and p.bd else 0,
         "csrf": p.token_csrf(),
         "aviso": p.aviso,
         "ruta": p.ruta,

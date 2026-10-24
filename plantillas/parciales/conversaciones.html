@@ -1,0 +1,16 @@
+{% if conversaciones %}
+<ul class="conversaciones">
+  {% for c in conversaciones %}
+  <li><a href="/mensajes/{{ c.cif }}" class="{% if c.sin_leer %}sin-leer{% endif %} {% if otro and otro.id == c.id %}activa{% endif %}">
+    {{ avatar(c.nombre, c.foto) }}
+    <span class="conversacion-texto">
+      <span class="conversacion-fila"><strong>{{ c.nombre }}</strong><time>{{ c.creado_en | rel }}</time></span>
+      <span class="conversacion-fila"><small>{% if c.emisor_id == usuario.id %}Tú: {% endif %}{{ c.ultimo }}</small>
+        {% if c.sin_leer %}<span class="contador">{{ c.sin_leer }}</span>{% endif %}</span>
+    </span></a></li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="vacio vacio-personas"><h3>Sin conversaciones</h3>
+  <p>Elige a alguien en «Nuevo chat» o pulsa «Mensaje» en la lista de miembros de un club.</p></div>
+{% endif %}

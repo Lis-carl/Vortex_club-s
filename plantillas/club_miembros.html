@@ -39,7 +39,7 @@
     {% for grupo in [lideres, capitanes, simples] %}{% for m in grupo %}
       <tr>
         <td><div class="celda-persona">{{ avatar(m.nombre, m.foto) }}
-          <div><a href="/perfil/{{ m.cif }}">{{ m.nombre }}</a><span class="tenue">Desde {{ m.unido_en | fecha_corta }}</span></div></div></td>
+          <div><a href="/perfil/{{ m.cif }}">{{ m.nombre }}</a><span class="tenue">Desde {{ m.unido_en | fecha_corta }}{% if m.cif != usuario.cif %} · <a class="accion-mensaje" href="/mensajes/{{ m.cif }}">Mensaje</a>{% endif %}</span></div></div></td>
         <td>{{ m.carrera }}</td>
         <td><span class="etiqueta {% if m.rol != 'miembro' %}etiqueta-marca{% endif %}">{% if m.rol == 'lider' %}Líder{% elif m.rol == 'capitan' %}Capitán{% else %}Miembro{% endif %}</span></td>
         {% if es_lider %}

@@ -280,6 +280,7 @@ Notación de Kendall (cap. 8): `=` está compuesto de, `+` y, `{ }` repetición,
 | D10 | Propuestas de evento | Propuestas y su revisión | Propuesta de evento | `propuestas_evento` |
 | D11 | Asistencias | Confirmaciones de asistencia a eventos | `ID usuario + ID evento + Fecha` | `asistencias` |
 | D12 | Notificaciones | Avisos para cada usuario | `ID usuario + Texto + Enlace + Leída + Fecha` | `notificaciones` |
+| D14 | Mensajes privados | Chat entre dos integrantes de un mismo club | `ID emisor + ID receptor + Contenido + Leído + Fecha` | `mensajes_privados` |
 | D13 | Solicitudes de capitán | Peticiones de miembros para ser capitán | `ID usuario + ID club + Motivo + Estado + (Revisor + Comentario)` | `solicitudes_capitan` |
 
 ### 3.5.3 Estructuras de datos
