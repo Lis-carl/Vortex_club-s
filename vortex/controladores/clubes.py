@@ -10,10 +10,7 @@ from ..vistas import render
 @ruta("GET", "/clubes")
 @requiere_sesion
 def catalogo(p):
-    texto = (p.consulta.get("q") or "").strip()[:60]
-    cat = int(p.consulta["cat"]) if (p.consulta.get("cat") or "").isdigit() else None
-    return render(p, "catalogo.html", lista=clubes.catalogo(p.bd, p.usuario.id, texto, cat),
-                  categorias=clubes.categorias(p.bd), q=texto, cat=cat)
+    return render(p, "catalogo.html", lista=clubes.catalogo(p.bd, p.usuario.id))
 
 
 @ruta("GET", "/clubes/solicitar")

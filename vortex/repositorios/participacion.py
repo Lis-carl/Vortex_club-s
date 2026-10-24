@@ -24,12 +24,3 @@ def de_usuario(bd, usuario_id):
     return Fila(puntos=puntos, insignia=insignia(puntos), siguiente=siguiente,
                 faltan=(siguiente - puntos) if siguiente is not None else 0)
 
-
-def ranking(bd, limite=5):
-    filas = bd.execute(
-        f"""SELECT * FROM (SELECT u.id, u.nombre, u.cif, {_PUNTOS} AS puntos
-                           FROM usuarios u WHERE u.activo = 1 AND u.rol_global = 'estudiante')
-            WHERE puntos > 0 ORDER BY puntos DESC, nombre LIMIT ?""", (limite,)).fetchall()
-    for f in filas:
-        f["insignia"] = insignia(f.puntos)
-    return filas

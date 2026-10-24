@@ -5,21 +5,10 @@
   <div>
     <p class="antetitulo">Catálogo</p>
     <h1>Explorar clubes</h1>
-    <p class="descripcion">{{ len(lista) }} club{% if len(lista) != 1 %}es{% endif %}{% if q or cat %} encontrado{% if len(lista) != 1 %}s{% endif %}{% else %} disponible{% if len(lista) != 1 %}s{% endif %}{% endif %}.</p>
+    <p class="descripcion">{{ len(lista) }} club{% if len(lista) != 1 %}es{% endif %} disponible{% if len(lista) != 1 %}s{% endif %}.</p>
   </div>
   <div class="acciones-encabezado"><a class="boton boton-secundario" href="/clubes/solicitar">Solicitar un club nuevo</a></div>
 </header>
-<form class="panel panel-cuerpo formulario-linea" method="get" action="/clubes">
-  <label for="filtro-q" class="oculto">Buscar</label>
-  <input id="filtro-q" type="search" name="q" value="{{ q }}" placeholder="Nombre o descripción del club" maxlength="60">
-  <label for="filtro-cat" class="oculto">Categoría</label>
-  <select id="filtro-cat" name="cat">
-    <option value="">Todas las categorías</option>
-    {% for c in categorias %}<option value="{{ c.id }}" {% if cat == c.id %}selected{% endif %}>{{ c.nombre }}</option>{% endfor %}
-  </select>
-  <button class="boton boton-primario">Filtrar</button>
-  {% if q or cat %}<a class="boton boton-secundario" href="/clubes">Limpiar</a>{% endif %}
-</form>
 {% if lista %}
 <div class="rejilla-clubes">
 {% for c in lista %}
@@ -48,8 +37,8 @@
 </div>
 {% else %}
 <section class="panel vacio">
-  <h3>No encontramos clubes</h3>
-  <p>Prueba con otro nombre o categoría, o solicita la creación de un club nuevo.</p>
+  <h3>Aún no hay clubes</h3>
+  <p>Solicita la creación de un club nuevo.</p>
   <a class="boton boton-primario" href="/clubes/solicitar">Solicitar un club</a>
 </section>
 {% endif %}

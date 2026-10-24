@@ -25,7 +25,7 @@ Requiere **Python 3.10 o superior**. No hay nada que instalar.
 python app.py
 ```
 
-Abre <http://127.0.0.1:8000>. La primera vez se crea la base de datos **vacía**, con los 14 clubes
+Abre <http://127.0.0.1:8000>. La primera vez se crea la base de datos **vacía**, con los 15 clubes
 oficiales de la Dirección de Vida Estudiantil (sin miembros) y una cuenta de administración:
 
 | Cuenta | CIF | Contraseña |
@@ -50,7 +50,7 @@ python -m unittest discover -s pruebas -t .
 | Función | Dónde |
 |---------|-------|
 | Registro e inicio de sesión con CIF y **rol de acceso** (Estudiante, Capitán, Líder, Administración) | `/registro`, `/acceder` |
-| Catálogo de clubes con búsqueda y categorías; unirse (abierto o con aprobación) | `/clubes` |
+| Catálogo de clubes; unirse (abierto o con aprobación) | `/clubes` |
 | Anuncios **generales** (administración) y **por club** (líder/capitanes) | `/anuncios`, `/clubes/<club>/anuncios` |
 | Ver **líder, capitanes y miembros**; nombrar capitanes, expulsar, transferir liderazgo | `/clubes/<club>/miembros` |
 | Foro estilo Reddit: publicaciones con imagen, comentarios anidados, votos ▲▼ | `/clubes/<club>` |
@@ -59,7 +59,7 @@ python -m unittest discover -s pruebas -t .
 | **Formulario de propuesta de evento** y flujo de aprobación | `/clubes/<club>/eventos` |
 | **Calendario mensual** de actividades y **confirmación de asistencia** con cupo | `/eventos` |
 | **Notificaciones** con contador y **recordatorios** de eventos confirmados (48 h antes) | `/notificaciones` |
-| **Puntos de participación**, niveles y ranking de los más participativos | inicio y perfil |
+| **Puntos de participación** y niveles | inicio y perfil |
 | **Solicitud para ser capitán**, aprobada por la administración (los líderes también nombran capitanes) | página del club, `/admin` |
 | Panel **Clubes a mi cargo** para líderes y capitanes (los capitanes también editan su club) | `/gestion` |
 | Solicitar la creación de un club | `/clubes/solicitar` |

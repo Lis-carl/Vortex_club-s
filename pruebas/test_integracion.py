@@ -112,16 +112,12 @@ class PruebasAcceso(PruebaServidor):
 
 
 class PruebasClubes(PruebaServidor):
-    def test_catalogo_y_busqueda(self):
-        c = self.cliente(ANA)
-        r = c.get("/clubes")
-        for club in ("Robótica", "Ajedrez", "Voluntariado Solidario", "Fotografía"):
+    def test_catalogo_sin_buscador_ni_filtro(self):
+        r = self.cliente(ANA).get("/clubes")
+        for club in ("Robótica", "Ajedrez", "Voluntariado Solidario", "Fotografía", "Club de Esports"):
             self.assertIn(club, r.cuerpo)
-        r = c.get("/clubes?q=ajedr")
-        self.assertIn("Ajedrez", r.cuerpo)
-        self.assertNotIn("Fotografía</a>", r.cuerpo.split("rejilla-clubes")[1])
-        r = c.get("/clubes?q=%25")      # el comodín % se trata como texto
-        self.assertIn("No encontramos clubes", r.cuerpo)
+        self.assertNotIn('name="q"', r.cuerpo)
+        self.assertNotIn('name="cat"', r.cuerpo)
 
     def test_unirse_club_abierto_y_salir(self):
         c = self.cliente(JORGE)
@@ -264,12 +260,11 @@ class PruebasForoYAnuncios(PruebaServidor):
         r = ana.post(f"/publicaciones/{pid}/comentar", {"contenido": "<b onmouseover=x>hola</b>"}, desde=f"/publicaciones/{pid}")
         self.assertNotIn("<b onmouseover", r.cuerpo)
 
-    def test_inyeccion_sql_en_busqueda(self):
-        r = self.cliente(ANA).get("/clubes?q=%27%20OR%201%3D1%20--")
+    def test_inyeccion_sql_en_parametros(self):
+        r = self.cliente(ANA).get("/?ver=%27%20OR%201%3D1%20--&orden=x%3BDROP%20TABLE%20usuarios")
         self.assertEqual(r.estado, 200)
-        self.assertIn("No encontramos clubes", r.cuerpo)
-        self.assertEqual(self.cliente(ANA).get("/clubes?cat=1%3BDROP%20TABLE%20usuarios").estado, 200)
-        self.assertEqual(consulta("SELECT COUNT(*) FROM usuarios")[0][0] > 0, True)
+        self.assertEqual(self.cliente(ANA).get("/eventos?mes=1%3BDROP%20TABLE%20usuarios").estado, 200)
+        self.assertTrue(consulta("SELECT COUNT(*) FROM usuarios")[0][0] > 0)
 
     def test_comentarios_anidados_votos_y_eliminar(self):
         ana, luis = self.cliente(ANA), self.cliente(LUIS)
@@ -486,13 +481,14 @@ class PruebasAdmin(PruebaServidor):
 
 
 class PruebasInstalacionLimpia(PruebaServidor):
-    """La aplicación real arranca vacía: sin usuarios de ejemplo y con el catálogo oficial de 14 clubes."""
+    """La aplicación real arranca vacía: sin usuarios de ejemplo y con el catálogo oficial de 15 clubes."""
     con_datos_prueba = False
 
     CLUBES_OFICIALES = [
         "Club Empresarial", "Club de Debate", "Voluntariado por el Autismo", "Voluntariado Aldeas Infantiles SOS",
         "Club de Cine", "Club de Modelos", "Club de Lectura", "Club de Maestros de Ceremonias", "Club de Edecanes",
         "Club Conanca", "Club de Traductores", "Voluntariado por la Niñez", "Club de Maquillaje", "Proyección Juvenil UNEN-UAM",
+        "Club de Esports",
     ]
 
     def _registrar(self, cif, nombre):
@@ -511,7 +507,7 @@ class PruebasInstalacionLimpia(PruebaServidor):
         catalogo = c.get("/clubes").cuerpo
         for nombre in self.CLUBES_OFICIALES:
             self.assertIn(nombre, catalogo)
-        self.assertIn("14 clubes disponibles", catalogo)
+        self.assertIn("15 clubes disponibles", catalogo)
         self.assertIn("Aún no perteneces a ningún club", c.get("/").cuerpo)
         self.assertIn("Sin asignar", c.get("/clubes/club-de-debate").cuerpo)        # sin líder hasta que la administración lo asigne
 
@@ -668,7 +664,7 @@ class PruebasRolesYFuncionesEncuesta(PruebaServidor):
         self.assertEqual(self.cliente(SOFIA).get("/eventos?mes=2026-99").estado, 200)   # mes inválido: usa el actual
         perfil = self.cliente(SOFIA).get(f"/perfil/{ANA}").cuerpo
         self.assertIn("puntos de participación", perfil)
-        self.assertIn("Más participativos", self.cliente(SOFIA).get("/").cuerpo)
+        self.assertNotIn("Más participativos", self.cliente(SOFIA).get("/").cuerpo)
 
     def test_sin_buscador_en_la_cabecera(self):
         inicio = self.cliente(ANA).get("/").cuerpo

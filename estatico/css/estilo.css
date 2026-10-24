@@ -395,12 +395,6 @@ input[type=file] { font: inherit; font-size: .88rem; }
 .pasos-lista b { color: var(--tinta); }
 .pasos-lista span { font-size: .86rem; color: var(--gris); }
 
-.ranking { list-style: none; margin: 0; padding: 0; }
-.ranking li { display: flex; align-items: center; gap: 10px; padding: 9px 16px; border-top: 1px solid var(--linea-suave); font-size: .9rem; }
-.ranking li:first-child { border-top: 0; }
-.ranking li a { flex: 1; }
-.ranking-pos { width: 22px; height: 22px; border-radius: 50%; background: var(--marca-claro); color: var(--marca-oscuro); font-size: .74rem; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
-.ranking li:first-child .ranking-pos { background: var(--acento-calido); color: #4A3200; }
 .insignia { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: .72rem; font-weight: 700; background: var(--marca-claro); color: var(--marca-oscuro); white-space: nowrap; }
 .insignia-destacado { background: var(--acento-calido); color: #4A3200; }
 .insignia-activo { background: var(--marca); color: #fff; }

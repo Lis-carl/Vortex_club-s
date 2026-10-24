@@ -25,7 +25,7 @@ La primera vez se crea `datos/vortex.db` **vacía**, solo con:
 
 - las 8 categorías;
 - la cuenta de administración;
-- los 14 clubes oficiales del afiche de la Dirección de Vida Estudiantil (sin miembros ni líder).
+- los 15 clubes oficiales (los 14 del afiche de la Dirección de Vida Estudiantil y el Club de Esports), sin miembros ni líder.
 
 No hay usuarios, publicaciones, anuncios ni eventos de ejemplo. Abre <http://127.0.0.1:8000>.
 

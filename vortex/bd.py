@@ -22,10 +22,12 @@ def inicializar():
         bd.execute("PRAGMA journal_mode = WAL")
         bd.executescript(config.RUTA_ESQUEMA.read_text(encoding="utf-8"))
         _migrar(bd)
-        if bd.execute("SELECT COUNT(*) AS n FROM categorias").fetchone().n == 0:
-            from . import semilla
+        from . import semilla
+        if bd.execute("SELECT COUNT(*) AS n FROM usuarios WHERE rol_global = 'admin'").fetchone().n == 0:
             semilla.datos_base(bd)
-            bd.commit()
+        else:
+            semilla.asegurar_catalogo(bd)
+        bd.commit()
     finally:
         bd.close()
 

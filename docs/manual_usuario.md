@@ -29,7 +29,7 @@ Para salir: pulsa tu nombre (arriba a la derecha) → **Cerrar sesión**.
 | Barra superior | Logotipo VC, el lema «Sé parte de un club», la **campana de notificaciones** (con el número de avisos sin leer) y tu menú de cuenta con el rol con que ingresaste |
 | Menú izquierdo | **General:** Inicio, Explorar clubes, Anuncios, Calendario, Notificaciones · **Gestión:** Clubes a mi cargo (líder/capitán), Crear un club, Administración (si te corresponde) · **Mis clubes** |
 | Centro | El contenido de la página |
-| Columna derecha | Próximos eventos, anuncios generales y los estudiantes más participativos (en pantallas grandes) |
+| Columna derecha | Próximos eventos y anuncios generales (en pantallas grandes) |
 
 En el celular el menú aparece como una franja horizontal que puedes desplazar.
 
@@ -42,7 +42,7 @@ En el celular el menú aparece como una franja horizontal que puedes desplazar.
 
 ## 4. Encontrar y unirte a un club
 
-1. Entra a **Explorar clubes**. Usa el filtro por nombre o por categoría.
+1. Entra a **Explorar clubes**: ahí están todos los clubes de la UAM.
 2. Cada club muestra su categoría, su descripción, el número de miembros y un botón:
    - **Unirme**: el club es abierto, entras de inmediato.
    - **Solicitar ingreso**: el club requiere aprobación; el líder o un capitán te aceptará.
@@ -92,7 +92,7 @@ y envía. La administración revisará tu solicitud y recibirás una notificaci�
   Al abrir la bandeja quedan marcados como leídos.
 - **Puntos:** ganas puntos al participar: publicación 5, comentario 2, asistencia confirmada 3,
   reacción recibida de otra persona 1. Según tus puntos tienes un nivel: *Nuevo* (0), *Participante*
-  (10), *Activo* (30) o *Destacado* (60). Los más participativos aparecen en el inicio.
+  (10), *Activo* (30) o *Destacado* (60). Tus puntos y tu nivel aparecen en tu inicio y en tu perfil.
 
 ## 7. Si eres capitán (entra con el rol Capitán)
 

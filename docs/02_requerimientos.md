@@ -67,12 +67,12 @@ completas están en [`encuesta/respuestas_encuesta.csv`](encuesta/respuestas_enc
 | Hallazgo | Función de la plataforma |
 |----------|-------------------------|
 | Inscripción en línea (función más votada) | Botón «Unirme» / «Solicitar ingreso» en el catálogo y en cada club (RF-06) |
-| Catálogo y buscador | Catálogo con filtro por nombre y categoría (RF-04) |
+| Catálogo y buscador | Catálogo de todos los clubes con su categoría, descripción y miembros (RF-04). Por decisión del equipo se retiró el buscador y el filtro: con 15 clubes el catálogo completo cabe en una sola vista |
 | Confirmación de asistencia | Botón «Confirmar asistencia» con cupo y lista de asistentes (RF-32) |
 | Notificaciones, avisos que llegan tarde, eventos perdidos | Bandeja de notificaciones con contador (RF-33) y recordatorios de eventos confirmados en las próximas 48 h (RF-34) |
 | Calendario y horarios mal coordinados | Calendario mensual de actividades de todos los clubes (RF-35) |
 | Información dispersa, demasiados mensajes en chats | Tablón de anuncios por club y general, foro ordenado y chat por club, todo en un solo lugar |
-| «Algo que incentive el uso» | Puntos de participación, niveles y ranking de los más participativos (RF-36) |
+| «Algo que incentive el uso» | Puntos de participación y niveles visibles en el inicio y el perfil (RF-36) |
 | No sé cómo inscribirme | Guía «Cómo unirte a un club» en 3 pasos en el inicio de quien aún no tiene clubes |
 | 13 de 15 usarían el celular | Diseño adaptable a pantallas de 360 px (RNF-05) |
 
@@ -97,7 +97,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 ### Clubes y membresías
 | ID | Requerimiento | Prioridad |
 |----|---------------|-----------|
-| RF-04 | El sistema debe mostrar el catálogo de clubes activos con búsqueda por nombre y filtro por categoría. | A |
+| RF-04 | El sistema debe mostrar el catálogo completo de clubes activos con su categoría, descripción y número de miembros. | A |
 | RF-05 | Un estudiante debe poder **solicitar la creación** de un club; el administrador la aprueba o rechaza, y quien la pidió queda como líder. | A |
 | RF-06 | Un estudiante debe poder **unirse** a un club. Si el club es abierto entra de inmediato; si requiere aprobación queda pendiente. | A |
 | RF-07 | Líder y capitanes deben poder aceptar o rechazar solicitudes de ingreso pendientes. | A |
@@ -155,7 +155,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | RF-33 | El sistema debe generar **notificaciones** (anuncio nuevo, evento aprobado, propuesta revisada, solicitud aceptada o rechazada, comentario o respuesta, asignación de rol) y mostrar el número de no leídas. | A |
 | RF-34 | El sistema debe mostrar **recordatorios** de los eventos confirmados que empiezan en las próximas 48 horas. | M |
 | RF-35 | El sistema debe ofrecer un **calendario mensual** de actividades, con filtro «mis clubes y confirmados». | A |
-| RF-36 | El sistema debe calcular **puntos de participación** (publicación 5, comentario 2, asistencia 3, reacción recibida 1), un nivel (Nuevo, Participante, Activo, Destacado) y un ranking de los más participativos. | B |
+| RF-36 | El sistema debe calcular **puntos de participación** (publicación 5, comentario 2, asistencia 3, reacción recibida 1), y un nivel (Nuevo, Participante, Activo, Destacado), visibles en el inicio y en el perfil. | B |
 
 ## 2.4 Requerimientos no funcionales
 
@@ -232,11 +232,12 @@ ejemplo. Al crearse la base de datos solo se cargan:
 
 - las 8 categorías de clubes;
 - la cuenta de administración;
-- el catálogo oficial de **14 clubes** del afiche «Contactos de clubes, I semestre 2026» de la
+- el catálogo oficial de **15 clubes**: los 14 del afiche «Contactos de clubes, I semestre 2026» de la
   Dirección de Vida Estudiantil: Club Empresarial, Club de Debate, Voluntariado por el Autismo,
   Voluntariado Aldeas Infantiles SOS, Club de Cine, Club de Modelos, Club de Lectura, Club de
   Maestros de Ceremonias, Club de Edecanes, Club Conanca, Club de Traductores, Voluntariado por la
-  Niñez, Club de Maquillaje y Proyección Juvenil UNEN-UAM.
+  Niñez, Club de Maquillaje y Proyección Juvenil UNEN-UAM, más el **Club de Esports** (agregado por el
+  equipo del proyecto). Si falta alguno en una base ya creada, se agrega solo al iniciar.
 
 Los clubes empiezan sin miembros y sin líder. Cuando cada líder crea su cuenta, la administración
 lo asigna desde su panel (RF-31) y el líder completa la descripción del club. Los datos de

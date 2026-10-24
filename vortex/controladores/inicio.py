@@ -45,7 +45,6 @@ def feed(p):
                   participacion=participacion.de_usuario(p.bd, p.usuario.id),
                   confirmados=eventos.confirmados_futuros(p.bd, p.usuario.id),
                   recordatorios=eventos.recordatorios(p.bd, p.usuario.id),
-                  ranking=participacion.ranking(p.bd, 5),
                   anuncios_generales=anuncios.listar(p.bd, None, 3), proximos=eventos.proximos(p.bd, p.usuario.id, 3))
 
 

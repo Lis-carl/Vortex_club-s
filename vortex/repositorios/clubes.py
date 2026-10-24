@@ -13,7 +13,7 @@ def categoria_existe(bd, categoria_id):
     return bd.execute("SELECT 1 FROM categorias WHERE id = ?", (categoria_id,)).fetchone() is not None
 
 
-def catalogo(bd, usuario_id, texto="", categoria_id=None):
+def catalogo(bd, usuario_id):
     sql = """
         SELECT c.*, cat.nombre AS categoria,
           (SELECT COUNT(*) FROM membresias m WHERE m.club_id = c.id AND m.estado = 'activa') AS n_miembros,
@@ -23,16 +23,8 @@ def catalogo(bd, usuario_id, texto="", categoria_id=None):
              AND m.estado = 'pendiente') AS mi_pendiente
         FROM clubes c JOIN categorias cat ON cat.id = c.categoria_id
         WHERE c.estado = 'activo'"""
-    params = {"uid": usuario_id}
-    if texto:
-        sql += r" AND (c.nombre LIKE :q ESCAPE '\' OR c.descripcion LIKE :q ESCAPE '\')"
-        escapado = texto.replace("\\", "\\\\").replace("%", r"\%").replace("_", r"\_")
-        params["q"] = f"%{escapado}%"
-    if categoria_id:
-        sql += " AND c.categoria_id = :cat"
-        params["cat"] = categoria_id
     sql += " ORDER BY n_miembros DESC, c.nombre"
-    return bd.execute(sql, params).fetchall()
+    return bd.execute(sql, {"uid": usuario_id}).fetchall()
 
 
 def por_slug(bd, slug):

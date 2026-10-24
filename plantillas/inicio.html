@@ -28,7 +28,7 @@
 <section class="panel pasos">
   <div class="panel-cabecera"><h2>Cómo unirte a un club</h2><span class="tenue">3 pasos</span></div>
   <ol class="pasos-lista">
-    <li><b>Explora</b><span>Revisa los 14 clubes de la UAM en el catálogo y filtra por categoría.</span></li>
+    <li><b>Explora</b><span>Revisa los clubes de la UAM en el catálogo.</span></li>
     <li><b>Únete</b><span>Pulsa «Unirme». Si el club pide aprobación, el líder o un capitán te aceptará.</span></li>
     <li><b>Participa</b><span>Publica, comenta, confirma tu asistencia a eventos y suma puntos.</span></li>
   </ol>
@@ -82,17 +82,5 @@
   {% endfor %}
   </ul>
   <div class="panel-pie"><a href="/anuncios">Ver todos los anuncios</a></div>
-</section>
-<section class="panel">
-  <div class="panel-cabecera"><h2>Más participativos</h2></div>
-  {% if ranking %}
-  <ol class="ranking">
-    {% for r in ranking %}
-      <li><span class="ranking-pos">{{ bucle.indice }}</span><a href="/perfil/{{ r.cif }}">{{ r.nombre }}</a>
-        <span class="insignia insignia-{{ r.insignia.lower() }}">{{ r.puntos }} pts</span></li>
-    {% endfor %}
-  </ol>
-  {% else %}<p class="vacio-corto">Publica, comenta o confirma tu asistencia a un evento para aparecer aquí.</p>{% endif %}
-  <div class="panel-pie tenue">Publicación 5 · comentario 2 · asistencia 3 · reacción recibida 1</div>
 </section>
 {% endblock %}

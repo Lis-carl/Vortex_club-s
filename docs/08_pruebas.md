@@ -20,7 +20,7 @@ python -m unittest discover -s pruebas -t .
 
 Cada clase de integración crea su propia base de datos temporal, por lo que las pruebas **nunca
 tocan** `datos/vortex.db`. La clase `PruebasInstalacionLimpia` usa la base exactamente como la crea
-la aplicación (vacía, con los 14 clubes oficiales); las demás le agregan los datos ficticios de
+la aplicación (vacía, con los 15 clubes oficiales); las demás le agregan los datos ficticios de
 `pruebas/datos_prueba.py` para poder ejercitar roles, foros y eventos. Se baja PBKDF2 a 1 000 iteraciones **solo** en las
 pruebas (`VORTEX_ITERACIONES`) para que corran en segundos.
 
@@ -40,7 +40,7 @@ OK
 | RF-01 Registro | `PruebasAcceso.test_registro` (validaciones, duplicados, hash) |
 | RF-02 Acceso y salida | `test_login_correcto_y_cerrar_sesion`, `test_login_incorrecto`, `test_paginas_publicas_y_redireccion` |
 | RF-03 Perfil | `PruebasAdmin.test_perfil` |
-| RF-04 Catálogo y búsqueda | `PruebasClubes.test_catalogo_y_busqueda` |
+| RF-04 Catálogo | `PruebasClubes.test_catalogo_sin_buscador_ni_filtro` |
 | RF-05 Solicitar creación de club | `test_solicitar_club_y_aprobacion_del_admin` |
 | RF-06 Unirse (abierto / con aprobación) | `test_unirse_club_abierto_y_salir`, `test_unirse_con_aprobacion` |
 | RF-07 Resolver solicitudes de ingreso | `test_unirse_con_aprobacion` |
@@ -80,7 +80,7 @@ OK
 | RNF-03 Sin JavaScript | `PruebasInstalacionLimpia.test_sin_javascript`: ninguna página contiene `<script` ni atributos `on…=`, no existe `app.js` y la cabecera CSP trae `script-src 'none'` |
 | RNF-06 Contraseñas con PBKDF2 | `PruebasSeguridad.test_hash_y_verificacion`, `test_registro` (no se guarda en claro) |
 | RNF-07 CSRF | `PruebasAcceso.test_csrf_obligatorio` |
-| RNF-08 XSS e inyección SQL | `test_xss_se_escapa`, `test_inyeccion_sql_en_busqueda`, `PruebasPlantillas.test_variable_se_escapa` |
+| RNF-08 XSS e inyección SQL | `test_xss_se_escapa`, `test_inyeccion_sql_en_parametros`, `PruebasPlantillas.test_variable_se_escapa` |
 | RNF-09 Cookies y sesión | `test_login_correcto_y_cerrar_sesion`, `test_sesion_se_invalida_al_desactivar` |
 | RNF-10 Imágenes | `test_publicar_con_imagen_y_validaciones`, `PruebasFormularios.test_firmas_de_imagen` |
 | RNF-12 Arranque con un comando | Verificación manual: `python app.py` crea la base de datos |
@@ -95,7 +95,7 @@ OK
 |---------|---------|-------------------------------|
 | CSRF | POST sin token o con token falso | 403 |
 | XSS almacenado | Título `<script>alert(1)</script>` y contenido `<img onerror=…>` en publicaciones, comentarios y chat | Se muestra como texto (`&lt;script&gt;`) |
-| Inyección SQL | `q=' OR 1=1 --` y `cat=1;DROP TABLE usuarios` | Sin resultados / sin efecto; la tabla sigue existiendo |
+| Inyección SQL | `ver=' OR 1=1 --`, `orden=x;DROP TABLE usuarios` y `mes=1;DROP TABLE usuarios` | Sin resultados / sin efecto; la tabla sigue existiendo |
 | Recorrido de carpetas | `/estatico/../vortex/config.py`, `/estatico/%2e%2e/…`, `/subidas/../app.py` | 404 |
 | Archivo malicioso | Subir HTML con extensión `.png`, o una imagen de más de 2 MB | Rechazado con mensaje |
 | Fuerza bruta | 5 intentos fallidos seguidos | Bloqueo temporal con mensaje |
