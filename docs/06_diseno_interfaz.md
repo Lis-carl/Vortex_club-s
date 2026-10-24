@@ -17,7 +17,7 @@ del foro de Reddit**, con un acabado formal: líneas rectas, bordes finos y sin 
 
 | Elemento | Valor |
 |----------|-------|
-| Logotipo | Monograma **VC** en SVG: la **C** es un remolino abierto (el «vortex») que envuelve a la **V**, con un arco interior tenue que sugiere el giro y un **punto dorado** `#F2B33D` en el extremo, como impulso o energía del club. Fondo cuadrado con esquinas redondeadas en degradado UAM (`#00B4C4` → `#007A87`), `estatico/img/logo.svg`; versión en trazos blancos para fondos oscuros o fotos, `logo-blanco.svg` |
+| Logotipo | Monograma **VC** (Vortex Club's) trazado en SVG: cuadrado color UAM `#009AA9` con letras blancas (`estatico/img/logo.svg`) y versión en contorno blanco para fondos oscuros (`logo-blanco.svg`) |
 | Color de marca | **`#009AA9`** (verde azulado institucional de la UAM); hover `#007A87`; profundo `#005C66`; fondo suave `#E1F5F7`; acento cálido `#F2B33D` para niveles y el lema |
 | Texto | Títulos `#14212B`, texto `#27343E`, secundario `#5E6C78` |
 | Fondo y tarjetas | Fondo `#F2F4F6`; tarjetas blancas **sin borde**, con sombra sutil y esquinas de **12 px**; botones y campos con esquinas de 8 px |
