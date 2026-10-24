@@ -62,7 +62,7 @@ para líder, capitanes y administración).
 - **Crear publicación:** título, texto opcional e imagen opcional (PNG, JPG, GIF o WEBP de hasta 5 MB). También puedes publicar desde el cuadro «¿Qué está pasando en tus clubes?» de tu inicio, eligiendo el club.
 - **Votar:** pulsa **Útil** si la publicación te sirvió (sube en *Populares*) o la flecha hacia abajo si es poco útil (baja). Pulsar de nuevo tu voto lo retira.
 - **Reaccionar:** pulsa **Reaccionar** y elige *Apoyo*, *Me encanta*, *Me divierte*, *Me sorprende*, *Me entristece* o *Increíble*. Cada una tiene su color; pulsa una ficha ya contada para sumarte o quitar la tuya.
-- **Comentar:** abre la publicación y escribe; usa **Responder** para contestar a un comentario.
+- **Comentar:** en el inicio o el foro pulsa el botón de comentarios de una publicación: se despliegan los primeros comentarios en hilo y el campo «Únete a la conversación». Con «Ver la conversación completa» vas a la publicación con todos los comentarios, donde puedes usar **Responder**.
 - **Eliminar:** como estudiante solo puedes eliminar **lo que tú publicaste**. Líder, capitanes y
   administración pueden eliminar publicaciones de otros en su club.
 

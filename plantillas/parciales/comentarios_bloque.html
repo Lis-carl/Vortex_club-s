@@ -1,0 +1,30 @@
+{# Comentarios desplegables en el feed (estilo Reddit): los primeros comentarios, un campo para comentar
+   y un botón que lleva a la publicación con todos los comentarios. Se ve cuando el botón de comentarios está abierto. #}
+  <div class="hilo-vista">
+  {% if pub.puede_comentar %}
+  <form method="post" action="/publicaciones/{{ pub.id }}/comentar" class="conversacion-nueva">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <input type="hidden" name="siguiente" value="{{ ruta_completa }}#pub-{{ pub.id }}">
+    <label for="comentar-{{ pub.id }}" class="oculto">Comentar</label>
+    <input id="comentar-{{ pub.id }}" name="contenido" maxlength="5000" placeholder="Únete a la conversación" autocomplete="off" required>
+    <button class="boton boton-primario boton-pequeno">Comentar</button>
+  </form>
+  {% endif %}
+  {% for c in pub.vista_comentarios %}
+  <div class="comentario-r nivel-{{ min(c.nivel, 3) }}">
+    {{ avatar(c.autor_nombre, c.autor_foto) }}
+    <div class="comentario-r-cuerpo">
+      <p class="comentario-r-meta"><a href="/perfil/{{ c.autor_cif }}">{{ c.autor_nombre }}</a><span>·</span><time>{{ c.creado_en | rel }}</time></p>
+      {% if c.eliminado %}<p class="comentario-r-texto eliminado">Comentario eliminado</p>
+      {% else %}<p class="comentario-r-texto">{{ c.contenido }}</p>{% endif %}
+      <div class="comentario-r-acciones">
+        <span class="comentario-r-puntos"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>{{ c.puntaje }}</span>
+        <a href="/publicaciones/{{ pub.id }}#comentario-{{ c.id }}"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Responder</a>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <p class="hilo-vacio">Todavía no hay comentarios. ¡Sé el primero!</p>
+  {% endfor %}
+  <a class="ver-todos-comentarios" href="/publicaciones/{{ pub.id }}#comentarios">{% if pub.n_comentarios > len(pub.vista_comentarios) %}Ver los {{ pub.n_comentarios }} comentarios{% else %}Ver la conversación completa{% endif %} en el foro del club →</a>
+</div>

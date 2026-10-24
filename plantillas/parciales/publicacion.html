@@ -23,7 +23,8 @@
       {% set v_texto = None %}
       {% set v_ayuda = None %}
       {% include "parciales/votos.html" %}
-      <a class="accion accion-comentarios" href="/publicaciones/{{ pub.id }}#comentarios"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>{{ pub.n_comentarios }}<span class="voto-texto">&nbsp;comentario{% if pub.n_comentarios != 1 %}s{% endif %}</span></a>
+      {% if completa %}<a class="accion accion-comentarios" href="#comentarios"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>{{ pub.n_comentarios }}<span class="voto-texto">&nbsp;comentario{% if pub.n_comentarios != 1 %}s{% endif %}</span></a>
+      {% else %}{% include "parciales/comentarios_vista.html" %}{% endif %}
       {% include "parciales/reacciones.html" %}
       {% if pub.autor_id == usuario.id %}<a class="accion" href="/publicaciones/{{ pub.id }}/editar">Editar</a>{% endif %}
       {% if pub.puede_eliminar %}
@@ -36,5 +37,6 @@
         {% include "parciales/confirmar.html" %}
       {% endif %}
     </div>
+    {% if not completa %}{% include "parciales/comentarios_bloque.html" %}{% endif %}
   </div>
 </article>

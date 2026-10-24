@@ -15,10 +15,14 @@ def marcar_permisos(p, publicaciones):
     Un estudiante solo puede eliminar lo que él mismo publicó. El líder o capitán (con ese rol activo)
     puede eliminar en su club, y la administración en todos.
     """
-    roles = {c.id: c.rol for c in clubes.mis_clubes(p.bd, p.usuario.id)} if modo_gestion(p) else {}
+    mios = {c.id: c.rol for c in clubes.mis_clubes(p.bd, p.usuario.id)}
+    roles = mios if modo_gestion(p) else {}
     for pub in publicaciones:
         pub["puede_eliminar"] = (pub.autor_id == p.usuario.id or es_admin(p)
                                  or roles.get(pub.club_id) in ("lider", "capitan"))
+        # vista previa de comentarios desplegable en el feed
+        pub["puede_comentar"] = pub.club_id in mios
+        pub["vista_comentarios"] = foro.comentarios(p.bd, pub.id, p.usuario.id)[:3] if pub.n_comentarios else []
     return publicaciones
 
 

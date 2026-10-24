@@ -115,15 +115,16 @@ def comentar(p, id):
         if not candidato or candidato.publicacion_id != id:
             raise ErrorHttp(400, "El comentario al que respondes no existe.")
         padre, autor_padre = candidato.id, candidato.autor_id
+    siguiente = destino_seguro(p.formulario.get("siguiente"), "")   # comentario desde el feed
     if errores:
-        return Respuesta.redirigir(f"/publicaciones/{id}").con_aviso("error", errores["contenido"])
+        return Respuesta.redirigir(siguiente or f"/publicaciones/{id}").con_aviso("error", errores["contenido"])
     foro.crear_comentario(p.bd, id, p.usuario.id, padre, contenido)
     enlace = f"/publicaciones/{id}#comentarios"
     if pub.autor_id != p.usuario.id:
         notificaciones.crear(p.bd, pub.autor_id, f"{p.usuario.nombre} comentó tu publicación «{pub.titulo}».", enlace)
     if autor_padre and autor_padre not in (p.usuario.id, pub.autor_id):
         notificaciones.crear(p.bd, autor_padre, f"{p.usuario.nombre} respondió tu comentario en «{pub.titulo}».", enlace)
-    return Respuesta.redirigir(f"/publicaciones/{id}#comentarios").con_aviso("ok", "Comentario publicado.")
+    return Respuesta.redirigir(siguiente or f"/publicaciones/{id}#comentarios").con_aviso("ok", "Comentario publicado.")
 
 
 @ruta("POST", "/publicaciones/<id>/votar")

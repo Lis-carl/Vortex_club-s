@@ -1312,3 +1312,37 @@ body:has(.feed) .marco-app { flex: 1; width: 100%; padding-bottom: 0; }
   body:has(.feed) .complementario > .lateral-fijo { position: sticky; top: 52px; display: flex; flex-direction: column; }
   body:has(.feed) .lateral-fijo > .panel { border: 0; border-bottom: 1px solid var(--linea); border-radius: 0; box-shadow: none; margin: 0; }
 }
+
+/* Comentarios estilo Reddit: desplegables en el feed y con líneas de hilo */
+.pub-comentarios > summary { list-style: none; cursor: pointer; }
+.pub-comentarios > summary::-webkit-details-marker { display: none; }
+.pub-comentarios[open] > summary { background: var(--marca-claro); color: var(--marca-profundo); }
+.hilo-vista { display: none; margin-top: 12px; flex-direction: column; gap: 4px; }
+.pub-cuerpo:has(.pub-comentarios[open]) > .hilo-vista { display: flex; }
+.conversacion-nueva { display: flex; align-items: center; gap: 8px; padding: 6px 6px 6px 18px; border: 1px solid var(--linea);
+  border-radius: 999px; background: #FFFFFF; transition: border-color var(--transicion); }
+.conversacion-nueva:focus-within { border-color: var(--marca); }
+.conversacion-nueva input, .conversacion-nueva textarea { flex: 1; min-width: 0; border: 0; outline: none; background: transparent;
+  font: inherit; font-size: .92rem; color: var(--texto); resize: none; padding: 6px 0; }
+.conversacion-nueva .boton { border-radius: 999px; }
+.comentario-r { display: flex; gap: 10px; padding: 10px 0 2px; position: relative; }
+.comentario-r > .avatar { width: 30px; height: 30px; border-radius: 50%; font-size: .7rem; flex: 0 0 auto; }
+.comentario-r.nivel-1, .comentario-r.nivel-2, .comentario-r.nivel-3 { margin-left: 15px; padding-left: 22px; border-left: 2px solid var(--linea); }
+.comentario-r.nivel-2 { margin-left: 30px; } .comentario-r.nivel-3 { margin-left: 45px; }
+.comentario-r-cuerpo { min-width: 0; flex: 1; }
+.comentario-r-meta { display: flex; align-items: center; gap: 6px; margin: 0; font-size: .82rem; color: var(--gris); }
+.comentario-r-meta a { color: var(--tinta); font-weight: 700; }
+.comentario-r-texto { margin: 2px 0 4px; font-size: .92rem; color: var(--texto); overflow-wrap: anywhere; }
+.comentario-r-texto.eliminado { color: var(--gris); font-style: italic; }
+.comentario-r-acciones { display: flex; align-items: center; gap: 14px; font-size: .8rem; font-weight: 600; color: var(--gris); }
+.comentario-r-acciones a, .comentario-r-puntos { display: inline-flex; align-items: center; gap: 5px; color: var(--gris); }
+.comentario-r-acciones a:hover { color: var(--marca-profundo); text-decoration: none; }
+.hilo-vacio { margin: 8px 0 0; font-size: .86rem; color: var(--gris); }
+.ver-todos-comentarios { align-self: flex-start; margin-top: 8px; padding: 6px 14px; border-radius: 999px; background: var(--fondo);
+  border: 1px solid var(--linea); font-size: .84rem; font-weight: 600; color: var(--marca-profundo); transition: all var(--transicion); }
+.ver-todos-comentarios:hover { background: var(--marca-claro); text-decoration: none; }
+/* Página del hilo: comentarios con avatar redondo y líneas de hilo */
+.comentario-nuevo.conversacion-nueva { margin: 16px; padding-left: 18px; }
+.comentario { border-left: 0; padding-left: 0; }
+.comentario.nivel-1, .comentario.nivel-2, .comentario.nivel-3, .comentario.nivel-4, .comentario.nivel-5 { padding-left: 20px; border-left: 2px solid var(--linea); }
+.comentario .pub-meta .avatar { border-radius: 50%; }

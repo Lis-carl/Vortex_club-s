@@ -8,11 +8,11 @@
 <section class="panel" id="comentarios">
   <div class="panel-cabecera"><h2>Comentarios ({{ pub.n_comentarios }})</h2></div>
   {% if es_miembro %}
-  <form method="post" action="/publicaciones/{{ pub.id }}/comentar" class="comentario-nuevo formulario">
+  <form method="post" action="/publicaciones/{{ pub.id }}/comentar" class="comentario-nuevo conversacion-nueva">
     <input type="hidden" name="csrf" value="{{ csrf }}">
-    <div class="campo"><label for="comentario-nuevo">Escribe un comentario</label>
-      <textarea id="comentario-nuevo" name="contenido" rows="3" maxlength="5000" required></textarea></div>
-    <div class="acciones-formulario"><button class="boton boton-primario">Comentar</button></div>
+    <label for="comentario-nuevo" class="oculto">Escribe un comentario</label>
+    <textarea id="comentario-nuevo" name="contenido" rows="1" maxlength="5000" placeholder="Únete a la conversación" required></textarea>
+    <button class="boton boton-primario boton-pequeno">Comentar</button>
   </form>
   {% else %}
   <p class="vacio-corto">Únete al club para comentar en esta publicación.</p>

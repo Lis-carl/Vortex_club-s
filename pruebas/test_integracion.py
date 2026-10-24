@@ -469,6 +469,18 @@ class PruebasChatYEventos(PruebaServidor):
         self.assertIn("Anuncios generales", agenda)
         self.assertNotIn('class="lista-publicaciones"', agenda)
 
+    def test_comentarios_en_el_feed(self):
+        maria = self.cliente(MARIA)
+        pid = consulta("SELECT id FROM publicaciones WHERE titulo LIKE 'Taller de Arduino%'")[0][0]
+        inicio = maria.get("/").cuerpo
+        bloque = inicio.split(f'id="pub-{pid}"')[1].split('</article>')[0]
+        self.assertIn('class="pub-comentarios"', bloque)
+        self.assertIn("Únete a la conversación", bloque)
+        self.assertIn(f'href="/publicaciones/{pid}#comentarios"', bloque)              # ver todos en el foro
+        r = maria.post(f"/publicaciones/{pid}/comentar", {"contenido": "Desde el feed", "siguiente": f"/#pub-{pid}"}, desde="/")
+        self.assertIn("Comentario publicado", r.cuerpo)
+        self.assertIn("Desde el feed", r.cuerpo.split(f'id="pub-{pid}"')[1].split('</article>')[0])
+
     def test_pagina_de_evento(self):
         eid = consulta("SELECT id FROM propuestas_evento WHERE titulo='Hackatón de robots'")[0][0]
         maria, ana = self.cliente(MARIA), self.cliente(ANA)

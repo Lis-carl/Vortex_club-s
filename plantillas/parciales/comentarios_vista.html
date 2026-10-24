@@ -1,0 +1,4 @@
+{# Botón de comentarios del feed: al abrirlo se muestra el bloque «parciales/comentarios_bloque.html» (con :has). #}
+<details class="pub-comentarios">
+  <summary class="accion accion-comentarios"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>{{ pub.n_comentarios }}<span class="voto-texto">&nbsp;comentario{% if pub.n_comentarios != 1 %}s{% endif %}</span></summary>
+</details>
