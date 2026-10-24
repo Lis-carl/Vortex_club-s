@@ -28,7 +28,8 @@ def mensajes(p, slug):
     club = club_o_404(p, slug)
     exigir_miembro(p, club)
     lista = list(reversed(chat.ultimos(p.bd, club.id)))
-    return Respuesta.html(motor.renderizar("chat_marco.html", {"mensajes": lista, "usuario": p.usuario}))
+    return Respuesta.html(motor.renderizar("chat_marco.html", {"mensajes": lista, "usuario": p.usuario,
+                                                                "editar_base": f"/clubes/{slug}/chat/"}))
 
 
 @ruta("POST", "/clubes/<slug>/chat")

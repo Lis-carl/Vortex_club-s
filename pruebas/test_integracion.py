@@ -394,6 +394,43 @@ class PruebasChatYEventos(PruebaServidor):
         self.assertIn("al menos 3", maria.post("/publicar", {"club": "robotica", "titulo": "ab"}, desde="/").cuerpo)
         self.assertEqual(maria.post("/publicar", {"club": "ajedrez", "titulo": "No soy miembro"}, desde="/").estado, 403)
 
+    def test_editar_contenido(self):
+        ana, luis, maria = self.cliente(ANA), self.cliente(LUIS), self.cliente(MARIA)
+        # publicación: solo su autor la edita y queda marcada como editada
+        pid = consulta("SELECT id FROM publicaciones WHERE titulo='Taller de Arduino este viernes'")[0][0]
+        self.assertIn(f'href="/publicaciones/{pid}/editar"', ana.get(f"/publicaciones/{pid}").cuerpo)
+        self.assertNotIn(f'href="/publicaciones/{pid}/editar"', luis.get(f"/publicaciones/{pid}").cuerpo)
+        self.assertEqual(luis.get(f"/publicaciones/{pid}/editar").estado, 403)
+        r = ana.post(f"/publicaciones/{pid}/editar", {"titulo": "Taller de Arduino el sábado", "contenido": "Cambio de día."},
+                     desde=f"/publicaciones/{pid}/editar")
+        self.assertIn("Taller de Arduino el sábado", r.cuerpo)
+        self.assertIn("· editado", r.cuerpo)
+        self.assertIn("al menos 3", ana.post(f"/publicaciones/{pid}/editar", {"titulo": "x"}, desde=f"/publicaciones/{pid}/editar").cuerpo)
+        # comentario propio
+        luis.post(f"/publicaciones/{pid}/comentar", {"contenido": "Ahí estaré"}, desde=f"/publicaciones/{pid}")
+        cid = consulta("SELECT id FROM comentarios WHERE contenido='Ahí estaré'")[0][0]
+        self.assertEqual(ana.post(f"/comentarios/{cid}/editar", {"contenido": "hackeado"}, desde=f"/publicaciones/{pid}").estado, 403)
+        self.assertIn("Ahí estaré sin falta", luis.post(f"/comentarios/{cid}/editar", {"contenido": "Ahí estaré sin falta"},
+                                                         desde=f"/publicaciones/{pid}").cuerpo)
+        # anuncio del club: lo editan la líder o el capitán, no un miembro
+        aid = consulta("SELECT id FROM anuncios WHERE titulo='Reunión de bienvenida'")[0][0]
+        self.assertEqual(maria.post(f"/anuncios/{aid}/editar", {"titulo": "Otro", "contenido": "x"}, desde="/").estado, 403)
+        r = luis.post(f"/anuncios/{aid}/editar", {"titulo": "Reunión de bienvenida (aula 5)", "contenido": "Jueves 4 pm.",
+                                                 "siguiente": "/clubes/robotica/anuncios"}, desde="/clubes/robotica/anuncios")
+        self.assertIn("Reunión de bienvenida (aula 5)", r.cuerpo)
+        # mensaje del chat del club y mensaje privado
+        luis.post("/clubes/robotica/chat", {"contenido": "Llego tarde"}, desde="/clubes/robotica/chat")
+        mid = consulta("SELECT id FROM mensajes_chat WHERE contenido='Llego tarde'")[0][0]
+        self.assertIn(f'href="/clubes/robotica/chat/{mid}/editar" target="_top"', luis.get("/clubes/robotica/chat/mensajes").cuerpo)
+        self.assertEqual(ana.get(f"/clubes/robotica/chat/{mid}/editar").estado, 403)
+        luis.post(f"/clubes/robotica/chat/{mid}/editar", {"contenido": "Llego en 10 minutos"}, desde=f"/clubes/robotica/chat/{mid}/editar")
+        self.assertIn("Llego en 10 minutos", ana.get("/clubes/robotica/chat/mensajes").cuerpo)
+        ana.post(f"/mensajes/{LUIS}", {"contenido": "Hola Luis"}, desde=f"/mensajes/{LUIS}")
+        pm = consulta("SELECT id FROM mensajes_privados WHERE contenido='Hola Luis'")[0][0]
+        self.assertEqual(luis.post(f"/mensajes/{LUIS}/{pm}/editar", {"contenido": "x"}, desde="/").estado, 403)
+        ana.post(f"/mensajes/{LUIS}/{pm}/editar", {"contenido": "Hola Luis, ¿cómo vas?"}, desde=f"/mensajes/{LUIS}/{pm}/editar")
+        self.assertIn("Hola Luis, ¿cómo vas?", luis.get(f"/mensajes/{ANA}/marco").cuerpo)
+
     def test_pagina_de_evento(self):
         eid = consulta("SELECT id FROM propuestas_evento WHERE titulo='Hackatón de robots'")[0][0]
         maria, ana = self.cliente(MARIA), self.cliente(ANA)

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block titulo %}{{ titulo_pagina }}{% endblock %}
+{% block contenido %}
+<section class="panel">
+  <div class="panel-cabecera"><h2>{{ titulo_pagina }}</h2></div>
+  <form method="post" action="{{ accion }}" class="panel-cuerpo formulario" novalidate>
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    {% if con_titulo %}
+    <div class="campo {% if errores.titulo %}con-error{% endif %}"><label for="titulo">Título</label>
+      <input id="titulo" name="titulo" value="{{ valores.titulo }}" maxlength="150" required>
+      {% if errores.titulo %}<p class="error-campo">{{ errores.titulo }}</p>{% endif %}</div>
+    {% endif %}
+    <div class="campo {% if errores.contenido %}con-error{% endif %}"><label for="contenido">{{ etiqueta_contenido }}</label>
+      <textarea id="contenido" name="contenido" rows="{% if max_contenido > 1000 %}6{% else %}3{% endif %}" maxlength="{{ max_contenido }}">{{ valores.contenido }}</textarea>
+      {% if errores.contenido %}<p class="error-campo">{{ errores.contenido }}</p>{% endif %}</div>
+    <div class="acciones-formulario">
+      <a class="boton boton-secundario" href="{{ volver }}">Cancelar</a>
+      <button class="boton boton-primario">Guardar cambios</button>
+    </div>
+  </form>
+</section>
+{% endblock %}

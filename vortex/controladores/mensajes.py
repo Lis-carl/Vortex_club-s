@@ -48,7 +48,8 @@ def marco(p, cif):
     otro, _ = _contacto(p, cif)
     privados.marcar_leidos(p.bd, p.usuario.id, otro.id)
     lista = list(reversed(privados.ultimos(p.bd, p.usuario.id, otro.id)))
-    return Respuesta.html(motor.renderizar("chat_marco.html", {"mensajes": lista, "usuario": p.usuario}))
+    return Respuesta.html(motor.renderizar("chat_marco.html", {"mensajes": lista, "usuario": p.usuario,
+                                                                "editar_base": f"/mensajes/{cif}/"}))
 
 
 @ruta("POST", "/mensajes/<cif>")

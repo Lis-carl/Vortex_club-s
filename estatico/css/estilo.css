@@ -1147,3 +1147,12 @@ body { background:
 .slide-general .slide-collage { flex-basis: 180px; transform: scale(.88); transform-origin: right center; }
 .slide-motivos { gap: 16px; }
 .slide-motivos li { font-size: .82rem; }
+
+/* Edición de contenido */
+.editado { color: var(--gris); font-size: .78rem; font-style: normal; }
+.mensaje-editado { margin-left: 4px; opacity: .8; }
+.mensaje-editar { margin-left: 8px; font-size: .72rem; font-weight: 600; color: inherit; opacity: .85; text-decoration: underline; }
+.mensaje-editar:hover { opacity: 1; }
+.anuncio-pie { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px; }
+.anuncio-editar { flex: 1 1 100%; order: 2; }
+.anuncio-editar form { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }

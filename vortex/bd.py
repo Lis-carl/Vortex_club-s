@@ -50,6 +50,9 @@ def _migrar(bd):
     columnas_eventos = {c.name for c in bd.execute("PRAGMA table_info(propuestas_evento)").fetchall()}
     if "imagen" not in columnas_eventos:
         bd.execute("ALTER TABLE propuestas_evento ADD COLUMN imagen TEXT NOT NULL DEFAULT ''")
+    for tabla in ("publicaciones", "comentarios", "anuncios", "mensajes_chat", "mensajes_privados"):
+        if "editado_en" not in {c.name for c in bd.execute(f"PRAGMA table_info({tabla})").fetchall()}:
+            bd.execute(f"ALTER TABLE {tabla} ADD COLUMN editado_en TEXT")   # marca de «editado»
     vista = bd.execute("SELECT sql FROM sqlite_master WHERE name = 'v_eventos'").fetchone()
     if vista and "club_foto" not in vista.sql:   # la vista de eventos ganó columnas: se vuelve a crear
         bd.execute("DROP VIEW v_eventos")

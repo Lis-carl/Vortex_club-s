@@ -3,12 +3,25 @@
     {% if a.fijado %}<span class="etiqueta etiqueta-marca">Fijado</span>{% endif %}
     {% if a.club_slug %}<a class="pub-club" href="/clubes/{{ a.club_slug }}/anuncios">{{ a.club_nombre }}</a>{% else %}<span class="etiqueta">General</span>{% endif %}
     <span class="separador">·</span><span>{{ a.autor_nombre }}</span>
-    <span class="separador">·</span><time>{{ a.creado_en | fecha }}</time>
+    <span class="separador">·</span><time>{{ a.creado_en | fecha }}</time>{% if a.editado_en %}<span class="editado">· editado</span>{% endif %}
   </p>
   <h3>{{ a.titulo }}</h3>
   <div class="anuncio-texto">{{ a.contenido | saltos }}</div>
-  {% if puede_eliminar_anuncios %}
+  {% if puede_eliminar_anuncios or a.autor_id == usuario.id %}
   <div class="anuncio-pie">
+    <details class="responder anuncio-editar"><summary class="accion">Editar</summary>
+      <form method="post" action="/anuncios/{{ a.id }}/editar" class="formulario">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <input type="hidden" name="siguiente" value="{{ ruta_completa }}">
+        <label for="anuncio-titulo-{{ a.id }}" class="oculto">Título</label>
+        <input id="anuncio-titulo-{{ a.id }}" name="titulo" value="{{ a.titulo }}" maxlength="150" required>
+        <label for="anuncio-texto-{{ a.id }}" class="oculto">Contenido</label>
+        <textarea id="anuncio-texto-{{ a.id }}" name="contenido" rows="3" maxlength="5000" required>{{ a.contenido }}</textarea>
+        <div><button class="boton boton-secundario boton-pequeno">Guardar cambios</button></div>
+      </form>
+    </details>
+  {% endif %}
+  {% if puede_eliminar_anuncios %}
     {% set c_url = "/anuncios/" + str(a.id) + "/eliminar" %}
     {% set c_etiqueta = "Eliminar" %}
     {% set c_pregunta = "¿Eliminar este anuncio?" %}
@@ -16,6 +29,8 @@
     {% set c_nombre = None %}
     {% set c_siguiente = ruta_completa %}
     {% include "parciales/confirmar.html" %}
+  {% endif %}
+  {% if puede_eliminar_anuncios or a.autor_id == usuario.id %}
   </div>
   {% endif %}
 </article>

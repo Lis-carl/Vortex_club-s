@@ -20,5 +20,10 @@ def por_id(bd, anuncio_id):
     return bd.execute("SELECT * FROM anuncios WHERE id = ?", (anuncio_id,)).fetchone()
 
 
+def editar(bd, anuncio_id, titulo, contenido):
+    bd.execute("UPDATE anuncios SET titulo = ?, contenido = ?, editado_en = datetime('now', 'localtime') WHERE id = ?",
+               (titulo, contenido, anuncio_id))
+
+
 def eliminar(bd, anuncio_id):
     bd.execute("DELETE FROM anuncios WHERE id = ?", (anuncio_id,))

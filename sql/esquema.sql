@@ -78,7 +78,8 @@ CREATE TABLE IF NOT EXISTS anuncios (
     titulo      TEXT    NOT NULL CHECK (length(titulo) BETWEEN 3 AND 150),
     contenido   TEXT    NOT NULL,
     fijado      INTEGER NOT NULL DEFAULT 0 CHECK (fijado IN (0, 1)),
-    creado_en   TEXT    NOT NULL DEFAULT (datetime('now', 'localtime'))
+    creado_en   TEXT    NOT NULL DEFAULT (datetime('now', 'localtime')),
+    editado_en  TEXT
 );
 
 -- D7 Publicaciones y comentarios ----------------------------------------
@@ -90,7 +91,8 @@ CREATE TABLE IF NOT EXISTS publicaciones (
     contenido   TEXT    NOT NULL DEFAULT '',
     imagen      TEXT    NOT NULL DEFAULT '',
     eliminado   INTEGER NOT NULL DEFAULT 0 CHECK (eliminado IN (0, 1)),
-    creado_en   TEXT    NOT NULL DEFAULT (datetime('now', 'localtime'))
+    creado_en   TEXT    NOT NULL DEFAULT (datetime('now', 'localtime')),
+    editado_en  TEXT
 );
 
 CREATE TABLE IF NOT EXISTS comentarios (
@@ -100,7 +102,8 @@ CREATE TABLE IF NOT EXISTS comentarios (
     padre_id        INTEGER REFERENCES comentarios(id) ON DELETE CASCADE,
     contenido       TEXT    NOT NULL CHECK (length(contenido) BETWEEN 1 AND 5000),
     eliminado       INTEGER NOT NULL DEFAULT 0 CHECK (eliminado IN (0, 1)),
-    creado_en       TEXT    NOT NULL DEFAULT (datetime('now', 'localtime'))
+    creado_en       TEXT    NOT NULL DEFAULT (datetime('now', 'localtime')),
+    editado_en      TEXT
 );
 
 -- D8 Votos y reacciones ------------------------------------------------
@@ -132,7 +135,8 @@ CREATE TABLE IF NOT EXISTS mensajes_chat (
     club_id     INTEGER NOT NULL REFERENCES clubes(id) ON DELETE CASCADE,
     autor_id    INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
     contenido   TEXT    NOT NULL CHECK (length(contenido) BETWEEN 1 AND 1000),
-    creado_en   TEXT    NOT NULL DEFAULT (datetime('now', 'localtime'))
+    creado_en   TEXT    NOT NULL DEFAULT (datetime('now', 'localtime')),
+    editado_en  TEXT
 );
 
 -- D10 Propuestas de evento -----------------------------------------------
@@ -202,6 +206,7 @@ CREATE TABLE IF NOT EXISTS mensajes_privados (
     contenido   TEXT    NOT NULL CHECK (length(contenido) BETWEEN 1 AND 1000),
     leido       INTEGER NOT NULL DEFAULT 0 CHECK (leido IN (0, 1)),
     creado_en   TEXT    NOT NULL DEFAULT (datetime('now', 'localtime')),
+    editado_en  TEXT,
     CHECK (emisor_id <> receptor_id)
 );
 

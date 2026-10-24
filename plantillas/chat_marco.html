@@ -4,14 +4,15 @@
   <meta charset="utf-8">
   <meta http-equiv="refresh" content="5">
   <title>Mensajes</title>
-  <link rel="stylesheet" href="/estatico/css/estilo.css?v=29">
+  <link rel="stylesheet" href="/estatico/css/estilo.css?v=30">
 </head>
 <body class="cuerpo-marco">
   {# Los mensajes llegan del más nuevo al más antiguo; column-reverse los muestra abajo, como en cualquier chat. #}
   <div class="mensajes">
     {% for m in mensajes %}
     <div class="mensaje {% if m.autor_id == usuario.id %}propio{% endif %}">
-      <p class="mensaje-meta"><strong>{{ m.autor_nombre }}</strong><span>{{ m.creado_en | hora }}</span></p>
+      <p class="mensaje-meta"><strong>{{ m.autor_nombre }}</strong><span>{{ m.creado_en | hora }}</span>{% if m.editado_en %}<span class="mensaje-editado">· editado</span>{% endif %}
+        {% if m.autor_id == usuario.id and editar_base %}<a class="mensaje-editar" href="{{ editar_base }}{{ m.id }}/editar" target="_top">Editar</a>{% endif %}</p>
       <p class="mensaje-texto">{{ m.contenido }}</p>
     </div>
     {% else %}

@@ -13,7 +13,7 @@ REACCIONES = [
 TIPOS_REACCION = [emoji for emoji, _, _ in REACCIONES]
 
 _BASE = """
-SELECT p.id, p.club_id, p.autor_id, p.titulo, p.contenido, p.imagen, p.creado_en,
+SELECT p.id, p.club_id, p.autor_id, p.titulo, p.contenido, p.imagen, p.creado_en, p.editado_en,
        c.nombre AS club_nombre, c.slug AS club_slug,
        u.nombre AS autor_nombre, u.cif AS autor_cif, u.foto AS autor_foto,
        COALESCE((SELECT SUM(v.valor) FROM votos_publicacion v WHERE v.publicacion_id = p.id), 0) AS puntaje,
@@ -84,7 +84,7 @@ def eliminar_publicacion(bd, publicacion_id):
 def comentarios(bd, publicacion_id, usuario_id):
     """Comentarios en orden de árbol (cada respuesta justo debajo de su comentario padre)."""
     filas = bd.execute(
-        """SELECT k.id, k.publicacion_id, k.autor_id, k.padre_id, k.contenido, k.eliminado, k.creado_en,
+        """SELECT k.id, k.publicacion_id, k.autor_id, k.padre_id, k.contenido, k.eliminado, k.creado_en, k.editado_en,
                   u.nombre AS autor_nombre, u.cif AS autor_cif, u.foto AS autor_foto,
                   COALESCE((SELECT SUM(v.valor) FROM votos_comentario v WHERE v.comentario_id = k.id), 0) AS puntaje,
                   (SELECT v.valor FROM votos_comentario v WHERE v.comentario_id = k.id AND v.usuario_id = ?) AS mi_voto
@@ -111,6 +111,15 @@ def comentario(bd, comentario_id):
 def crear_comentario(bd, publicacion_id, autor_id, padre_id, contenido):
     bd.execute("INSERT INTO comentarios (publicacion_id, autor_id, padre_id, contenido) VALUES (?, ?, ?, ?)",
                (publicacion_id, autor_id, padre_id, contenido))
+
+
+def editar_publicacion(bd, publicacion_id, titulo, contenido):
+    bd.execute("UPDATE publicaciones SET titulo = ?, contenido = ?, editado_en = datetime('now', 'localtime') WHERE id = ?",
+               (titulo, contenido, publicacion_id))
+
+
+def editar_comentario(bd, comentario_id, contenido):
+    bd.execute("UPDATE comentarios SET contenido = ?, editado_en = datetime('now', 'localtime') WHERE id = ?", (contenido, comentario_id))
 
 
 def eliminar_comentario(bd, comentario_id):

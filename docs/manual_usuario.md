@@ -66,6 +66,13 @@ para líder, capitanes y administración).
 - **Eliminar:** como estudiante solo puedes eliminar **lo que tú publicaste**. Líder, capitanes y
   administración pueden eliminar publicaciones de otros en su club.
 
+### Editar lo que publicaste
+Puedes corregir lo que escribiste: en tus **publicaciones** pulsa **Editar** (se abre un formulario con
+el título y el texto); en tus **comentarios**, **Editar** despliega el texto para cambiarlo; en el **chat
+del club** y en los **mensajes privados**, tus mensajes tienen el enlace **Editar**. Los **anuncios** los
+puede editar quien los publicó, el líder, los capitanes o la administración. Todo lo editado muestra
+la marca «editado».
+
 ### Anuncios
 Los del club están en su pestaña **Anuncios**; los de toda la UAM, en **Anuncios** del menú.
 Cada anuncio nuevo te llega también como notificación.

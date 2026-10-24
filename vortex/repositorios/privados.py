@@ -60,11 +60,20 @@ def enviar(bd, emisor_id, receptor_id, contenido):
 def ultimos(bd, a, b, cantidad=60):
     """Mismas columnas que el chat del club, para reutilizar su marco."""
     filas = bd.execute(
-        """SELECT m.id, m.contenido, m.creado_en, m.emisor_id AS autor_id, u.nombre AS autor_nombre
+        """SELECT m.id, m.contenido, m.creado_en, m.editado_en, m.emisor_id AS autor_id, u.nombre AS autor_nombre
            FROM mensajes_privados m JOIN usuarios u ON u.id = m.emisor_id
            WHERE (m.emisor_id = ? AND m.receptor_id = ?) OR (m.emisor_id = ? AND m.receptor_id = ?)
            ORDER BY m.id DESC LIMIT ?""", (a, b, b, a, cantidad)).fetchall()
     return list(reversed(filas))
+
+
+def mensaje(bd, mensaje_id):
+    """Mensaje con el mismo nombre de columna de autor que el chat del club."""
+    return bd.execute("SELECT *, emisor_id AS autor_id FROM mensajes_privados WHERE id = ?", (mensaje_id,)).fetchone()
+
+
+def editar(bd, mensaje_id, contenido):
+    bd.execute("UPDATE mensajes_privados SET contenido = ?, editado_en = datetime('now', 'localtime') WHERE id = ?", (contenido, mensaje_id))
 
 
 def marcar_leidos(bd, receptor_id, emisor_id):
