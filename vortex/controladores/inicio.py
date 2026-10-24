@@ -44,7 +44,8 @@ def feed(p):
                   saludo=_saludo(), fecha_hoy=f"{hoy.day} de {MESES_LARGOS[hoy.month - 1]} de {hoy.year}",
                   confirmados=eventos.confirmados_futuros(p.bd, p.usuario.id),
                   recordatorios=eventos.recordatorios(p.bd, p.usuario.id),
-                  anuncios_generales=anuncios.listar(p.bd, None, 3), proximos=eventos.proximos(p.bd, p.usuario.id, 3))
+                  anuncios_generales=anuncios.listar(p.bd, None, 3), proximos=eventos.proximos(p.bd, p.usuario.id, 3),
+                  slides=eventos.proximos(p.bd, p.usuario.id, 5))
 
 
 # --- Anuncios generales ----------------------------------------------------------------------

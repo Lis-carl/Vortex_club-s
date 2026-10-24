@@ -1,17 +1,7 @@
 {% extends "base.html" %}
 {% block titulo %}Inicio{% endblock %}
 {% block contenido %}
-<section class="bienvenida">
-  <div class="bienvenida-texto">
-    <p class="antetitulo antetitulo-claro">{{ fecha_hoy }}</p>
-    <h1>{{ saludo }}, {{ usuario.nombre.split()[0] }}</h1>
-    <p>Esto es lo que pasa hoy en los clubes de la UAM.</p>
-  </div>
-  <dl class="bienvenida-datos">
-    <div><dt>Mis clubes</dt><dd>{{ n_clubes }}</dd></div>
-    <div><dt>Eventos confirmados</dt><dd>{{ confirmados }}</dd></div>
-  </dl>
-</section>
+{% include "parciales/carrusel.html" %}
 
 {% if recordatorios %}
 <section class="recordatorio" role="status">

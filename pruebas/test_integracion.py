@@ -375,6 +375,14 @@ class PruebasChatYEventos(PruebaServidor):
         self.assertEqual(sofia.get("/clubes/robotica/chat/mensajes").estado, 403)
         self.assertEqual(sofia.post("/clubes/robotica/chat", {"contenido": "hola"}, desde="/").estado, 403)
 
+    def test_carrusel_inicio(self):
+        inicio = self.cliente(MARIA).get("/").cuerpo
+        self.assertIn('class="carrusel"', inicio)
+        self.assertIn('id="slide-0" class="carrusel-radio" checked', inicio)   # la primera diapositiva es la general
+        self.assertIn("Hackatón de robots", inicio)
+        self.assertIn("Unirme al evento", inicio)
+        self.assertIn("/clubes/robotica/eventos#evento-", inicio)               # «Ver completo»
+
     def test_chat_privado(self):
         ana, luis = self.cliente(ANA), self.cliente(LUIS)
         bandeja = ana.get("/mensajes").cuerpo
