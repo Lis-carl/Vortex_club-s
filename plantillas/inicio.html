@@ -5,7 +5,9 @@
 {% include "parciales/recordatorio.html" %}
 {% endif %}
 
-{# Feed en una sola columna continua: pestañas, cuadro para publicar, carrusel y publicaciones. #}
+{% include "parciales/carrusel.html" %}
+
+{# Feed en una sola columna continua: pestañas, cuadro para publicar y publicaciones. #}
 <section class="feed" aria-label="Publicaciones">
   <div class="feed-pestanas">
     <nav class="feed-origen" aria-label="Origen de las publicaciones">
@@ -52,8 +54,6 @@
     <a class="boton boton-primario" href="/clubes">Explorar clubes</a>
   </div>
   {% endif %}
-
-  {% include "parciales/carrusel.html" %}
 
   {% if tiene_clubes %}
     {% set vacio_titulo = "Todavía no hay publicaciones" %}
