@@ -23,11 +23,6 @@ def marcar_permisos(p, publicaciones):
     return publicaciones
 
 
-def _saludo():
-    hora = datetime.now().hour
-    return "Buenos días" if hora < 12 else "Buenas tardes" if hora < 19 else "Buenas noches"
-
-
 @ruta("GET", "/")
 @requiere_sesion
 def feed(p):
@@ -41,7 +36,7 @@ def feed(p):
     hoy = datetime.now()
     return render(p, "inicio.html", publicaciones=marcar_permisos(p, pubs[:20]), ver=ver, orden=orden, pagina=pagina,
                   hay_mas=hay_mas, tiene_clubes=tiene_clubes, n_clubes=len(mis),
-                  saludo=_saludo(), fecha_hoy=f"{hoy.day} de {MESES_LARGOS[hoy.month - 1]} de {hoy.year}",
+                  fecha_hoy=f"{hoy.day} de {MESES_LARGOS[hoy.month - 1]} de {hoy.year}",
                   confirmados=eventos.confirmados_futuros(p.bd, p.usuario.id),
                   recordatorios=eventos.recordatorios(p.bd, p.usuario.id),
                   anuncios_generales=anuncios.listar(p.bd, None, 3), proximos=eventos.proximos(p.bd, p.usuario.id, 3),

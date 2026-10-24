@@ -906,3 +906,17 @@ h1, h2, h3, .pub-titulo a, .club-tarjeta-cabecera h2 a { color: var(--tinta); }
   .slide-datos div { min-width: 0; flex: 1; }
   .carrusel-puntos { left: 20px; bottom: 26px; }
 }
+
+/* Carrusel: fondos nuevos (anillos del vórtice sobre degradados de la marca) */
+.slide { --anillos: repeating-radial-gradient(circle at 108% 50%, rgba(255, 255, 255, .08) 0 2px, transparent 2px 24px); }
+.slide-general { background: var(--anillos),
+  radial-gradient(circle at 12% 120%, rgba(245, 166, 35, .35), transparent 45%),
+  linear-gradient(130deg, #00707C 0%, #009AA9 55%, #22B5C1 100%); }
+.slide-evento { background-blend-mode: normal; background: var(--anillos), linear-gradient(130deg, #14385C 0%, #1D5F8A 100%); }
+.slide-evento:nth-child(3n) { background: var(--anillos), linear-gradient(130deg, #0E4B4F 0%, #0F7C74 100%); }
+.slide-evento:nth-child(3n+1) { background: var(--anillos), linear-gradient(130deg, #2D2F6E 0%, #3F5BA9 100%); }
+.slide-general h1 { font-size: 2rem; }
+
+/* Pestañas «Mis clubes / Toda la UAM / Recientes / Populares»: la elegida en azul */
+.segmentos a.activo { background: var(--marca); color: #FFFFFF; box-shadow: 0 2px 8px rgba(0, 154, 169, .3); }
+.segmentos a.activo:hover { background: var(--marca-oscuro); color: #FFFFFF; }

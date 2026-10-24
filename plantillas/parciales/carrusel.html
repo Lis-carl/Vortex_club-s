@@ -9,9 +9,8 @@
     <div class="carrusel-pista">
       <article class="slide slide-general" aria-label="Diapositiva 1 de {{ n_slides }}">
         <div class="slide-contenido">
-          <p class="slide-antetitulo">{{ fecha_hoy }}</p>
-          <h1>{{ saludo }}, {{ usuario.nombre.split()[0] }}</h1>
-          <p class="slide-texto">Esto es lo que pasa hoy en los clubes de la UAM.{% if slides %} Desliza para ver los próximos eventos.{% endif %}</p>
+          <p class="slide-antetitulo">UAM · Vida Estudiantil · {{ fecha_hoy }}</p>
+          <h1>Sé parte de un club</h1>
           <dl class="slide-datos">
             <div><dt>Mis clubes</dt><dd>{{ n_clubes }}</dd></div>
             <div><dt>Eventos confirmados</dt><dd>{{ confirmados }}</dd></div>
@@ -29,7 +28,7 @@
           <p class="slide-antetitulo">Próximo evento · {{ e.club_nombre }}</p>
           <h2>{{ e.titulo }}</h2>
           <p class="slide-texto">{{ e.descripcion | extracto }}</p>
-          <p class="slide-meta"><span>{{ e.fecha_inicio | hora }}</span><span>{{ e.lugar }}</span>
+          <p class="slide-meta"><span>{{ e.fecha_inicio | fecha }}</span><span>{{ e.lugar }}</span>
             <span>{{ e.n_asistentes }} confirmado{% if e.n_asistentes != 1 %}s{% endif %}{% if e.cupo %} de {{ e.cupo }}{% endif %}</span></p>
           <div class="slide-botones">
             {% if e.mi_asistencia %}
