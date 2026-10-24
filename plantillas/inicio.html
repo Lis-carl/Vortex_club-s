@@ -1,69 +1,97 @@
 {% extends "base.html" %}
 {% block titulo %}Inicio{% endblock %}
 {% block contenido %}
-{% include "parciales/carrusel.html" %}
-
 {% if recordatorios %}
 {% include "parciales/recordatorio.html" %}
 {% endif %}
 
-{% if not tiene_clubes %}
-<section class="panel pasos">
-  <div class="panel-cabecera"><h2>Cómo unirte a un club</h2><span class="tenue">3 pasos</span></div>
-  <ol class="pasos-lista">
-    <li><b>Explora</b><span>Revisa los clubes de la UAM en el catálogo.</span></li>
-    <li><b>Únete</b><span>Pulsa «Unirme». Si el club pide aprobación, el líder o un capitán te aceptará.</span></li>
-    <li><b>Participa</b><span>Publica, comenta, vota propuestas y confirma tu asistencia a eventos.</span></li>
-  </ol>
-  <div class="panel-pie"><a class="boton boton-primario" href="/clubes">Explorar clubes</a></div>
-</section>
-{% endif %}
+{# Feed en una sola columna continua: pestañas, cuadro para publicar, carrusel y publicaciones. #}
+<section class="feed" aria-label="Publicaciones">
+  <div class="feed-pestanas">
+    <nav class="feed-origen" aria-label="Origen de las publicaciones">
+      <a class="{% if ver == 'mis' %}activo{% endif %}" href="/?ver=mis&amp;orden={{ orden }}">Mis clubes</a>
+      <a class="{% if ver == 'todos' %}activo{% endif %}" href="/?ver=todos&amp;orden={{ orden }}">Toda la UAM</a>
+    </nav>
+    <nav class="feed-orden" aria-label="Orden">
+      <a class="{% if orden == 'nuevos' %}activo{% endif %}" href="/?ver={{ ver }}&amp;orden=nuevos">Recientes</a>
+      <a class="{% if orden == 'populares' %}activo{% endif %}" href="/?ver={{ ver }}&amp;orden=populares">Populares</a>
+    </nav>
+  </div>
 
-<div class="barra-herramientas">
-  <nav class="segmentos" aria-label="Origen de las publicaciones">
-    <a class="{% if ver == 'mis' %}activo{% endif %}" href="/?ver=mis&amp;orden={{ orden }}">Mis clubes</a>
-    <a class="{% if ver == 'todos' %}activo{% endif %}" href="/?ver=todos&amp;orden={{ orden }}">Toda la UAM</a>
-  </nav>
-  <nav class="segmentos" aria-label="Orden">
-    <a class="{% if orden == 'nuevos' %}activo{% endif %}" href="/?ver={{ ver }}&amp;orden=nuevos">Recientes</a>
-    <a class="{% if orden == 'populares' %}activo{% endif %}" href="/?ver={{ ver }}&amp;orden=populares">Populares</a>
-  </nav>
-</div>
-{% if tiene_clubes %}
-  {% set vacio_titulo = "Todavía no hay publicaciones" %}
-  {% set vacio_texto = "Cuando alguien publique en tus clubes, lo verás aquí." %}
-  {% set vacio_url = None %}
-{% else %}
-  {% set vacio_titulo = "Aún no hay publicaciones" %}
-  {% set vacio_texto = "Las publicaciones de los clubes de la UAM aparecerán aquí." %}
-  {% set vacio_url = None %}
-{% endif %}
-{% set base_consulta = "ver=" + ver + "&orden=" + orden + "&" %}
-{% include "parciales/lista_publicaciones.html" %}
+  {% if tiene_clubes %}
+  <form class="redactor" method="post" action="/publicar" enctype="multipart/form-data">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    {{ avatar(usuario.nombre, usuario.foto) }}
+    <div class="redactor-campos">
+      <label for="redactor-titulo" class="oculto">Título</label>
+      <input id="redactor-titulo" class="redactor-titulo" name="titulo" placeholder="¿Qué está pasando en tus clubes?" maxlength="150" required>
+      <label for="redactor-texto" class="oculto">Detalle</label>
+      <textarea id="redactor-texto" class="redactor-texto" name="contenido" rows="1" maxlength="10000" placeholder="Agrega más detalles (opcional)"></textarea>
+      <div class="redactor-barra">
+        <label class="redactor-icono" title="Agregar imagen">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="9" cy="10" r="1.8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 17l5-5 4 4 2.5-2.5L20 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          <input type="file" name="imagen" accept="image/png,image/jpeg,image/gif,image/webp" class="oculto">
+          <span class="oculto">Agregar imagen</span>
+        </label>
+        <label for="redactor-club" class="oculto">Club</label>
+        <select id="redactor-club" name="club" class="redactor-club" required>
+          {% for c in mis_clubes %}<option value="{{ c.slug }}">{{ c.nombre }}</option>{% endfor %}
+        </select>
+        <button class="boton boton-primario redactor-boton">Publicar</button>
+      </div>
+    </div>
+  </form>
+  {% else %}
+  <div class="feed-pasos">
+    <h2>Cómo unirte a un club</h2>
+    <ol class="pasos-lista">
+      <li><b>Explora</b><span>Revisa los clubes de la UAM en el catálogo.</span></li>
+      <li><b>Únete</b><span>Pulsa «Unirme». Si el club pide aprobación, el líder o un capitán te aceptará.</span></li>
+      <li><b>Participa</b><span>Publica, comenta, vota propuestas y confirma tu asistencia a eventos.</span></li>
+    </ol>
+    <a class="boton boton-primario" href="/clubes">Explorar clubes</a>
+  </div>
+  {% endif %}
+
+  {% include "parciales/carrusel.html" %}
+
+  {% if tiene_clubes %}
+    {% set vacio_titulo = "Todavía no hay publicaciones" %}
+    {% set vacio_texto = "Cuando alguien publique en tus clubes, lo verás aquí." %}
+    {% set vacio_url = None %}
+  {% else %}
+    {% set vacio_titulo = "Aún no hay publicaciones" %}
+    {% set vacio_texto = "Las publicaciones de los clubes de la UAM aparecerán aquí." %}
+    {% set vacio_url = None %}
+  {% endif %}
+  {% set base_consulta = "ver=" + ver + "&orden=" + orden + "&" %}
+  {% include "parciales/lista_publicaciones.html" %}
+</section>
 {% endblock %}
 {% block lateral %}
-<section class="panel">
+<section class="panel panel-lateral">
   <div class="panel-cabecera"><h2>Próximos eventos</h2></div>
   {% for e in proximos %}
-    <div class="evento-lateral">
-      <div class="fecha fecha-pequena"><b>{{ e.fecha_inicio | dia }}</b><span>{{ e.fecha_inicio | mes }}</span></div>
-      <div><a href="/eventos/{{ e.id }}">{{ e.titulo }}</a>
-        <span class="tenue">{{ e.club_nombre }} · {{ e.fecha_inicio | fecha }}{% if e.mi_asistencia %} · Asistirás{% endif %}</span></div>
-    </div>
+    <a class="lateral-item" href="/eventos/{{ e.id }}">
+      <span class="lateral-item-meta">{{ e.club_nombre }} · {{ e.fecha_inicio | fecha }}</span>
+      <strong>{{ e.titulo }}</strong>
+      <span class="lateral-item-meta">{{ e.lugar }}{% if e.mi_asistencia %} · Asistirás{% endif %}</span>
+    </a>
   {% else %}
     <p class="vacio-corto">No hay eventos programados.</p>
   {% endfor %}
-  <div class="panel-pie"><a href="/eventos">Ver calendario</a></div>
+  <a class="lateral-mas" href="/eventos">Ver calendario</a>
 </section>
-<section class="panel">
+<section class="panel panel-lateral">
   <div class="panel-cabecera"><h2>Anuncios generales</h2></div>
-  <ul class="lista-simple">
   {% for a in anuncios_generales %}
-    <li><a href="/anuncios">{{ a.titulo }}</a><span class="tenue">{% if a.fijado %}Fijado · {% endif %}{{ a.creado_en | rel }}</span></li>
+    <a class="lateral-item" href="/anuncios">
+      <span class="lateral-item-meta">{% if a.fijado %}Fijado · {% endif %}{{ a.creado_en | rel }}</span>
+      <strong>{{ a.titulo }}</strong>
+    </a>
   {% else %}
-    <li class="tenue">No hay anuncios publicados.</li>
+    <p class="vacio-corto">No hay anuncios publicados.</p>
   {% endfor %}
-  </ul>
-  <div class="panel-pie"><a href="/anuncios">Ver todos los anuncios</a></div>
+  <a class="lateral-mas" href="/anuncios">Ver todos los anuncios</a>
 </section>
 {% endblock %}

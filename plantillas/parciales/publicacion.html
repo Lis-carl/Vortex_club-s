@@ -1,19 +1,19 @@
 <article class="publicacion" id="pub-{{ pub.id }}">
+  <a class="pub-avatar" href="/perfil/{{ pub.autor_cif }}" aria-hidden="true" tabindex="-1">{{ avatar(pub.autor_nombre, pub.autor_foto) }}</a>
   <div class="pub-cuerpo">
     <p class="pub-meta">
-      <a class="pub-club" href="/clubes/{{ pub.club_slug }}">{{ pub.club_nombre }}</a>
-      <span class="separador">·</span>
-      <span class="pub-autor">{{ avatar(pub.autor_nombre, pub.autor_foto, "avatar-mini") }}Publicado por <a href="/perfil/{{ pub.autor_cif }}">{{ pub.autor_nombre }}</a></span>
+      <a class="pub-nombre" href="/perfil/{{ pub.autor_cif }}">{{ pub.autor_nombre }}</a>
       <span class="separador">·</span>
       <time>{{ pub.creado_en | rel }}</time>
+      <a class="pub-club" href="/clubes/{{ pub.club_slug }}">{{ pub.club_nombre }}</a>
     </p>
     <h2 class="pub-titulo">{% if completa %}{{ pub.titulo }}{% else %}<a href="/publicaciones/{{ pub.id }}">{{ pub.titulo }}</a>{% endif %}</h2>
-    {% if pub.imagen %}<img class="pub-imagen" src="/subidas/{{ pub.imagen }}" alt="Imagen de la publicación: {{ pub.titulo }}" loading="lazy">{% endif %}
     {% if completa %}
       {% if pub.contenido %}<div class="pub-texto">{{ pub.contenido | saltos }}</div>{% endif %}
     {% elif pub.contenido %}
       <p class="pub-extracto">{{ pub.contenido | extracto }}</p>
     {% endif %}
+    {% if pub.imagen %}<img class="pub-imagen" src="/subidas/{{ pub.imagen }}" alt="Imagen de la publicación: {{ pub.titulo }}" loading="lazy">{% endif %}
     <div class="pub-acciones">
       {% set v_url = "/publicaciones/" + str(pub.id) + "/votar" %}
       {% set v_id = "votos-p-" + str(pub.id) %}

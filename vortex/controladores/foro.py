@@ -35,6 +35,28 @@ def foro_club(p, slug):
                   hay_mas=hay_mas, **contexto_club(p, club, "foro"))
 
 
+@ruta("POST", "/publicar")
+@requiere_sesion
+def publicar_desde_inicio(p):
+    """Cuadro «¿Qué está pasando en tus clubes?» del inicio: se elige el club en el mismo formulario."""
+    club = club_o_404(p, (p.formulario.get("club") or "").strip() or "-")
+    exigir_miembro(p, club)
+    errores = frm.Errores()
+    titulo = frm.texto(p.formulario, errores, "titulo", "El título", 3, 150)
+    contenido = frm.texto(p.formulario, errores, "contenido", "El texto", 1, 10000, obligatorio=False, una_linea=False)
+    archivo = p.archivos.get("imagen")
+    extension = frm.validar_imagen(archivo, errores)
+    volver = Respuesta.redirigir("/?ver=mis")
+    if errores:
+        return volver.con_aviso("error", next(iter(errores.values())))
+    nombre_imagen = ""
+    if extension:
+        nombre_imagen = f"{secrets.token_hex(16)}.{extension}"
+        (config.DIR_SUBIDAS / nombre_imagen).write_bytes(archivo.datos)
+    foro.crear_publicacion(p.bd, club.id, p.usuario.id, titulo, contenido, nombre_imagen)
+    return volver.con_aviso("ok", f"Publicado en {club.nombre}.")
+
+
 @ruta("GET", "/clubes/<slug>/publicar")
 @requiere_sesion
 def publicar_formulario(p, slug):

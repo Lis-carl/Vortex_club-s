@@ -383,6 +383,17 @@ class PruebasChatYEventos(PruebaServidor):
         self.assertIn("Unirme al evento", inicio)
         self.assertRegex(inicio, r'href="/eventos/\d+">Ver completo</a>')      # abre la página del evento
 
+    def test_publicar_desde_inicio(self):
+        maria = self.cliente(MARIA)
+        inicio = maria.get("/").cuerpo
+        self.assertIn('action="/publicar"', inicio)
+        self.assertIn('<option value="robotica">', inicio)
+        r = maria.post("/publicar", {"club": "robotica", "titulo": "Busco equipo para la feria", "contenido": "Somos dos."}, desde="/")
+        self.assertIn("Publicado en Robótica", r.cuerpo)
+        self.assertIn("Busco equipo para la feria", self.cliente(ANA).get("/clubes/robotica").cuerpo)
+        self.assertIn("al menos 3", maria.post("/publicar", {"club": "robotica", "titulo": "ab"}, desde="/").cuerpo)
+        self.assertEqual(maria.post("/publicar", {"club": "ajedrez", "titulo": "No soy miembro"}, desde="/").estado, 403)
+
     def test_pagina_de_evento(self):
         eid = consulta("SELECT id FROM propuestas_evento WHERE titulo='Hackatón de robots'")[0][0]
         maria, ana = self.cliente(MARIA), self.cliente(ANA)
