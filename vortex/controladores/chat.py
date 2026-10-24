@@ -5,7 +5,7 @@ La página del chat incrusta un marco (iframe) con los mensajes; ese marco se re
 en el navegador. Enviar un mensaje es un formulario POST normal.
 """
 from .. import formularios as frm
-from ..acceso import requiere_sesion, club_o_404, contexto_club, exigir_miembro
+from ..acceso import requiere_sesion, club_o_404, contexto_club, exigir_miembro, destino_seguro
 from ..enrutador import ruta
 from ..nucleo import Respuesta
 from ..plantillas import motor
@@ -39,8 +39,10 @@ def enviar(p, slug):
     exigir_miembro(p, club)
     errores = frm.Errores()
     contenido = frm.texto(p.formulario, errores, "contenido", "El mensaje", 1, 1000)
-    volver = Respuesta.redirigir(f"/clubes/{slug}/chat")
+    volver = Respuesta.redirigir(destino_seguro(p.formulario.get("siguiente"), f"/clubes/{slug}/chat"))
     if errores:
         return volver.con_aviso("error", errores["contenido"])
     chat.enviar(p.bd, club.id, p.usuario.id, contenido)
+    if p.formulario.get("siguiente"):   # respuesta rápida desde el panel de chats
+        return volver.con_aviso("ok", f"Mensaje enviado al chat de {club.nombre}.")
     return volver

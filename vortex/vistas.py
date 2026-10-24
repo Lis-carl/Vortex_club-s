@@ -2,8 +2,8 @@
 from .nucleo import Fila, Respuesta
 from .plantillas import motor
 from .acceso import es_admin, ROLES_ACCESO
-from .repositorios import (clubes as repo_clubes, eventos as repo_eventos, notificaciones as repo_notificaciones,
-                           privados as repo_privados)
+from .repositorios import (chat as repo_chat, clubes as repo_clubes, eventos as repo_eventos,
+                           notificaciones as repo_notificaciones, privados as repo_privados)
 from .utilidades import fecha_larga
 
 
@@ -22,6 +22,8 @@ def render(p, nombre, estado=200, **contexto):
         "rol_acceso_nombre": ROLES_ACCESO.get(p.usuario.rol_acceso) if p.usuario else None,
         "n_notificaciones": repo_notificaciones.no_leidas(p.bd, p.usuario.id) if p.usuario and p.bd else 0,
         "notificaciones_recientes": repo_notificaciones.listar(p.bd, p.usuario.id, 8) if p.usuario and p.bd else [],
+        "chats_recientes": repo_privados.conversaciones(p.bd, p.usuario.id)[:6] if p.usuario and p.bd else [],
+        "chats_clubes": repo_chat.resumen_de_mis_clubes(p.bd, p.usuario.id) if p.usuario and p.bd else [],
         "n_mensajes": repo_privados.no_leidos(p.bd, p.usuario.id) if p.usuario and p.bd else 0,
         "csrf": p.token_csrf(),
         "aviso": p.aviso,

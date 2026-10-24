@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block titulo %}Inicio{% endblock %} | Vortex Clubs</title>
   <link rel="icon" type="image/svg+xml" href="/estatico/img/logo.svg?v=6">
-  <link rel="stylesheet" href="/estatico/css/estilo.css?v=32">
+  <link rel="stylesheet" href="/estatico/css/estilo.css?v=33">
 </head>
 <body>
 {% if usuario %}
@@ -21,6 +21,7 @@
         <span class="marca-texto">Vortex Clubs<small>UAM · Vida Estudiantil</small></span>
       </a>
       {% include "parciales/panel_notificaciones.html" %}
+      {% include "parciales/panel_chats.html" %}
       <details class="cuenta">
         <summary>
           {{ avatar(usuario.nombre, usuario.foto) }}

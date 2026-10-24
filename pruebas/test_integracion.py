@@ -431,6 +431,20 @@ class PruebasChatYEventos(PruebaServidor):
         ana.post(f"/mensajes/{LUIS}/{pm}/editar", {"contenido": "Hola Luis, ¿cómo vas?"}, desde=f"/mensajes/{LUIS}/{pm}/editar")
         self.assertIn("Hola Luis, ¿cómo vas?", luis.get(f"/mensajes/{ANA}/marco").cuerpo)
 
+    def test_panel_de_chats(self):
+        ana, luis = self.cliente(ANA), self.cliente(LUIS)
+        ana.post(f"/mensajes/{LUIS}", {"contenido": "¿Traes el cautín?"}, desde=f"/mensajes/{LUIS}")
+        panel = luis.get("/eventos").cuerpo.split('aria-label="Chats"')[1]
+        self.assertIn("¿Traes el cautín?", panel)                         # mensaje reciente en el panel
+        self.assertIn('action="/clubes/robotica/chat"', panel)            # y el chat de sus clubes
+        # contestar desde el panel deja al usuario en la misma página
+        r = luis.post(f"/mensajes/{ANA}", {"contenido": "Sí, lo llevo", "siguiente": "/eventos"}, desde="/eventos")
+        self.assertTrue(r.url.endswith("/eventos"))
+        self.assertIn("Mensaje enviado a Ana López", r.cuerpo)
+        self.assertIn("Sí, lo llevo", ana.get(f"/mensajes/{LUIS}/marco").cuerpo)
+        r = luis.post("/clubes/robotica/chat", {"contenido": "Hola club", "siguiente": "/eventos"}, desde="/eventos")
+        self.assertIn("Mensaje enviado al chat de Robótica", r.cuerpo)
+
     def test_pagina_de_evento(self):
         eid = consulta("SELECT id FROM propuestas_evento WHERE titulo='Hackatón de robots'")[0][0]
         maria, ana = self.cliente(MARIA), self.cliente(ANA)

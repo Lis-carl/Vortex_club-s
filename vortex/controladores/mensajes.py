@@ -5,7 +5,7 @@ mensajes, y enviar es un formulario POST. Solo se puede escribir a alguien con q
 menos un club activo; si dejan de compartirlo, la conversación anterior se puede leer pero no seguir.
 """
 from .. import formularios as frm
-from ..acceso import requiere_sesion
+from ..acceso import requiere_sesion, destino_seguro
 from ..enrutador import ruta
 from ..nucleo import ErrorHttp, Respuesta
 from ..plantillas import motor
@@ -56,7 +56,7 @@ def marco(p, cif):
 @requiere_sesion
 def enviar(p, cif):
     otro, puede_escribir = _contacto(p, cif)
-    volver = Respuesta.redirigir(f"/mensajes/{cif}")
+    volver = Respuesta.redirigir(destino_seguro(p.formulario.get("siguiente"), f"/mensajes/{cif}"))
     if not puede_escribir:
         return volver.con_aviso("error", "Ya no comparten ningún club, así que no puedes seguir esta conversación.")
     errores = frm.Errores()
@@ -64,4 +64,6 @@ def enviar(p, cif):
     if errores:
         return volver.con_aviso("error", errores["contenido"])
     privados.enviar(p.bd, p.usuario.id, otro.id, contenido)
+    if p.formulario.get("siguiente"):   # respuesta rápida desde el panel de chats
+        return volver.con_aviso("ok", f"Mensaje enviado a {otro.nombre}.")
     return volver

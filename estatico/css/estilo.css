@@ -1203,3 +1203,23 @@ body:has(.feed) .marco-app { flex: 1; width: 100%; padding-bottom: 0; }
 .notif-todo svg { position: absolute; right: 14px; }
 .notif-todo:hover { background: #000000; color: #FFFFFF; text-decoration: none; }
 .cabecera-interior > .notif + .cuenta { margin-left: 0; }
+
+/* Panel de chats (junto a la campana) */
+.notif.panel-chats { margin-left: 0; }
+.panel-chats .notif-panel { width: 360px; }
+.chats-lista li { align-items: flex-start; }
+.chats-lista .avatar { width: 34px; height: 34px; border-radius: 50%; flex: 0 0 auto; }
+.chats-lista .notif-texto { flex: 1; }
+.chats-lista .notif-texto p { margin-bottom: 2px; }
+.chats-lista .notif-texto p a { color: #F3F4F6; }
+.chat-ultimo { display: block; font-size: .82rem; color: #C9CDD2; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 250px; }
+.chat-nuevos { margin-left: 4px; padding: 1px 7px; border-radius: 999px; background: var(--marca); color: #FFFFFF; font-size: .7rem; font-weight: 700; }
+.chat-grupo { margin-left: 4px; font-size: .7rem; font-weight: 600; color: #9CA3AF; }
+.chat-rapido { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+.chat-rapido input { flex: 1; min-width: 0; padding: 7px 10px; border: 1px solid rgba(255, 255, 255, .18); border-radius: 8px; background: #2A2F36;
+  color: #F3F4F6; font: inherit; font-size: .82rem; outline: none; }
+.chat-rapido input:focus { border-color: var(--marca); }
+.chat-rapido input::placeholder { color: #8B929B; }
+.chat-rapido button { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 0; border-radius: 8px;
+  background: var(--marca); color: #FFFFFF; cursor: pointer; transition: background var(--transicion); }
+.chat-rapido button:hover { background: var(--marca-oscuro); }

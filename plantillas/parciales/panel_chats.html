@@ -1,0 +1,58 @@
+{# Ícono de chats junto a la campana: muestra los mensajes recientes y permite contestar desde ahí. #}
+<details class="notif panel-chats">
+  <summary class="campana {% if n_mensajes %}con-pendientes{% endif %} {% if ruta.startswith('/mensajes') %}activa{% endif %}"
+           aria-label="Chats{% if n_mensajes %}: {{ n_mensajes }} sin leer{% endif %}" title="Chats">
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 5.5h11v8H8.5L5 16.5v-3H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 9h5v8h-1v3l-3.5-3H10v-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+    {% if n_mensajes %}<span class="campana-numero">{{ n_mensajes }}</span>{% endif %}
+  </summary>
+  <div class="notif-panel" role="dialog" aria-label="Chats">
+    <div class="notif-cabecera">
+      <strong>Chats</strong>
+      <div class="notif-herramientas">
+        <a class="notif-boton" href="/mensajes" title="Abrir mensajes" aria-label="Abrir mensajes">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 6h14M5 12h14M5 18h9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </a>
+      </div>
+    </div>
+    <ul class="notif-lista chats-lista">
+      {% for c in chats_recientes %}
+      <li class="{% if c.sin_leer %}no-leida{% endif %}">
+        {{ avatar(c.nombre, c.foto) }}
+        <div class="notif-texto">
+          <p><a href="/mensajes/{{ c.cif }}">{{ c.nombre }}</a>{% if c.sin_leer %} <span class="chat-nuevos">{{ c.sin_leer }} nuevo{% if c.sin_leer != 1 %}s{% endif %}</span>{% endif %}</p>
+          <span class="chat-ultimo">{% if c.emisor_id == usuario.id %}Tú: {% endif %}{{ c.ultimo }}</span>
+          <time>{{ c.creado_en | rel }}</time>
+          <form method="post" action="/mensajes/{{ c.cif }}" class="chat-rapido">
+            <input type="hidden" name="csrf" value="{{ csrf }}">
+            <input type="hidden" name="siguiente" value="{{ ruta_completa }}">
+            <label for="rapido-{{ c.cif }}" class="oculto">Responder a {{ c.nombre }}</label>
+            <input id="rapido-{{ c.cif }}" name="contenido" maxlength="1000" placeholder="Responder…" autocomplete="off" required>
+            <button aria-label="Enviar"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
+          </form>
+        </div>
+      </li>
+      {% endfor %}
+      {% for c in chats_clubes %}
+      <li>
+        {{ avatar(c.nombre, c.foto) }}
+        <div class="notif-texto">
+          <p><a href="/clubes/{{ c.slug }}/chat">{{ c.nombre }}</a> <span class="chat-grupo">Chat del club</span></p>
+          {% if c.ultimo %}<span class="chat-ultimo">{{ c.ultimo_autor.split()[0] }}: {{ c.ultimo }}</span><time>{{ c.ultimo_en | rel }}</time>
+          {% else %}<span class="chat-ultimo">Aún no hay mensajes.</span>{% endif %}
+          <form method="post" action="/clubes/{{ c.slug }}/chat" class="chat-rapido">
+            <input type="hidden" name="csrf" value="{{ csrf }}">
+            <input type="hidden" name="siguiente" value="{{ ruta_completa }}">
+            <label for="rapido-club-{{ c.slug }}" class="oculto">Escribir en el chat de {{ c.nombre }}</label>
+            <input id="rapido-club-{{ c.slug }}" name="contenido" maxlength="1000" placeholder="Escribir al club…" autocomplete="off" required>
+            <button aria-label="Enviar"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></button>
+          </form>
+        </div>
+      </li>
+      {% endfor %}
+      {% if not chats_recientes and not chats_clubes %}
+      <li class="notif-vacia">Únete a un club para conversar con sus integrantes.</li>
+      {% endif %}
+    </ul>
+    <a class="notif-todo" href="/mensajes">Ver todos los mensajes <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  </div>
+</details>

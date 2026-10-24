@@ -112,6 +112,10 @@ Puedes conversar en privado con cualquier integrante de tus clubes:
 
 Si dejan de compartir un club, la conversación queda solo de lectura.
 
+**Respuesta rápida:** el ícono de chats junto a la campana abre un panel con tus conversaciones
+recientes y los chats de tus clubes, con el último mensaje de cada uno. Escribe en «Responder…» y pulsa
+enviar: el mensaje sale sin salir de la página en la que estás.
+
 ### Solicitar ser capitán
 Si eres miembro, en la cabecera del club pulsa **Solicitar ser capitán**, escribe un motivo opcional
 y envía. La administración revisará tu solicitud y recibirás una notificación con la respuesta.
