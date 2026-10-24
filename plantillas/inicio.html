@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 {% block titulo %}Inicio{% endblock %}
 {% block contenido %}
+
+{% include "parciales/carrusel.html" %}
+
 {% if recordatorios %}
 {% include "parciales/recordatorio.html" %}
 {% endif %}
-
-{% include "parciales/carrusel.html" %}
 
 {# Feed en una sola columna continua: pestañas, cuadro para publicar y publicaciones. #}
 <section class="feed" aria-label="Publicaciones">
