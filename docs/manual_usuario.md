@@ -29,9 +29,11 @@ comentarios y en la lista de miembros de tus clubes. Desde el mismo lugar puedes
 | Barra superior | Logotipo VC, el lema «Sé parte de un club», la **campana de notificaciones** (con el número de avisos sin leer) y tu menú de cuenta con tu tipo de usuario |
 | Menú izquierdo | **General:** Inicio, Explorar clubes, Anuncios, Calendario, Notificaciones · **Gestión:** Clubes a mi cargo (líder/capitán), Crear un club, Administración (si te corresponde) · **Mis clubes** |
 | Centro | El contenido de la página |
-| Columna derecha | Próximos eventos y anuncios generales (en pantallas grandes) |
+| Columna derecha | Próximos eventos y anuncios generales |
 
-En el celular el menú aparece como una franja horizontal que puedes desplazar.
+En el celular y la tablet el menú izquierdo se esconde: ábrelo con el botón de tres líneas
+(arriba a la izquierda) y ciérralo con la X o tocando fuera. Los próximos eventos y anuncios
+aparecen debajo del contenido.
 
 ## 3. Tu inicio
 

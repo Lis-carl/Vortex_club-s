@@ -670,3 +670,128 @@ input[type=datetime-local], select, textarea, .ficha, .voto, .emoji { border-rad
 .avatar-club-grande { width: 88px; height: 88px; font-size: 1.6rem; }
 .foto-club { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
 .foto-club-formularios { flex: 1; min-width: 240px; display: flex; flex-direction: column; gap: 8px; }
+
+
+/* =====================================================================
+   Panel principal v8: estándar premium, minimalista y responsivo
+   (todo con CSS; el menú hamburguesa usa una casilla oculta, sin JavaScript)
+   ===================================================================== */
+:root {
+  --fondo: #F8FAFC;
+  --tinta: #0F172A;          /* negro suave: títulos y textos principales */
+  --texto: #1E293B;
+  --gris: #64748B;           /* gris medio: metadatos, tiempos, roles */
+  --gris-claro: #94A3B8;
+  --linea: #E2E8F0;
+  --linea-suave: #EEF2F6;
+  --radio-tarjeta: 12px;
+  --sombra-tarjeta: 0 4px 15px rgba(0, 0, 0, .03);
+  --sombra-elevada: 0 8px 24px rgba(15, 23, 42, .07);
+  --transicion: .2s ease-in-out;
+  --fuente: "Inter", "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+body { background: var(--fondo); color: var(--texto); font-family: var(--fuente); font-size: 15px; line-height: 1.6; letter-spacing: -.003em; }
+h1, h2, h3, .pub-titulo a, .club-tarjeta-cabecera h2 a { color: var(--tinta); }
+.tenue, .pub-meta, .pub-meta a:not(.pub-club), .club-datos, .evento-datos, time, .cuenta-nombre small,
+.datos-club li span:first-child, .votacion-texto, .ayuda-campo { color: var(--gris); }
+
+/* --- Estructura en CSS Grid: 3 columnas (menú · contenido · paneles) --- */
+.marco-app { display: grid; grid-template-columns: 240px minmax(0, 1fr) 320px; grid-template-areas: "menu contenido lateral";
+  gap: 28px; max-width: 1360px; margin: 0 auto; padding: 28px 24px 56px; }
+.marco-app:has(.complementario:empty) { grid-template-columns: 240px minmax(0, 1fr); grid-template-areas: "menu contenido"; }
+.lateral-nav { grid-area: menu; }
+.principal { grid-area: contenido; gap: 20px; }
+.complementario { grid-area: lateral; gap: 20px; top: 92px; }
+
+/* --- Tarjetas: blanco puro, 12px, borde ultra sutil y sombra suave --- */
+.panel, .publicacion, .club-cabecera, .club-tarjeta, .estadisticas, .destacado, .acceso-caja, .aviso, .recordatorio {
+  background: #FFFFFF; border: 1px solid var(--linea); border-radius: var(--radio-tarjeta); box-shadow: var(--sombra-tarjeta); }
+.aviso { border-left: 4px solid var(--ok); }
+.aviso-error { border-left-color: var(--peligro); }
+.recordatorio { border-left: 4px solid var(--acento-calido); background: #FFFDF7; }
+.publicacion:hover, .club-tarjeta:hover, .destacado:hover { border-color: #CBD5E1; box-shadow: var(--sombra-elevada); transform: translateY(-1px); }
+/* Más aire dentro de las tarjetas */
+.panel-cabecera { padding: 18px 24px; border-bottom: 1px solid var(--linea-suave); }
+.panel-cuerpo { padding: 24px; }
+.panel-pie { padding: 14px 24px; border-top: 1px solid var(--linea-suave); }
+.pub-cuerpo { padding: 22px 24px 16px; }
+.pub-acciones { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--linea-suave); }
+.evento, .propuesta, .anuncio { padding: 22px 24px; }
+.evento-lateral, .lista-simple li, .datos-club li, .notificaciones li { padding-left: 24px; padding-right: 24px; }
+.evento-lateral { padding-top: 14px; padding-bottom: 14px; }
+.vacio { padding: 48px 28px; }
+.vacio-corto { padding: 18px 24px; }
+.club-cabecera-superior { padding: 26px 28px 20px; }
+.pestanas { padding: 0 18px; border-top-color: var(--linea-suave); }
+.club-tarjeta-cabecera { padding: 22px 22px 14px; }
+.club-tarjeta-descripcion { padding: 0 22px 18px; }
+.club-tarjeta-pie { padding: 14px 22px; border-top-color: var(--linea-suave); }
+.encabezado-pagina { border-bottom-color: var(--linea); padding-bottom: 18px; }
+.panel-cabecera h2, .panel-cabecera h3 { color: var(--tinta); letter-spacing: .08em; }
+
+/* --- Banner de bienvenida: foto de la UAM con velo oscuro para un contraste perfecto --- */
+.bienvenida { padding: 30px 32px; border: 0; border-radius: var(--radio-tarjeta); box-shadow: 0 10px 30px rgba(15, 23, 42, .18);
+  background:
+    linear-gradient(105deg, rgba(2, 18, 24, .88) 0%, rgba(4, 44, 52, .78) 42%, rgba(0, 92, 102, .55) 75%, rgba(0, 92, 102, .35) 100%),
+    linear-gradient(0deg, rgba(0, 0, 0, .35), rgba(0, 0, 0, .05)),
+    url("/estatico/img/campus-uam.jpg") 50% 42% / cover no-repeat; }
+.bienvenida h1 { color: #FFFFFF; font-size: 1.75rem; font-weight: 700; text-shadow: 0 1px 2px rgba(0, 0, 0, .25); }
+.bienvenida p { color: rgba(255, 255, 255, .9); }
+.bienvenida .antetitulo-claro { color: rgba(255, 255, 255, .78) !important; }
+.bienvenida-datos div { background: rgba(255, 255, 255, .10); border: 1px solid rgba(255, 255, 255, .18); border-radius: 10px;
+  backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); transition: background var(--transicion), transform var(--transicion); }
+.bienvenida-datos div:hover { background: rgba(255, 255, 255, .18); }
+.bienvenida-datos dt { color: rgba(255, 255, 255, .75); }
+.bienvenida-datos dd { color: #FFFFFF; }
+
+/* --- Micro-interacciones: 0.2s ease-in-out --- */
+.voto, .accion, .accion-comentarios, .accion-reaccionar, .ficha, .emoji, .boton, .segmentos a, .pestanas a,
+.nav-enlace, .campana, .cuenta summary, .destacado, .publicacion, .club-tarjeta { transition: all var(--transicion); }
+.voto:hover, .accion-comentarios:hover, .accion-reaccionar:hover, .ficha:hover { opacity: .92; }
+.accion-comentarios:hover, .accion-reaccionar:hover { background: var(--marca-claro); color: var(--marca-profundo); }
+.pestanas a { border-radius: 8px 8px 0 0; }
+.pestanas a:hover { color: var(--tinta); background: rgba(15, 23, 42, .03); }
+.nav-enlace { color: #334155; }
+.nav-enlace:hover { background: rgba(0, 154, 169, .07); color: var(--tinta); padding-left: 14px; }
+.nav-enlace.activo { background: rgba(0, 154, 169, .10); color: var(--marca-profundo); }
+.boton:hover { opacity: .95; }
+
+/* --- Menú hamburguesa (solo en pantallas pequeñas) --- */
+.menu-interruptor { position: absolute; opacity: 0; pointer-events: none; }
+.hamburguesa, .menu-velo, .nav-movil-cabecera { display: none; }
+
+@media (max-width: 1024px) {
+  .marco-app, .marco-app:has(.complementario:empty) { grid-template-columns: minmax(0, 1fr); grid-template-areas: "contenido" "lateral";
+    padding: 20px 18px 40px; gap: 20px; }
+  .complementario { display: flex; position: static; }          /* los paneles derechos se apilan debajo, al 100 % */
+  .complementario:empty { display: none; }
+  .hamburguesa { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 10px;
+    color: var(--tinta); cursor: pointer; transition: background var(--transicion); }
+  .hamburguesa:hover { background: rgba(15, 23, 42, .05); }
+  /* el menú lateral se convierte en un panel que entra desde la izquierda */
+  .lateral-nav { position: fixed; z-index: 60; top: 0; bottom: 0; left: 0; width: min(300px, 86vw); height: 100vh; height: 100dvh; max-height: none; overflow-y: auto; align-self: auto; margin: 0; border-radius: 0;
+    flex-direction: column; flex-wrap: nowrap; padding: 16px 12px 24px; border: 0; background: #FFFFFF;
+    box-shadow: 0 0 40px rgba(15, 23, 42, .18); transform: translateX(-105%); transition: transform .25s ease-in-out; }
+  .menu-interruptor:checked ~ .marco-app .lateral-nav { transform: translateX(0); }
+  .menu-velo { display: block; position: fixed; inset: 0; z-index: 55; background: rgba(15, 23, 42, .35); opacity: 0; pointer-events: none;
+    transition: opacity .25s ease-in-out; }
+  .menu-interruptor:checked ~ .marco-app .menu-velo { opacity: 1; pointer-events: auto; }
+  .nav-movil-cabecera { display: flex; align-items: center; justify-content: space-between; padding: 4px 8px 14px; margin-bottom: 6px;
+    border-bottom: 1px solid var(--linea-suave); }
+  .nav-movil-cabecera .marca-texto small { display: block; }
+  .nav-cerrar { display: inline-flex; width: 36px; height: 36px; align-items: center; justify-content: center; border-radius: 10px; cursor: pointer; color: var(--gris); }
+  .nav-cerrar:hover { background: rgba(15, 23, 42, .05); color: var(--tinta); }
+  .lateral-nav .nav-titulo { display: block; }
+  .lateral-nav .nav-vacio { display: block; }
+  .lateral-nav .nav-club { display: flex; }
+  .lateral-nav .nav-enlace { border-left: 3px solid transparent; border-bottom: 0; white-space: normal; margin-right: 0; }
+  .lateral-nav .nav-enlace.activo { border-left-color: var(--marca); background: rgba(0, 154, 169, .10); }
+}
+@media (max-width: 760px) {
+  .cabecera-interior { padding: 0 12px; gap: 10px; }
+  .bienvenida { padding: 22px 20px; }
+  .bienvenida h1 { font-size: 1.4rem; }
+  .bienvenida-datos div { min-width: 0; flex: 1; }
+  .pub-cuerpo, .evento, .propuesta, .anuncio { padding: 18px; }
+  .panel-cabecera { padding: 16px 18px; }
+}
