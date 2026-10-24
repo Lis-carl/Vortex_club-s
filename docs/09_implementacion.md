@@ -56,10 +56,12 @@ $env:VORTEX_ADMIN_CLAVE = 'una-clave-larga'; python app.py
 ### Primeros pasos después de instalar
 
 1. Cada líder de club crea su cuenta en **Crear cuenta** con su CIF.
-2. La administración entra a **Administración → Clubes**, escribe el CIF del líder en la fila de su
-   club y pulsa **Asignar**.
-3. El líder entra a su club → **Configuración** y escribe la descripción del club.
-4. Los estudiantes se registran y se unen a los clubes desde **Explorar clubes**.
+2. La administración inicia sesión con el rol **Administración**, entra a **Administración → Clubes**,
+   escribe el CIF del líder en la fila de su club y pulsa **Asignar**.
+3. El líder inicia sesión con el rol **Líder**, entra a su club → **Configuración** y escribe la
+   descripción. Puede nombrar capitanes desde **Miembros**.
+4. Los estudiantes se registran, se unen a los clubes y pueden **solicitar ser capitán**; la
+   administración aprueba esas solicitudes desde su panel.
 
 ### Variables de entorno
 

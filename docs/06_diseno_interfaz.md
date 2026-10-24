@@ -17,8 +17,8 @@ del foro de Reddit**, con un acabado formal: líneas rectas, bordes finos y sin 
 
 | Elemento | Valor |
 |----------|-------|
-| Logotipo | Monograma **VC** (Vortex Club's) trazado en SVG: cuadrado verde petróleo con letras blancas (`estatico/img/logo.svg`) y versión en contorno blanco para fondos oscuros (`logo-blanco.svg`) |
-| Color de marca | `#0B4A57` (verde petróleo); hover `#073742`; acento `#12707E`; fondo suave `#E4EFF1` |
+| Logotipo | Monograma **VC** (Vortex Club's) trazado en SVG: cuadrado color UAM `#009AA9` con letras blancas (`estatico/img/logo.svg`) y versión en contorno blanco para fondos oscuros (`logo-blanco.svg`) |
+| Color de marca | **`#009AA9`** (verde azulado institucional de la UAM); hover `#007A87`; profundo `#005C66`; fondo suave `#E1F5F7`; acento cálido `#F2B33D` para niveles y el lema |
 | Texto | Títulos `#14212B`, texto `#27343E`, secundario `#5E6C78` |
 | Fondo y paneles | Fondo `#F2F4F6`; paneles blancos con borde de 1 px `#D7DDE3` y esquinas de **3 px** (casi rectas), sin sombras |
 | Estados | Peligro `#A8261C`, éxito `#1D6B45`, pendiente `#7A5300`, siempre con su fondo claro |
@@ -26,6 +26,9 @@ del foro de Reddit**, con un acabado formal: líneas rectas, bordes finos y sin 
 | Rótulos de sección | Mayúsculas pequeñas con espaciado amplio (p. ej. «ANUNCIOS GENERALES») |
 | Íconos y emojis | **Ninguno** en títulos, menús ni botones. Los únicos emojis visibles son las seis reacciones del foro, porque son el contenido de esa función |
 | Tema | Claro, único, para mantener una apariencia uniforme |
+| Identidad UAM | Lema del afiche de Vida Estudiantil «Sé parte de un club» en la cabecera y el acceso; «Universidad Americana (UAM) · Managua, Nicaragua · Dirección de Vida Estudiantil · I Semestre 2026» en el pie; carreras de la UAM en el registro; los 14 clubes oficiales |
+| Movimiento | Animaciones pequeñas de CSS: entrada escalonada de paneles y publicaciones, elevación al pasar el cursor, menús que se despliegan suavemente, campana que se mueve y contador que late cuando hay notificaciones, barra de cupo que se llena. Se desactivan si el sistema pide «reducir movimiento» |
+| Cabecera | Logotipo, lema, campana de notificaciones con contador y menú de cuenta con el rol con que se ingresó. **Sin barra de búsqueda** (la búsqueda queda en el catálogo de clubes) |
 | JavaScript | **Ninguno.** Todo se resuelve con HTML generado por Python y CSS |
 
 ## 6.3 Principios de interacción humano-computadora aplicados
@@ -74,11 +77,12 @@ flowchart TD
 
 ```text
 ┌──────────────────────────────┬───────────────────────────────────────────────┐
-│ [VC] Vortex Club's           │                                               │
-│ (panel verde petróleo)       │      ┌─────────────────────────────────┐      │
-│                              │      │ Iniciar sesión                  │      │
-│ Plataforma de clubes         │      │ Ingresa con tu CIF y contraseña │      │
-│ estudiantiles                │      │ CIF         [_______________]   │      │
+│ [VC] Vortex Club's · UAM     │                                               │
+│ (panel #009AA9)              │      ┌─────────────────────────────────┐      │
+│ VIDA ESTUDIANTIL · I SEM 2026│      │ Iniciar sesión                  │      │
+│ Sé parte de un club          │      │ Ingresar como: [Estudiante][Cap]│      │
+│                              │      │                [Líder][Admin]   │      │
+│                              │      │ CIF         [_______________]   │      │
 │                              │      │ Contraseña  [_______________]   │      │
 │ ─ Catálogo e inscripción     │      │ [            Acceder          ] │      │
 │ ─ Anuncios generales y club  │      │ ┃ ¿No tienes cuenta? Crea una   │      │
@@ -92,10 +96,10 @@ flowchart TD
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────────────┐
-│ [VC] Vortex Club's    [ Buscar clubes            ][Buscar]          [AL] Ana ▾   │
+│ [VC] Vortex Club's          Sé parte de un club     [campana 2]  [AL] Ana · Líder│
 ├───────────────┬────────────────────────────────────────────┬─────────────────────┤
-│ GENERAL       │ INICIO                                     │ ANUNCIOS GENERALES  │
-│ ┃ Inicio      │ Publicaciones          [Mis clubes|Todos]  │ Título del anuncio  │
+│ GENERAL       │ ┌ Buenas tardes, Ana ─ clubes 2 · confirmados 1 ┐│ PRÓXIMOS EVENTOS    │
+│ ┃ Inicio      │ └ puntos 15 · nivel Participante ─────────────┘│ [08 NOV] Título     │
 │   Explorar    │ ───────────────────────────────────────────│ Fijado · hace 2 h   │
 │   Anuncios    │ [Recientes|Populares]                      │ Ver todos           │
 │   Eventos     │ ┌──┬──────────────────────────────────────┐├─────────────────────┤
@@ -148,6 +152,11 @@ flowchart TD
 
 | Salida | Medio | Contenido | Orden |
 |--------|-------|-----------|-------|
+| Bienvenida | Pantalla | Saludo según la hora, fecha, número de clubes, eventos confirmados, puntos y nivel | — |
+| Recordatorios | Banda amarilla en inicio y Notificaciones | Eventos confirmados que empiezan en 48 h o menos | Fecha ascendente |
+| Notificaciones | Pantalla y contador en la campana | Texto con enlace y fecha relativa; las no leídas resaltadas | Más recientes primero |
+| Calendario | Rejilla mensual (lunes a domingo) | Eventos por día; los confirmados en color sólido | Por día |
+| Ranking | Panel lateral | Los 5 estudiantes con más puntos y su nivel | Puntos descendente |
 | Inicio | Pantalla | Publicaciones de mis clubes con club, autor, fecha relativa, título, extracto, imagen, puntaje, comentarios y reacciones | Recientes o Populares |
 | Foro del club | Pantalla | Igual que el inicio, filtrado por club | Recientes o Populares (puntaje + reacciones + comentarios) |
 | Anuncios | Pantalla | Título, autor, fecha, texto; rótulo «Fijado» | Fijados primero, luego fecha |
@@ -162,7 +171,7 @@ flowchart TD
 | Formulario | Campos (tipo HTML) | Obligatorios |
 |-----------|--------------------|-------------|
 | Crear cuenta | CIF (`text`, `inputmode=numeric`, `maxlength=8`), nombre, correo (`email`), carrera (`text` + `datalist`), contraseña y confirmación (`password`) | Todos menos carrera |
-| Iniciar sesión | CIF, contraseña | Todos |
+| Iniciar sesión | Rol de acceso (`radio`: Estudiante, Capitán, Líder, Administración), CIF, contraseña | Todos |
 | Solicitar club | Nombre, categoría (`select`), descripción (`textarea`), justificación (`textarea`), ¿requiere aprobación? (`checkbox`) | Nombre, categoría, descripción |
 | Crear publicación | Título, texto (`textarea`), imagen (`file`) | Título |
 | Comentario / respuesta | Contenido (`textarea`), padre (oculto) | Contenido |

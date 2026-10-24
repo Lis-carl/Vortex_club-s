@@ -1,18 +1,61 @@
 """Propuestas de evento y calendario de eventos aprobados."""
-from datetime import datetime
+import calendar
+from datetime import date, datetime
 
 from .. import formularios as frm
-from ..acceso import requiere_sesion, club_o_404, contexto_club, exigir_miembro, exigir_responsable
+from ..acceso import requiere_sesion, club_o_404, contexto_club, exigir_miembro, exigir_responsable, destino_seguro
 from ..enrutador import ruta
 from ..nucleo import ErrorHttp, Respuesta
-from ..repositorios import clubes, eventos
+from ..nucleo import Fila
+from ..repositorios import clubes, eventos, notificaciones
+from ..utilidades import MESES_LARGOS
 from ..vistas import render
+
+
+DIAS_SEMANA = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"]
 
 
 @ruta("GET", "/eventos")
 @requiere_sesion
 def proximos(p):
-    return render(p, "eventos.html", eventos=eventos.proximos(p.bd))
+    """Calendario mensual de actividades (pedido en la encuesta) y lista de próximos eventos."""
+    hoy = date.today()
+    try:
+        anio, mes = (int(x) for x in (p.consulta.get("mes") or "").split("-"))
+        date(anio, mes, 1)
+    except ValueError:
+        anio, mes = hoy.year, hoy.month
+    solo_mios = p.consulta.get("vista") == "mios"
+    del_mes = eventos.del_mes(p.bd, p.usuario.id, anio, mes, solo_mios)
+    por_dia = {}
+    for e in del_mes:
+        por_dia.setdefault(int(e.fecha_inicio[8:10]), []).append(e)
+    semanas = [[Fila(dia=d, eventos=por_dia.get(d, []), hoy=(date(anio, mes, d) == hoy) if d else False)
+                for d in semana] for semana in calendar.Calendar(firstweekday=0).monthdayscalendar(anio, mes)]
+    anterior = (anio - 1, 12) if mes == 1 else (anio, mes - 1)
+    siguiente = (anio + 1, 1) if mes == 12 else (anio, mes + 1)
+    return render(p, "eventos.html", semanas=semanas, dias_semana=DIAS_SEMANA, titulo_mes=f"{MESES_LARGOS[mes - 1]} {anio}",
+                  mes_anterior=f"{anterior[0]:04d}-{anterior[1]:02d}", mes_siguiente=f"{siguiente[0]:04d}-{siguiente[1]:02d}",
+                  mes_actual=f"{anio:04d}-{mes:02d}", vista="mios" if solo_mios else "todos",
+                  eventos=eventos.proximos(p.bd, p.usuario.id), eventos_mes=del_mes)
+
+
+@ruta("POST", "/eventos/<id>/asistencia")
+@requiere_sesion
+def asistencia(p, id):
+    """Confirma o cancela la asistencia a un evento aprobado y futuro."""
+    e = eventos.evento(p.bd, id, p.usuario.id)
+    if not e:
+        raise ErrorHttp(404, "Ese evento no existe o no está aprobado.")
+    volver = Respuesta.redirigir(destino_seguro(p.formulario.get("siguiente"), "/eventos"))
+    if e.fecha_inicio < datetime.now().strftime("%Y-%m-%d %H:%M"):
+        return volver.con_aviso("error", "Ese evento ya ocurrió.")
+    try:
+        confirmado = eventos.alternar_asistencia(p.bd, p.usuario.id, id)
+    except ValueError as error:
+        return volver.con_aviso("error", str(error))
+    return volver.con_aviso("ok", f"Asistencia confirmada a «{e.titulo}». Te lo recordaremos en tu inicio."
+                            if confirmado else f"Cancelaste tu asistencia a «{e.titulo}».")
 
 
 @ruta("GET", "/clubes/<slug>/eventos")
@@ -20,7 +63,10 @@ def proximos(p):
 def eventos_club(p, slug):
     club = club_o_404(p, slug)
     ctx = contexto_club(p, club, "eventos")
-    proximos_club, pasados = eventos.del_club(p.bd, club.id)
+    proximos_club, pasados = eventos.del_club(p.bd, club.id, p.usuario.id)
+    if ctx["es_responsable"]:
+        for e in proximos_club:
+            e["asistentes"] = eventos.asistentes(p.bd, e.id)
     return render(p, "club_eventos.html", proximos=proximos_club, pasados=pasados,
                   pendientes=eventos.pendientes(p.bd, club.id) if ctx["es_responsable"] else [],
                   mias=eventos.mias(p.bd, club.id, p.usuario.id) if ctx["es_miembro"] else [], **ctx)
@@ -59,6 +105,9 @@ def proponer(p, slug):
                                "cupo": f.get("cupo"), "fecha_inicio": fecha_txt})
     eventos.proponer(p.bd, club.id, p.usuario.id, titulo, descripcion, fecha.strftime("%Y-%m-%d %H:%M"), lugar,
                      cupo, recursos)
+    responsables = [m.usuario_id for m in clubes.integrantes(p.bd, club.id) if m.rol in ("lider", "capitan")]
+    notificaciones.crear_para_varios(p.bd, responsables, f"Nueva propuesta de evento en {club.nombre}: {titulo}",
+                                     f"/clubes/{slug}/eventos", excepto=p.usuario.id)
     return Respuesta.redirigir(f"/clubes/{slug}/eventos").con_aviso(
         "ok", "Propuesta enviada. Un líder o capitán la revisará.")
 
@@ -82,4 +131,10 @@ def revisar(p, id):
         if datetime.strptime(propuesta.fecha_inicio, "%Y-%m-%d %H:%M") <= datetime.now():
             return volver.con_aviso("error", "No se puede aprobar: la fecha del evento ya pasó.")
     eventos.revisar(p.bd, id, p.usuario.id, decision == "aprobar", comentario)
+    enlace = f"/clubes/{club.slug}/eventos"
+    resultado = "aprobada" if decision == "aprobar" else "rechazada"
+    notificaciones.crear(p.bd, propuesta.proponente_id, f"Tu propuesta «{propuesta.titulo}» fue {resultado}.", enlace)
+    if decision == "aprobar":
+        notificaciones.crear_para_club(p.bd, club.id, f"Nuevo evento en {club.nombre}: {propuesta.titulo}. "
+                                       "Confirma tu asistencia.", enlace, excepto=propuesta.proponente_id)
     return volver.con_aviso("ok", "Propuesta aprobada." if decision == "aprobar" else "Propuesta rechazada.")

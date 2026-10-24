@@ -3,6 +3,8 @@ import re
 import unicodedata
 from datetime import datetime
 
+MESES_LARGOS = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre",
+                "octubre", "noviembre", "diciembre"]
 MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
 _FORMATOS = ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M", "%Y-%m-%dT%H:%M", "%Y-%m-%dT%H:%M:%S")
 RESERVADOS = {"solicitar", "nuevo", "editar"}
@@ -76,7 +78,7 @@ def iniciales(texto):
 
 
 # Tonos sobrios para los avatares de iniciales.
-_COLORES = ["#0B4A57", "#12707E", "#3A5A78", "#56653A", "#7A3E48", "#4A4F57", "#8A6A2E", "#2F5D50"]
+_COLORES = ["#009AA9", "#007A87", "#2F6F8F", "#4E7D5B", "#8A4F5E", "#5A6470", "#B07D2B", "#3C8D93"]
 
 
 def color(texto):

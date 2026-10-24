@@ -1,19 +1,44 @@
 {% extends "base.html" %}
-{% block titulo %}Próximos eventos{% endblock %}
+{% block titulo %}Calendario de actividades{% endblock %}
 {% block contenido %}
 <header class="encabezado-pagina">
   <div>
     <p class="antetitulo">Calendario</p>
-    <h1>Próximos eventos</h1>
-    <p class="descripcion">Eventos aprobados por los clubes, ordenados por fecha.</p>
+    <h1>Actividades de los clubes</h1>
+    <p class="descripcion">Eventos aprobados por los clubes de la UAM. Confirma tu asistencia y te lo recordaremos.</p>
   </div>
+  <nav class="segmentos" aria-label="Qué eventos mostrar">
+    <a class="{% if vista == 'todos' %}activo{% endif %}" href="/eventos?mes={{ mes_actual }}">Todos</a>
+    <a class="{% if vista == 'mios' %}activo{% endif %}" href="/eventos?mes={{ mes_actual }}&amp;vista=mios">Mis clubes y confirmados</a>
+  </nav>
 </header>
+
+<section class="panel calendario">
+  <div class="calendario-cabecera">
+    <a class="boton boton-secundario boton-pequeno" href="/eventos?mes={{ mes_anterior }}&amp;vista={{ vista }}" aria-label="Mes anterior">‹ Anterior</a>
+    <h2>{{ titulo_mes }}</h2>
+    <a class="boton boton-secundario boton-pequeno" href="/eventos?mes={{ mes_siguiente }}&amp;vista={{ vista }}" aria-label="Mes siguiente">Siguiente ›</a>
+  </div>
+  <div class="calendario-rejilla">
+    {% for d in dias_semana %}<div class="calendario-dia-nombre">{{ d }}</div>{% endfor %}
+    {% for semana in semanas %}{% for celda in semana %}
+      <div class="calendario-celda {% if not celda.dia %}vacia{% endif %} {% if celda.hoy %}hoy{% endif %} {% if celda.eventos %}con-eventos{% endif %}">
+        {% if celda.dia %}<span class="calendario-numero">{{ celda.dia }}</span>{% endif %}
+        {% for e in celda.eventos %}
+          <a class="calendario-evento {% if e.mi_asistencia %}confirmado{% endif %}" href="#evento-{{ e.id }}" title="{{ e.titulo }} · {{ e.club_nombre }}">{{ e.fecha_inicio | hora }} {{ e.titulo }}</a>
+        {% endfor %}
+      </div>
+    {% endfor %}{% endfor %}
+  </div>
+</section>
+
 <section class="panel">
+  <div class="panel-cabecera"><h2>Eventos de {{ titulo_mes }}</h2></div>
   {% set mostrar_club = True %}
-  {% for e in eventos %}
+  {% for e in eventos_mes %}
     {% include "parciales/evento.html" %}
   {% else %}
-    <div class="vacio"><h3>Sin eventos programados</h3><p>Los miembros pueden proponer eventos desde la pestaña Eventos de cada club.</p></div>
+    <div class="vacio"><h3>Sin eventos este mes</h3><p>Los miembros pueden proponer eventos desde la pestaña Eventos de cada club.</p></div>
   {% endfor %}
 </section>
 {% endblock %}

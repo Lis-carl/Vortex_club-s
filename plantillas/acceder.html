@@ -2,11 +2,20 @@
 {% block titulo %}Iniciar sesión{% endblock %}
 {% block acceso %}
 <h2>Iniciar sesión</h2>
-<p class="tenue">Ingresa con tu CIF y tu contraseña.</p>
+<p class="tenue">Elige con qué rol ingresas y escribe tu CIF y contraseña.</p>
 <form method="post" action="/acceder" class="formulario">
   <input type="hidden" name="csrf" value="{{ csrf }}">
   <input type="hidden" name="siguiente" value="{{ siguiente }}">
   {% if error %}<p class="alerta-formulario" role="alert">{{ error }}</p>{% endif %}
+  <fieldset class="selector-rol">
+    <legend>Ingresar como</legend>
+    {% for clave, nombre in roles.items() %}
+      <label class="opcion-rol">
+        <input type="radio" name="rol" value="{{ clave }}" {% if rol == clave %}checked{% endif %}>
+        <span>{{ nombre }}</span>
+      </label>
+    {% endfor %}
+  </fieldset>
   <div class="campo">
     <label for="cif">CIF</label>
     <input id="cif" type="text" name="cif" value="{{ cif }}" inputmode="numeric" maxlength="8" autocomplete="username" required autofocus>
@@ -18,7 +27,8 @@
   <button class="boton boton-primario boton-ancho">Acceder</button>
 </form>
 <div class="acceso-ayuda">
-  <p><strong>¿No tienes cuenta?</strong> <a href="/registro">Crea una cuenta</a> con tu CIF universitario.</p>
-  <p><strong>¿Olvidaste tu contraseña?</strong> Solicita el restablecimiento a la administración de la plataforma.</p>
+  <p><strong>Capitán y Líder:</strong> ingresa con ese rol para administrar tu club (anuncios, eventos, miembros y configuración).</p>
+  <p><strong>¿No tienes cuenta?</strong> <a href="/registro">Crea una cuenta</a> con tu CIF de la UAM.</p>
+  <p><strong>¿Olvidaste tu contraseña?</strong> Solicítala en la Dirección de Vida Estudiantil.</p>
 </div>
 {% endblock %}

@@ -212,3 +212,67 @@ def resolver_solicitud(bd, solicitud_id, admin_id, aprobar, comentario):
            revisado_en = ? WHERE id = ?""",
         ("aprobada" if aprobar else "rechazada", admin_id, comentario, club_id, ahora_iso(), solicitud_id))
     return bd.execute("SELECT slug FROM clubes WHERE id = ?", (club_id,)).fetchone().slug if club_id else None
+
+
+# --- Solicitudes para ser capitán (las resuelve la administración) -----------------------------
+def solicitud_capitan_pendiente(bd, usuario_id, club_id):
+    return bd.execute("SELECT * FROM solicitudes_capitan WHERE usuario_id = ? AND club_id = ? AND estado = 'pendiente'",
+                      (usuario_id, club_id)).fetchone()
+
+
+def crear_solicitud_capitan(bd, usuario_id, club_id, motivo):
+    bd.execute("INSERT INTO solicitudes_capitan (usuario_id, club_id, motivo) VALUES (?, ?, ?)",
+               (usuario_id, club_id, motivo))
+
+
+def solicitudes_capitan_pendientes(bd):
+    return bd.execute(
+        """SELECT s.*, u.nombre AS solicitante, u.cif AS solicitante_cif, c.nombre AS club_nombre, c.slug AS club_slug
+           FROM solicitudes_capitan s JOIN usuarios u ON u.id = s.usuario_id JOIN clubes c ON c.id = s.club_id
+           WHERE s.estado = 'pendiente' ORDER BY s.id""").fetchall()
+
+
+def resolver_solicitud_capitan(bd, solicitud_id, admin_id, aprobar, comentario):
+    """Devuelve la solicitud resuelta (o None si no estaba pendiente). Al aprobar, el miembro pasa a capitán."""
+    s = bd.execute("SELECT * FROM solicitudes_capitan WHERE id = ? AND estado = 'pendiente'", (solicitud_id,)).fetchone()
+    if not s:
+        return None
+    m = membresia(bd, s.usuario_id, s.club_id)
+    if aprobar and not (m and m.estado == "activa"):
+        aprobar = False
+        comentario = comentario or "Ya no es miembro activo del club."
+    if aprobar and m.rol == "miembro":
+        cambiar_rol(bd, m.id, "capitan")
+    bd.execute("UPDATE solicitudes_capitan SET estado = ?, revisado_por = ?, comentario = ?, revisado_en = ? WHERE id = ?",
+               ("aprobada" if aprobar else "rechazada", admin_id, comentario, ahora_iso(), solicitud_id))
+    s["aprobada"] = aprobar
+    return s
+
+
+# --- Clubes a cargo y roles del usuario ------------------------------------------------------
+def roles_de(bd, usuario_id):
+    """Conjunto de roles que el usuario tiene en algún club activo (para validar el rol de acceso)."""
+    filas = bd.execute(
+        """SELECT DISTINCT m.rol FROM membresias m JOIN clubes c ON c.id = m.club_id
+           WHERE m.usuario_id = ? AND m.estado = 'activa' AND c.estado = 'activo'""", (usuario_id,)).fetchall()
+    return {f.rol for f in filas}
+
+
+def clubes_a_cargo(bd, usuario_id):
+    return bd.execute(
+        """SELECT c.id, c.nombre, c.slug, m.rol,
+             (SELECT COUNT(*) FROM membresias x WHERE x.club_id = c.id AND x.estado = 'activa') AS n_miembros,
+             (SELECT COUNT(*) FROM membresias x WHERE x.club_id = c.id AND x.estado = 'pendiente') AS pend_miembros,
+             (SELECT COUNT(*) FROM propuestas_evento e WHERE e.club_id = c.id AND e.estado = 'pendiente') AS pend_eventos
+           FROM membresias m JOIN clubes c ON c.id = m.club_id
+           WHERE m.usuario_id = ? AND m.estado = 'activa' AND m.rol IN ('lider', 'capitan') AND c.estado = 'activo'
+           ORDER BY c.nombre""", (usuario_id,)).fetchall()
+
+
+def ids_miembros_activos(bd, club_id):
+    return [f.usuario_id for f in bd.execute(
+        "SELECT usuario_id FROM membresias WHERE club_id = ? AND estado = 'activa'", (club_id,)).fetchall()]
+
+
+def solicitud_club(bd, solicitud_id):
+    return bd.execute("SELECT * FROM solicitudes_club WHERE id = ?", (solicitud_id,)).fetchone()

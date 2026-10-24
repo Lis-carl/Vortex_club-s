@@ -27,11 +27,11 @@ pruebas (`VORTEX_ITERACIONES`) para que corran en segundos.
 ## 8.2 Resultado de la última ejecución
 
 ```text
-Ran 58 tests in ~8 s
+Ran 67 tests in ~13 s
 OK
 ```
 
-22 pruebas de unidad y 36 de integración.
+22 pruebas de unidad y 45 de integración.
 
 ## 8.3 Matriz de trazabilidad (requerimiento → prueba)
 
@@ -65,6 +65,16 @@ OK
 | RF-27 Próximos eventos | `test_flujo_de_propuesta_y_aprobacion` |
 | RF-28 / RF-29 / RF-30 Panel de administración | `PruebasAdmin.test_panel_y_cuentas` (incluye las estadísticas), `test_sesion_se_invalida_al_desactivar`, `test_desactivar_club` |
 | RF-31 Asignar líder | `PruebasInstalacionLimpia.test_administracion_asigna_lider` |
+| RF-02 Rol de acceso | `PruebasRolesYFuncionesEncuesta.test_login_con_rol` |
+| RF-11 Capitanes editan su club | `PruebasClubes.test_editar_club_lider_y_capitan` |
+| RF-32 Confirmación de asistencia y cupo | `test_confirmacion_de_asistencia_y_cupo` |
+| RF-33 Notificaciones | `test_notificaciones`, `test_flujo_de_propuesta_y_aprobacion`, `test_solicitud_de_capitan_aprobada_por_la_administracion` |
+| RF-34 Recordatorios | `test_recordatorio_de_eventos_proximos` |
+| RF-35 Calendario mensual / RF-36 Participación | `test_calendario_y_participacion` |
+| RF-37 Solicitud de capitán | `test_solicitud_de_capitan_aprobada_por_la_administracion` |
+| RF-38 Administración con permiso total | `test_administracion_tiene_permiso_total` |
+| RN-10 / RN-11 Rol activo y borrado solo de lo propio | `test_estudiante_no_borra_lo_ajeno_y_lider_en_modo_estudiante_no_gestiona` |
+| Sin buscador en la cabecera e identidad UAM | `test_sin_buscador_en_la_cabecera` |
 | Datos iniciales (sección 2.7) | `PruebasInstalacionLimpia.test_a_base_vacia_con_los_clubes_oficiales` |
 | RNF-01, RNF-02 Solo biblioteca estándar y SQLite | Las pruebas corren sin dependencias; revisión de imports (`grep -R "^import\|^from" vortex`) |
 | RNF-03 Sin JavaScript | `PruebasInstalacionLimpia.test_sin_javascript`: ninguna página contiene `<script` ni atributos `on…=`, no existe `app.js` y la cabecera CSP trae `script-src 'none'` |

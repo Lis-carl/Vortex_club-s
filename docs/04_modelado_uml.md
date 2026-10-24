@@ -39,6 +39,12 @@ flowchart LR
         CU20(["CU-20 Gestionar cuentas"])
         CU21(["CU-21 Subir imagen"])
         CU22(["CU-22 Asignar líder de club"])
+        CU23(["CU-23 Confirmar asistencia"])
+        CU24(["CU-24 Ver notificaciones y recordatorios"])
+        CU25(["CU-25 Consultar calendario"])
+        CU26(["CU-26 Solicitar ser capitán"])
+        CU27(["CU-27 Aprobar solicitud de capitán"])
+        CU28(["CU-28 Editar configuración del club"])
     end
 
     V --- CU01
@@ -62,6 +68,13 @@ flowchart LR
     A --- CU19
     A --- CU20
     A --- CU22
+    A --- CU27
+    E --- CU23
+    E --- CU24
+    E --- CU25
+    E --- CU26
+    C --- CU28
+    CU26 -. "«include» CU-27" .-> CU27
 
     C -. "es un" .-> E
     L -. "es un" .-> C
@@ -225,6 +238,47 @@ precondiciones, postcondiciones, suposiciones, garantías, requerimientos cubier
 | **Garantía mínima** | Si falla cualquier paso se deshace todo (transacción). |
 | **Requerimientos cubiertos** | RF-05, RN-02, RN-08 |
 
+### CU-23 Confirmar asistencia
+
+| Campo | Detalle |
+|-------|---------|
+| **ID / Prioridad** | CU-23 / Alta (pedido en la encuesta) |
+| **Actor principal** | Estudiante |
+| **Descripción** | El estudiante confirma o cancela su asistencia a un evento aprobado. |
+| **Precondiciones** | Sesión iniciada; evento aprobado y futuro. |
+
+| Pasos | Información |
+|-------|------------|
+| 1. Abre el calendario o los eventos del club y pulsa **Confirmar asistencia**. | Evento |
+| 2. El sistema verifica que el evento sea futuro y que haya cupo. | D10, D11 |
+| 3. Registra la asistencia y vuelve al mismo evento con «Asistirás» y el conteo actualizado. | D11 |
+| 4. Si faltan 48 h o menos, el evento aparece como recordatorio en el inicio y en Notificaciones. | — |
+
+| Campo | Detalle |
+|-------|---------|
+| **Extensión** | 2a. Sin cupo: muestra «El evento ya alcanzó su cupo». 1a. Si ya había confirmado, el botón cancela la asistencia. |
+| **Requerimientos cubiertos** | RF-32, RF-34, RN-12 |
+
+### CU-26 / CU-27 Solicitar ser capitán y aprobarlo
+
+| Campo | Detalle |
+|-------|---------|
+| **Actores** | Miembro (solicita) y Administración (aprueba) |
+| **Descripción** | Un miembro pide ser capitán de su club; la administración aprueba o rechaza la petición. |
+| **Precondiciones** | Membresía activa con rol miembro; sin otra solicitud pendiente en ese club. |
+
+| Pasos | Información |
+|-------|------------|
+| 1. En la cabecera del club, el miembro pulsa **Solicitar ser capitán** y escribe un motivo opcional. | Motivo |
+| 2. El sistema guarda la solicitud pendiente y notifica a la administración. | D13, D12 |
+| 3. La administración revisa la solicitud en su panel y pulsa **Aprobar** o **Rechazar**. | D13 |
+| 4. Si aprueba, la membresía pasa a rol capitán; en ambos casos se notifica al miembro. | D5, D12 |
+
+| Campo | Detalle |
+|-------|---------|
+| **Alternativa** | El líder del club puede nombrar capitanes directamente desde la pestaña Miembros (CU-17). |
+| **Requerimientos cubiertos** | RF-37, RN-13 |
+
 ## 4.3 Diagramas de actividades
 
 ### Unirse a un club
@@ -286,7 +340,7 @@ sequenceDiagram
     participant BD as SQLite
 
     U->>N: Escribe CIF y contraseña
-    N->>S: POST /acceder (cif, contrasena, csrf)
+    N->>S: POST /acceder (rol, cif, contrasena, csrf)
     S->>R: resolver("POST", "/acceder")
     R-->>S: cuentas.acceder
     S->>C: acceder(peticion)
@@ -294,7 +348,8 @@ sequenceDiagram
     BD-->>C: fila (hash, sal, activo)
     C->>Sg: verificar_contrasena(contrasena, sal, hash)
     Sg-->>C: verdadero
-    C->>Sg: crear_sesion(usuario_id)
+    C->>BD: ¿la cuenta tiene el rol elegido? (rol_global o membresías)
+    C->>Sg: crear_sesion(usuario_id, rol_acceso)
     Sg->>BD: INSERT INTO sesiones
     Sg-->>C: token
     C-->>S: Respuesta 303 → /  + Set-Cookie: sesion=token
@@ -550,6 +605,28 @@ stateDiagram-v2
     Aprobada --> Realizado : pasa la fecha del evento
     Rechazada --> [*]
     Realizado --> [*]
+```
+
+### Solicitud para ser capitán
+
+```mermaid
+stateDiagram-v2
+    [*] --> Pendiente : miembro solicita (una por club)
+    Pendiente --> Aprobada : administración aprueba / el miembro pasa a capitán
+    Pendiente --> Rechazada : administración rechaza
+    Aprobada --> [*]
+    Rechazada --> [*]
+```
+
+### Asistencia a un evento
+
+```mermaid
+stateDiagram-v2
+    [*] --> SinConfirmar
+    SinConfirmar --> Confirmada : confirmar (si hay cupo y el evento es futuro)
+    Confirmada --> SinConfirmar : cancelar
+    Confirmada --> Recordatorio : faltan 48 h o menos
+    Recordatorio --> [*] : el evento ocurre
 ```
 
 ### Solicitud de creación de club

@@ -1,13 +1,34 @@
-<article class="evento">
+<article class="evento" id="evento-{{ e.id }}">
   <div class="fecha"><b>{{ e.fecha_inicio | dia }}</b><span>{{ e.fecha_inicio | mes }}</span></div>
   <div>
     <h3>{{ e.titulo }}</h3>
     <p class="evento-datos">
       <span>Hora: {{ e.fecha_inicio | hora }}</span>
       <span>Lugar: {{ e.lugar }}</span>
-      {% if e.cupo %}<span>Cupo: {{ e.cupo }}</span>{% endif %}
+      <span>{{ e.n_asistentes }} confirmado{% if e.n_asistentes != 1 %}s{% endif %}{% if e.cupo %} de {{ e.cupo }}{% endif %}</span>
       {% if mostrar_club %}<span>Club: <a href="/clubes/{{ e.club_slug }}/eventos">{{ e.club_nombre }}</a></span>{% endif %}
     </p>
     <p>{{ e.descripcion | saltos }}</p>
+    {% if e.cupo %}<div class="barra-cupo" aria-hidden="true"><span style="width:{{ min(100, int(e.n_asistentes * 100 / e.cupo)) }}%"></span></div>{% endif %}
+    <div class="evento-acciones">
+      <form method="post" action="/eventos/{{ e.id }}/asistencia">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <input type="hidden" name="siguiente" value="{{ ruta_completa }}#evento-{{ e.id }}">
+        {% if e.mi_asistencia %}
+          <span class="etiqueta etiqueta-aprobada">Asistirás</span>
+          <button class="accion">Cancelar asistencia</button>
+        {% elif e.cupo and e.n_asistentes >= e.cupo %}
+          <span class="etiqueta etiqueta-rechazada">Cupo lleno</span>
+        {% else %}
+          <button class="boton boton-primario boton-pequeno">Confirmar asistencia</button>
+        {% endif %}
+      </form>
+      {% if e.asistentes %}
+      <details class="lista-asistentes">
+        <summary class="accion">Ver asistentes ({{ len(e.asistentes) }})</summary>
+        <ul>{% for a in e.asistentes %}<li><a href="/perfil/{{ a.cif }}">{{ a.nombre }}</a></li>{% endfor %}</ul>
+      </details>
+      {% endif %}
+    </div>
   </div>
 </article>

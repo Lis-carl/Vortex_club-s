@@ -1,13 +1,17 @@
 """Ayudantes para generar respuestas HTML a partir de plantillas."""
 from .nucleo import Fila, Respuesta
 from .plantillas import motor
-from .repositorios import clubes as repo_clubes
+from .acceso import es_admin, ROLES_ACCESO
+from .repositorios import clubes as repo_clubes, notificaciones as repo_notificaciones
 
 
 def render(p, nombre, estado=200, **contexto):
     base = {
         "usuario": p.usuario,
-        "es_admin": bool(p.usuario and p.usuario.rol_global == "admin"),
+        "es_admin": es_admin(p),
+        "rol_acceso": p.usuario.rol_acceso if p.usuario else None,
+        "rol_acceso_nombre": ROLES_ACCESO.get(p.usuario.rol_acceso) if p.usuario else None,
+        "n_notificaciones": repo_notificaciones.no_leidas(p.bd, p.usuario.id) if p.usuario and p.bd else 0,
         "csrf": p.token_csrf(),
         "aviso": p.aviso,
         "ruta": p.ruta,

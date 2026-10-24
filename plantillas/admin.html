@@ -36,6 +36,24 @@
 </section>
 
 <section class="panel">
+  <div class="panel-cabecera"><h2>Solicitudes para ser capitán ({{ len(solicitudes_capitan) }})</h2></div>
+  {% for s in solicitudes_capitan %}
+  <div class="propuesta">
+    <h3><a href="/perfil/{{ s.solicitante_cif }}">{{ s.solicitante }}</a> quiere ser capitán de <a href="/clubes/{{ s.club_slug }}/miembros">{{ s.club_nombre }}</a></h3>
+    <p class="evento-datos"><span>CIF {{ s.solicitante_cif }}</span><span>{{ s.creado_en | rel }}</span></p>
+    {% if s.motivo %}<p>{{ s.motivo | saltos }}</p>{% endif %}
+    <form method="post" action="/admin/capitanes/{{ s.id }}" class="formulario-linea">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <label for="comentario-c{{ s.id }}" class="oculto">Comentario</label>
+      <input id="comentario-c{{ s.id }}" type="text" name="comentario" placeholder="Comentario (opcional)" maxlength="500">
+      <button class="boton boton-primario" name="decision" value="aprobar">Aprobar</button>
+      <button class="boton boton-peligro" name="decision" value="rechazar">Rechazar</button>
+    </form>
+  </div>
+  {% else %}<p class="vacio-corto">No hay solicitudes de capitán pendientes.</p>{% endfor %}
+</section>
+
+<section class="panel">
   <div class="panel-cabecera"><h2>Clubes ({{ len(lista_clubes) }})</h2></div>
   <div class="tabla-envoltorio"><table class="tabla tabla-compacta">
     <thead><tr><th>Club</th><th>Miembros</th><th>Líder</th><th>Asignar líder (CIF)</th><th>Estado</th><th></th></tr></thead>

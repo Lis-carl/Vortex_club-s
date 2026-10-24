@@ -1,10 +1,9 @@
 """Catálogo, solicitud de clubes, membresías, anuncios del club y miembros."""
 from .. import formularios as frm
-from ..acceso import (requiere_sesion, club_o_404, contexto_club, exigir_responsable, es_responsable,
-                      destino_seguro, es_admin)
+from ..acceso import (requiere_sesion, club_o_404, contexto_club, exigir_responsable, es_lider_en, es_admin)
 from ..enrutador import ruta
 from ..nucleo import ErrorHttp, Respuesta
-from ..repositorios import anuncios, clubes
+from ..repositorios import anuncios, clubes, notificaciones
 from ..vistas import render
 
 
@@ -58,6 +57,10 @@ def unirse(p, slug):
         return Respuesta.redirigir(f"/clubes/{slug}").con_aviso("error", mensaje)
     pendiente = bool(club.requiere_aprobacion)
     clubes.unirse(p.bd, p.usuario.id, club.id, pendiente)
+    if pendiente:
+        responsables = [m.usuario_id for m in clubes.integrantes(p.bd, club.id) if m.rol in ("lider", "capitan")]
+        notificaciones.crear_para_varios(p.bd, responsables, f"{p.usuario.nombre} solicitó unirse a {club.nombre}.",
+                                         f"/clubes/{slug}/miembros")
     mensaje = "Solicitud enviada; un responsable del club la revisará." if pendiente else "¡Te uniste al club!"
     return Respuesta.redirigir(f"/clubes/{slug}").con_aviso("ok", mensaje)
 
@@ -81,8 +84,8 @@ def salir(p, slug):
 def editar_formulario(p, slug):
     club = club_o_404(p, slug)
     ctx = contexto_club(p, club, "editar")
-    if not ctx["es_lider"]:
-        raise ErrorHttp(403, "Solo el líder puede editar el club.")
+    if not ctx["es_responsable"]:
+        raise ErrorHttp(403, "Solo el líder, los capitanes o la administración pueden editar el club.")
     return render(p, "club_editar.html", categorias=clubes.categorias(p.bd), errores=frm.Errores(),
                   valores={"descripcion": club.descripcion, "categoria": str(club.categoria_id),
                            "con_aprobacion": "1" if club.requiere_aprobacion else ""}, **ctx)
@@ -93,8 +96,8 @@ def editar_formulario(p, slug):
 def editar(p, slug):
     club = club_o_404(p, slug)
     ctx = contexto_club(p, club, "editar")
-    if not ctx["es_lider"]:
-        raise ErrorHttp(403, "Solo el líder puede editar el club.")
+    if not ctx["es_responsable"]:
+        raise ErrorHttp(403, "Solo el líder, los capitanes o la administración pueden editar el club.")
     f, errores = p.formulario, frm.Errores()
     descripcion = frm.texto(f, errores, "descripcion", "La descripción", 10, 1000, una_linea=False)
     cat_txt = f.get("categoria") or ""
@@ -131,6 +134,8 @@ def publicar_anuncio(p, slug):
                       valores={"titulo": titulo, "contenido": contenido}, errores=errores,
                       **contexto_club(p, club, "anuncios"))
     anuncios.crear(p.bd, club.id, p.usuario.id, titulo, contenido, p.formulario.get("fijado") == "1")
+    notificaciones.crear_para_club(p.bd, club.id, f"Nuevo anuncio en {club.nombre}: {titulo}",
+                                   f"/clubes/{slug}/anuncios", excepto=p.usuario.id)
     return Respuesta.redirigir(f"/clubes/{slug}/anuncios").con_aviso("ok", "Anuncio publicado.")
 
 
@@ -150,7 +155,7 @@ def miembros(p, slug):
 @requiere_sesion
 def gestionar_miembro(p, slug, mid):
     club = club_o_404(p, slug)
-    actor = exigir_responsable(p, club)
+    exigir_responsable(p, club)
     objetivo = clubes.membresia_por_id(p.bd, mid)
     if not objetivo or objetivo.club_id != club.id:
         raise ErrorHttp(404, "Ese integrante no existe en el club.")
@@ -162,18 +167,23 @@ def gestionar_miembro(p, slug, mid):
             return volver.con_aviso("error", "Esa solicitud ya fue resuelta.")
         if accion == "aceptar":
             clubes.aceptar(p.bd, objetivo.id)
+            notificaciones.crear(p.bd, objetivo.usuario_id, f"Tu solicitud para unirte a {club.nombre} fue aceptada.",
+                                 f"/clubes/{slug}")
             return volver.con_aviso("ok", "Solicitud aceptada.")
         clubes.quitar(p.bd, objetivo.id)
+        notificaciones.crear(p.bd, objetivo.usuario_id, f"Tu solicitud para unirte a {club.nombre} no fue aceptada.",
+                             "/clubes")
         return volver.con_aviso("ok", "Solicitud rechazada.")
 
-    if actor.rol != "lider":
-        raise ErrorHttp(403, "Solo el líder puede cambiar roles o expulsar.")
+    if not es_lider_en(p, club.id):
+        raise ErrorHttp(403, "Solo el líder o la administración pueden cambiar roles o expulsar.")
     if objetivo.estado != "activa":
         raise ErrorHttp(400, "Primero acepta la solicitud de ingreso.")
     if objetivo.rol == "lider":
         return volver.con_aviso("error", "No puedes modificar al líder. Usa «Transferir liderazgo» con otro miembro.")
     if accion == "hacer_capitan" and objetivo.rol == "miembro":
         clubes.cambiar_rol(p.bd, objetivo.id, "capitan")
+        notificaciones.crear(p.bd, objetivo.usuario_id, f"Ahora eres capitán de {club.nombre}.", f"/clubes/{slug}")
         return volver.con_aviso("ok", "Ahora es capitán.")
     if accion == "quitar_capitan" and objetivo.rol == "capitan":
         clubes.cambiar_rol(p.bd, objetivo.id, "miembro")
@@ -183,5 +193,26 @@ def gestionar_miembro(p, slug, mid):
         return volver.con_aviso("ok", "Integrante expulsado del club.")
     if accion == "transferir":
         clubes.transferir_liderazgo(p.bd, club.id, objetivo.id)
-        return volver.con_aviso("ok", "Liderazgo transferido. Ahora eres capitán del club.")
+        notificaciones.crear(p.bd, objetivo.usuario_id, f"Ahora eres líder de {club.nombre}.", f"/clubes/{slug}")
+        return volver.con_aviso("ok", "Liderazgo transferido. El líder anterior pasó a ser capitán.")
     raise ErrorHttp(400, "Acción no válida.")
+
+
+# --- Solicitud para ser capitán ------------------------------------------------------------------
+@ruta("POST", "/clubes/<slug>/solicitar-capitan")
+@requiere_sesion
+def solicitar_capitan(p, slug):
+    """Un miembro pide ser capitán; la administración aprueba o rechaza la petición."""
+    club = club_o_404(p, slug)
+    m = clubes.membresia(p.bd, p.usuario.id, club.id)
+    volver = Respuesta.redirigir(f"/clubes/{slug}")
+    if not m or m.estado != "activa":
+        raise ErrorHttp(403, "Debes ser miembro del club para pedir ser capitán.")
+    if m.rol != "miembro":
+        return volver.con_aviso("error", "Ya eres capitán o líder de este club.")
+    if clubes.solicitud_capitan_pendiente(p.bd, p.usuario.id, club.id):
+        return volver.con_aviso("error", "Ya tienes una solicitud pendiente para este club.")
+    motivo = frm.texto(p.formulario, frm.Errores(), "motivo", "El motivo", 1, 500, obligatorio=False, una_linea=False)
+    clubes.crear_solicitud_capitan(p.bd, p.usuario.id, club.id, motivo)
+    notificaciones.crear_para_admins(p.bd, f"{p.usuario.nombre} pidió ser capitán de {club.nombre}.")
+    return volver.con_aviso("ok", "Solicitud enviada. La administración la revisará.")

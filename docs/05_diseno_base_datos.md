@@ -11,6 +11,11 @@ Notación pata de gallo: `||` exactamente uno, `o|` cero o uno, `o{` cero o much
 ```mermaid
 erDiagram
     USUARIOS ||--o{ SESIONES : "abre"
+    USUARIOS ||--o{ ASISTENCIAS : "confirma"
+    PROPUESTAS_EVENTO ||--o{ ASISTENCIAS : "recibe"
+    USUARIOS ||--o{ NOTIFICACIONES : "recibe"
+    USUARIOS ||--o{ SOLICITUDES_CAPITAN : "pide"
+    CLUBES ||--o{ SOLICITUDES_CAPITAN : "recibe"
     USUARIOS ||--o{ MEMBRESIAS : "tiene"
     CLUBES ||--|{ MEMBRESIAS : "agrupa"
     CATEGORIAS ||--o{ CLUBES : "clasifica"
@@ -52,6 +57,31 @@ erDiagram
         int usuario_id FK
         text csrf
         text expira_en
+        text rol_acceso "estudiante | capitan | lider | admin"
+    }
+    ASISTENCIAS {
+        int usuario_id PK, FK
+        int evento_id PK, FK
+        text creado_en
+    }
+    NOTIFICACIONES {
+        int id PK
+        int usuario_id FK
+        text texto
+        text enlace
+        int leida
+        text creado_en
+    }
+    SOLICITUDES_CAPITAN {
+        int id PK
+        int usuario_id FK
+        int club_id FK
+        text motivo
+        text estado "pendiente | aprobada | rechazada"
+        int revisado_por FK
+        text comentario
+        text creado_en
+        text revisado_en
     }
     CATEGORIAS {
         int id PK
@@ -213,7 +243,7 @@ publicación y la lista de eventos) **no se guardan**: se calculan con las vista
 | Tabla | Clave primaria | Claves foráneas | Restricciones relevantes |
 |-------|---------------|-----------------|--------------------------|
 | `usuarios` | `id` | — | `cif` único de 8 dígitos (`CHECK`), `correo` único sin distinguir mayúsculas, `rol_global ∈ {estudiante, admin}` |
-| `sesiones` | `token` | `usuario_id → usuarios` | Se borra en cascada con el usuario |
+| `sesiones` | `token` | `usuario_id → usuarios` | Se borra en cascada con el usuario; `rol_acceso` guarda el rol elegido al iniciar sesión |
 | `categorias` | `id` | — | `nombre` único |
 | `clubes` | `id` | `categoria_id → categorias` | `nombre` y `slug` únicos, `estado ∈ {activo, inactivo}` |
 | `solicitudes_club` | `id` | `usuario_id`, `categoria_id`, `revisado_por`, `club_id` | `estado ∈ {pendiente, aprobada, rechazada}` |
@@ -226,6 +256,9 @@ publicación y la lista de eventos) **no se guardan**: se calculan con las vista
 | `reacciones` | `(usuario_id, publicacion_id, tipo)` | ambos | `tipo` ∈ 6 emojis: una reacción de cada tipo por persona (RN-05) |
 | `mensajes_chat` | `id` | `club_id`, `autor_id` | 1 a 1000 caracteres |
 | `propuestas_evento` | `id` | `club_id`, `proponente_id`, `revisado_por` | `cupo` entre 1 y 10 000, `estado ∈ {pendiente, aprobada, rechazada}` |
+| `asistencias` | `(usuario_id, evento_id)` | ambos | Una confirmación por persona y evento; el cupo se valida en el servidor (RN-12) |
+| `notificaciones` | `id` | `usuario_id` | `leida ∈ {0, 1}`; índice por usuario y estado de lectura |
+| `solicitudes_capitan` | `id` | `usuario_id`, `club_id`, `revisado_por` | Índice único parcial: una sola solicitud **pendiente** por persona y club (RN-13) |
 
 ## 5.4 Índices y vistas
 
@@ -238,6 +271,9 @@ publicación y la lista de eventos) **no se guardan**: se calculan con las vista
 | `ix_propuestas_club` | Bandeja de pendientes y próximos eventos. |
 | `v_eventos` | Propuestas aprobadas de clubes activos. |
 | `v_puntaje_publicacion` | Suma de votos de cada publicación. |
+| `ux_capitan_pendiente` | Índice único parcial: una solicitud de capitán pendiente por persona y club. |
+| `ix_notificaciones` | Bandeja y contador de no leídas de cada usuario. |
+| `ix_asistencias_evento` | Conteo de confirmados por evento. |
 
 ## 5.5 Decisiones de diseño
 
@@ -250,4 +286,9 @@ publicación y la lista de eventos) **no se guardan**: se calculan con las vista
   bloqueen entre sí.
 - **Transacciones** en operaciones de varios pasos: aprobar un club (crear club + líder + marcar
   solicitud) y transferir liderazgo.
+- **Migración automática:** al iniciar, si la base de datos es de una versión anterior y a la
+  tabla `sesiones` le falta la columna `rol_acceso`, se agrega con `ALTER TABLE` (las tablas nuevas
+  se crean solas con `CREATE TABLE IF NOT EXISTS`).
+- **Puntos de participación calculados, no guardados:** se obtienen con subconsultas sobre
+  publicaciones, comentarios, asistencias y reacciones, así nunca quedan desactualizados.
 - **Respaldo:** basta con copiar el archivo `datos/vortex.db` con el servidor detenido.

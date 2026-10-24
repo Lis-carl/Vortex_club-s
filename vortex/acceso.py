@@ -1,9 +1,19 @@
-"""Control de acceso: decoradores de sesión y consultas de permisos por club."""
+"""Control de acceso: decoradores de sesión y permisos por club.
+
+Al iniciar sesión el usuario elige con qué rol entra (estudiante, capitán, líder o administración)
+y ese rol queda guardado en la sesión (``usuario.rol_acceso``):
+
+* **estudiante**: solo permisos de miembro, aunque sea capitán o líder de algún club;
+* **capitán / líder**: además, los permisos reales que tenga en cada club (según su membresía);
+* **administración**: permiso total sobre todos los clubes.
+"""
 from functools import wraps
 from urllib.parse import quote
 
 from .nucleo import ErrorHttp, Fila, Respuesta
 from .repositorios import clubes as repo_clubes, eventos as repo_eventos
+
+ROLES_ACCESO = {"estudiante": "Estudiante", "capitan": "Capitán", "lider": "Líder", "admin": "Administración"}
 
 
 def requiere_sesion(funcion):
@@ -22,13 +32,19 @@ def requiere_admin(funcion):
     @requiere_sesion
     def interno(p, **parametros):
         if not es_admin(p):
-            raise ErrorHttp(403, "Esta sección es solo para administradores.")
+            raise ErrorHttp(403, "Esta sección es solo para la administración. Inicia sesión con el rol Administración.")
         return funcion(p, **parametros)
     return interno
 
 
 def es_admin(p):
-    return bool(p.usuario and p.usuario.rol_global == "admin")
+    """Administración con permiso total: cuenta de administración que entró con ese rol."""
+    return bool(p.usuario and p.usuario.rol_global == "admin" and p.usuario.rol_acceso == "admin")
+
+
+def modo_gestion(p):
+    """El usuario entró como capitán o líder, así que sus roles en los clubes están activos."""
+    return bool(p.usuario and p.usuario.rol_acceso in ("capitan", "lider"))
 
 
 def destino_seguro(valor, defecto="/"):
@@ -46,34 +62,56 @@ def club_o_404(p, slug):
     return club
 
 
-def es_responsable(membresia):
-    return bool(membresia and membresia.estado == "activa" and membresia.rol in ("lider", "capitan"))
+def _membresia_activa(p, club_id):
+    m = repo_clubes.membresia(p.bd, p.usuario.id, club_id)
+    return m if m and m.estado == "activa" else None
+
+
+def es_responsable_en(p, club_id):
+    """Líder o capitán del club (con el rol de gestión activo) o administración."""
+    if es_admin(p):
+        return True
+    m = _membresia_activa(p, club_id)
+    return bool(m and m.rol in ("lider", "capitan") and modo_gestion(p))
+
+
+def es_lider_en(p, club_id):
+    if es_admin(p):
+        return True
+    m = _membresia_activa(p, club_id)
+    return bool(m and m.rol == "lider" and modo_gestion(p))
 
 
 def exigir_miembro(p, club):
-    m = repo_clubes.membresia(p.bd, p.usuario.id, club.id)
-    if not m or m.estado != "activa":
+    if es_admin(p):
+        return Fila(rol="admin", estado="activa")
+    m = _membresia_activa(p, club.id)
+    if not m:
         raise ErrorHttp(403, "Debes ser miembro del club para hacer esto.")
     return m
 
 
 def exigir_responsable(p, club):
-    m = repo_clubes.membresia(p.bd, p.usuario.id, club.id)
-    if not es_responsable(m):
-        raise ErrorHttp(403, "Solo el líder o los capitanes del club pueden hacer esto.")
-    return m
+    if not es_responsable_en(p, club.id):
+        raise ErrorHttp(403, "Solo el líder, los capitanes del club o la administración pueden hacer esto. "
+                             "Si tienes ese rol, inicia sesión como Líder o Capitán.")
+    return _membresia_activa(p, club.id) or Fila(rol="admin", estado="activa")
 
 
 def contexto_club(p, club, pestana):
     """Datos que necesita la cabecera con pestañas de cualquier página de club."""
     mi = repo_clubes.membresia(p.bd, p.usuario.id, club.id)
-    responsable = es_responsable(mi)
+    responsable = es_responsable_en(p, club.id)
+    puede_pedir_capitan = bool(mi and mi.estado == "activa" and mi.rol == "miembro"
+                               and not repo_clubes.solicitud_capitan_pendiente(p.bd, p.usuario.id, club.id))
     return {
         "club": club,
         "mi": mi,
-        "es_miembro": bool(mi and mi.estado == "activa"),
+        "es_miembro": bool(mi and mi.estado == "activa") or es_admin(p),
         "es_responsable": responsable,
-        "es_lider": bool(mi and mi.estado == "activa" and mi.rol == "lider"),
+        "es_lider": es_lider_en(p, club.id),
+        "puede_pedir_capitan": puede_pedir_capitan,
+        "capitan_pendiente": bool(mi and repo_clubes.solicitud_capitan_pendiente(p.bd, p.usuario.id, club.id)),
         "pestana": pestana,
         "lider": repo_clubes.lider(p.bd, club.id),
         "pend_miembros": repo_clubes.contar_pendientes(p.bd, club.id) if responsable else 0,

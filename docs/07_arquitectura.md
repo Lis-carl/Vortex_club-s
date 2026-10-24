@@ -70,7 +70,7 @@ Vortex_club/
 │   ├── seguridad.py        ← contraseñas PBKDF2, sesiones, CSRF, límite de intentos
 │   ├── formularios.py      ← lectura urlencoded/multipart y validaciones
 │   ├── utilidades.py       ← slugs, fechas relativas, iniciales
-│   ├── repositorios/       ← usuarios, clubes, anuncios, foro, chat, eventos (todo el SQL)
+│   ├── repositorios/       ← usuarios, clubes, anuncios, foro, chat, eventos, notificaciones, participacion (todo el SQL)
 │   └── controladores/      ← cuentas, inicio, clubes, foro, chat, eventos, admin
 ├── plantillas/             ← HTML (base, páginas y parciales/)
 ├── estatico/               ← css/estilo.css, img/logo.svg (monograma VC), img/logo-blanco.svg
@@ -146,7 +146,11 @@ integradas de Python), sobre los datos que entrega el controlador.
 | GET | `/perfil/<cif>` | cuentas.perfil | Sesión |
 | GET/POST | `/anuncios` | inicio.anuncios_generales | Sesión / Admin para publicar |
 | POST | `/anuncios/<id>/eliminar` | inicio.eliminar_anuncio | Autor, responsable o admin |
-| GET | `/eventos` | eventos.proximos | Sesión |
+| GET | `/eventos?mes=AAAA-MM&vista=mios` | eventos.proximos (calendario mensual) | Sesión |
+| POST | `/eventos/<id>/asistencia` | eventos.asistencia (confirmar / cancelar) | Sesión |
+| GET | `/notificaciones` | inicio.ver_notificaciones | Sesión |
+| GET | `/gestion` | inicio.gestion (clubes a mi cargo) | Capitán / Líder / Admin |
+| POST | `/clubes/<slug>/solicitar-capitan` | clubes.solicitar_capitan | Miembro |
 | GET | `/clubes` | clubes.catalogo | Sesión |
 | GET/POST | `/clubes/solicitar` | clubes.solicitar | Sesión |
 | GET | `/clubes/<slug>` | foro.foro_club | Sesión |
@@ -175,8 +179,26 @@ integradas de Python), sobre los datos que entrega el controlador.
 | POST | `/admin/usuarios/<id>` | admin.cambiar_estado_usuario | Admin |
 | POST | `/admin/clubes/<id>` | admin.cambiar_estado_club | Admin |
 | POST | `/admin/clubes/<id>/lider` | admin.asignar_lider | Admin |
+| POST | `/admin/capitanes/<id>` | admin.resolver_solicitud_capitan | Admin |
 
-## 7.8 Seguridad
+## 7.8 Modelo de permisos
+
+Al iniciar sesión se elige el **rol de acceso**, que se guarda en la sesión (`sesiones.rol_acceso`)
+y se valida contra la cuenta: «Administración» exige `rol_global = 'admin'`; «Líder» o «Capitán»
+exigen ese rol en al menos un club. `vortex/acceso.py` concentra las reglas:
+
+| Función | Devuelve verdadero cuando… |
+|---------|----------------------------|
+| `es_admin(p)` | la cuenta es de administración **y** entró como Administración (permiso total) |
+| `modo_gestion(p)` | entró como Capitán o Líder |
+| `es_responsable_en(p, club)` | es administración, o (modo gestión y es líder o capitán activo del club) |
+| `es_lider_en(p, club)` | es administración, o (modo gestión y es el líder del club) |
+| `exigir_miembro(p, club)` | es miembro activo o administración; si no, error 403 |
+
+Con el rol Estudiante una persona actúa como miembro común, aunque sea líder en algún club, y solo
+puede eliminar lo que ella misma publicó.
+
+## 7.9 Seguridad
 
 | Amenaza | Medida |
 |---------|--------|

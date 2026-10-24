@@ -178,8 +178,12 @@ class PruebasClubes(PruebaServidor):
                               "WHERE c.slug='ajedrez' AND m.rol IN ('lider','capitan')"))
         self.assertEqual(roles, {SOFIA: "lider", CARLOS: "capitan"})
 
-    def test_editar_club_solo_lider(self):
-        self.assertEqual(self.cliente(LUIS).get("/clubes/robotica/editar").estado, 403)   # capitán, no líder
+    def test_editar_club_lider_y_capitan(self):
+        self.assertEqual(self.cliente(LUIS).get("/clubes/robotica/editar").estado, 200)    # el capitán también edita
+        self.assertEqual(self.cliente(MARIA).get("/clubes/robotica/editar").estado, 403)   # miembro simple de Robótica
+        luis_estudiante = Cliente(self.base)
+        luis_estudiante.entrar(LUIS, rol="estudiante")
+        self.assertEqual(luis_estudiante.get("/clubes/robotica/editar").estado, 403)       # entró como estudiante
         ana = self.cliente(ANA)
         self.assertEqual(ana.get("/clubes/robotica/editar").estado, 200)
         r = ana.post("/clubes/robotica/editar", {"descripcion": "corta", "categoria": "1"}, desde="/clubes/robotica/editar")
@@ -411,7 +415,9 @@ class PruebasChatYEventos(PruebaServidor):
         r = luis.post(f"/propuestas/{pid}/revisar", {"decision": "aprobar", "comentario": "Adelante"}, desde="/clubes/robotica/eventos")
         self.assertIn("Propuesta aprobada", r.cuerpo)
         self.assertEqual(consulta("SELECT estado, comentario_revision FROM propuestas_evento WHERE id=?", pid), [("aprobada", "Adelante")])
-        self.assertIn("Evento para aprobar", self.cliente(CARLOS).get("/eventos").cuerpo)   # calendario general
+        self.assertIn("Evento para aprobar", self.cliente(CARLOS).get(f"/eventos?mes={FUTURO[:7]}").cuerpo)   # calendario
+        self.assertIn("Tu propuesta «Evento para aprobar» fue aprobada", maria.get("/notificaciones").cuerpo)
+        self.assertIn("Nuevo evento en Robótica: Evento para aprobar", self.cliente(JORGE).get("/notificaciones").cuerpo)
         self.assertIn("ya fue revisada", luis.post(f"/propuestas/{pid}/revisar", {"decision": "rechazar"}, desde="/").cuerpo)
 
     def test_rechazar_propuesta(self):
@@ -423,7 +429,7 @@ class PruebasChatYEventos(PruebaServidor):
         r = maria.get("/clubes/robotica/eventos")
         self.assertIn("rechazada", r.cuerpo)
         self.assertIn("Sin presupuesto", r.cuerpo)
-        self.assertNotIn("Evento para rechazar", self.cliente(CARLOS).get("/eventos").cuerpo)
+        self.assertNotIn("Evento para rechazar", self.cliente(CARLOS).get(f"/eventos?mes={FUTURO[:7]}").cuerpo)
 
     def test_no_se_aprueba_evento_pasado(self):
         con = sqlite3.connect(os.environ["VORTEX_BD"])
@@ -532,10 +538,144 @@ class PruebasInstalacionLimpia(PruebaServidor):
         self.assertEqual(lider1.post(f"/admin/clubes/{cid}/lider", {"cif": "27100003"}, desde="/").estado, 403)
         r = admin.post(f"/admin/clubes/{cid}/lider", {"cif": "27100003"}, desde="/admin")
         self.assertIn("Primera Líder es ahora líder de Club de Debate", r.cuerpo)
-        self.assertIn("Configuración", lider1.get("/clubes/club-de-debate").cuerpo)      # pestaña solo para el líder
+        self.assertNotIn(">Configuración<", lider1.get("/clubes/club-de-debate").cuerpo)  # su sesión es de estudiante
+        lider1.entrar("27100003", clave="clave123", rol="lider")
+        self.assertIn(">Configuración<", lider1.get("/clubes/club-de-debate").cuerpo)     # con rol de líder sí
+        self.assertIn("te asignó como líder de Club de Debate", lider1.get("/notificaciones").cuerpo)
         admin.post(f"/admin/clubes/{cid}/lider", {"cif": "27100004"}, desde="/admin")
         roles = dict(consulta("SELECT u.cif, m.rol FROM membresias m JOIN usuarios u ON u.id=m.usuario_id WHERE m.club_id=?", cid))
         self.assertEqual(roles, {"27100003": "miembro", "27100004": "lider"})      # siempre un solo líder
+
+
+class PruebasRolesYFuncionesEncuesta(PruebaServidor):
+    """Rol elegido al iniciar sesión, permisos, solicitudes de capitán y funciones pedidas en la encuesta."""
+
+    def test_login_con_rol(self):
+        c = Cliente(self.base)
+        r = c.post("/acceder", {"cif": JORGE, "contrasena": "demo1234", "rol": "lider"}, desde="/acceder")
+        self.assertIn("no es líder de ningún club", r.cuerpo)
+        r = c.post("/acceder", {"cif": ANA, "contrasena": "demo1234", "rol": "admin"}, desde="/acceder")
+        self.assertIn("no tiene permisos de administración", r.cuerpo)
+        r = c.post("/acceder", {"cif": LUIS, "contrasena": "demo1234", "rol": "capitan"}, desde="/acceder")
+        self.assertTrue(r.url.endswith("/gestion"))                          # capitán: panel de sus clubes
+        self.assertIn("Robótica", r.cuerpo)
+        self.assertIn("Capitán", r.cuerpo)
+        admin = Cliente(self.base)
+        self.assertTrue(admin.entrar(ADMIN, rol="admin").url.endswith("/admin"))
+        admin_estudiante = Cliente(self.base)
+        admin_estudiante.entrar(ADMIN, rol="estudiante")
+        self.assertEqual(admin_estudiante.get("/admin").estado, 403)          # sin el rol de administración
+        self.assertIn('name="rol"', Cliente(self.base).get("/acceder").cuerpo)
+
+    def test_estudiante_no_borra_lo_ajeno_y_lider_en_modo_estudiante_no_gestiona(self):
+        pid = consulta("SELECT id FROM publicaciones WHERE titulo LIKE '¿Qué sensor%'")[0][0]   # de Luis
+        self.assertEqual(self.cliente(MARIA).post(f"/publicaciones/{pid}/eliminar", desde="/").estado, 403)
+        ana_estudiante = Cliente(self.base)
+        ana_estudiante.entrar(ANA, rol="estudiante")
+        self.assertEqual(ana_estudiante.post(f"/publicaciones/{pid}/eliminar", desde="/").estado, 403)
+        self.assertEqual(ana_estudiante.post("/clubes/robotica/anuncios", {"titulo": "Prueba", "contenido": "x"},
+                                             desde="/").estado, 403)
+        self.assertNotIn(">Eliminar<", ana_estudiante.get(f"/publicaciones/{pid}").cuerpo.split('id="comentarios"')[0])
+
+    def test_administracion_tiene_permiso_total(self):
+        admin = self.cliente(ADMIN)
+        r = admin.post("/clubes/robotica/anuncios", {"titulo": "Aviso de la administración", "contenido": "Hola"},
+                       desde="/clubes/robotica/anuncios")
+        self.assertIn("Aviso de la administración", r.cuerpo)
+        self.assertEqual(admin.get("/clubes/robotica/editar").estado, 200)
+        self.assertEqual(admin.get("/clubes/robotica/chat").estado, 200)
+        mid = consulta("SELECT m.id FROM membresias m JOIN usuarios u ON u.id=m.usuario_id JOIN clubes c ON c.id=m.club_id "
+                       "WHERE u.cif=? AND c.slug='robotica'", JORGE)[0][0]
+        self.assertIn("Ahora es capitán", admin.post(f"/clubes/robotica/miembros/{mid}", {"accion": "hacer_capitan"},
+                                                     desde="/clubes/robotica/miembros").cuerpo)
+        pid = consulta("SELECT id FROM publicaciones WHERE titulo LIKE 'Apertura%'")[0][0]
+        self.assertIn("Publicación eliminada", admin.post(f"/publicaciones/{pid}/eliminar", desde="/").cuerpo)
+
+    def test_solicitud_de_capitan_aprobada_por_la_administracion(self):
+        maria = self.cliente(MARIA)                       # miembro simple de Robótica
+        self.assertIn("Solicitar ser capitán", maria.get("/clubes/robotica").cuerpo)
+        r = maria.post("/clubes/robotica/solicitar-capitan", {"motivo": "Organizo los talleres"}, desde="/clubes/robotica")
+        self.assertIn("La administración la revisará", r.cuerpo)
+        self.assertIn("Solicitud de capitán en revisión", r.cuerpo)
+        self.assertIn("Ya tienes una solicitud pendiente",
+                      maria.post("/clubes/robotica/solicitar-capitan", {}, desde="/clubes/robotica").cuerpo)
+        self.assertEqual(self.cliente(SOFIA).post("/clubes/robotica/solicitar-capitan", {}, desde="/").estado, 403)
+        admin = self.cliente(ADMIN)
+        panel = admin.get("/admin").cuerpo
+        self.assertIn("quiere ser capitán de", panel)
+        self.assertIn("Organizo los talleres", panel)
+        sid = consulta("SELECT id FROM solicitudes_capitan WHERE estado='pendiente'")[0][0]
+        self.assertEqual(self.cliente(ANA).post(f"/admin/capitanes/{sid}", {"decision": "aprobar"}, desde="/").estado, 403)
+        self.assertIn("Nuevo capitán asignado en Robótica",
+                      admin.post(f"/admin/capitanes/{sid}", {"decision": "aprobar"}, desde="/admin").cuerpo)
+        self.assertEqual(consulta("SELECT m.rol FROM membresias m JOIN usuarios u ON u.id=m.usuario_id JOIN clubes c "
+                                  "ON c.id=m.club_id WHERE u.cif=? AND c.slug='robotica'", MARIA), [("capitan",)])
+        self.assertIn("ahora eres capitán de Robótica", maria.get("/notificaciones").cuerpo)
+
+    def test_confirmacion_de_asistencia_y_cupo(self):
+        eid = consulta("SELECT id FROM propuestas_evento WHERE titulo='Torneo relámpago de ajedrez'")[0][0]
+        con = sqlite3.connect(os.environ["VORTEX_BD"])
+        con.execute("UPDATE propuestas_evento SET cupo = 1 WHERE id = ?", (eid,))
+        con.commit()
+        con.close()
+        sofia, luis = self.cliente(SOFIA), self.cliente(LUIS)
+        r = sofia.post(f"/eventos/{eid}/asistencia", {"siguiente": "/clubes/ajedrez/eventos"}, desde="/clubes/ajedrez/eventos")
+        self.assertIn("Asistencia confirmada", r.cuerpo)
+        self.assertIn("Asistirás", r.cuerpo)
+        self.assertIn("1 confirmado de 1", r.cuerpo)
+        self.assertIn("alcanzó su cupo", luis.post(f"/eventos/{eid}/asistencia", {}, desde="/").cuerpo)
+        self.assertIn("Cupo lleno", luis.get("/clubes/ajedrez/eventos").cuerpo)
+        lider = self.cliente(CARLOS)
+        self.assertIn("Ver asistentes (1)", lider.get("/clubes/ajedrez/eventos").cuerpo)   # el líder ve la lista
+        self.assertIn("Cancelaste tu asistencia", sofia.post(f"/eventos/{eid}/asistencia", {}, desde="/").cuerpo)
+        self.assertEqual(consulta("SELECT COUNT(*) FROM asistencias WHERE evento_id=?", eid), [(0,)])
+        self.assertEqual(sofia.post("/eventos/99999/asistencia", {}, desde="/").estado, 404)
+
+    def test_recordatorio_de_eventos_proximos(self):
+        con = sqlite3.connect(os.environ["VORTEX_BD"])
+        manana = (datetime.now() + timedelta(hours=20)).strftime("%Y-%m-%d %H:%M")
+        con.execute("UPDATE propuestas_evento SET fecha_inicio = ? WHERE titulo='Hackatón de robots'", (manana,))
+        con.commit()
+        con.close()
+        eid = consulta("SELECT id FROM propuestas_evento WHERE titulo='Hackatón de robots'")[0][0]
+        maria = self.cliente(MARIA)
+        self.assertNotIn('class="recordatorio"', maria.get("/").cuerpo)
+        maria.post(f"/eventos/{eid}/asistencia", {}, desde="/")
+        inicio = maria.get("/").cuerpo
+        self.assertIn('class="recordatorio"', inicio)
+        self.assertIn("Hackatón de robots", inicio.split('class="recordatorio"')[1][:600])
+
+    def test_notificaciones(self):
+        maria = self.cliente(MARIA)
+        maria.get("/notificaciones")                      # deja todo leído
+        self.cliente(ANA).post("/clubes/robotica/anuncios", {"titulo": "Cambio de aula", "contenido": "Ahora en el lab 5"},
+                               desde="/clubes/robotica/anuncios")
+        inicio = maria.get("/").cuerpo
+        self.assertIn('class="campana-numero">1<', inicio)
+        bandeja = maria.get("/notificaciones").cuerpo
+        self.assertIn("Nuevo anuncio en Robótica: Cambio de aula", bandeja)
+        self.assertIn('class="nueva"', bandeja)
+        self.assertNotIn("campana-numero", maria.get("/").cuerpo)   # al abrir la bandeja quedan leídas
+        pid = consulta("SELECT id FROM publicaciones WHERE titulo LIKE 'Taller de Arduino%'")[0][0]
+        self.cliente(JORGE).post(f"/publicaciones/{pid}/comentar", {"contenido": "Me apunto también"}, desde="/")
+        self.assertIn("Jorge Díaz comentó tu publicación", self.cliente(ANA).get("/notificaciones").cuerpo)
+
+    def test_calendario_y_participacion(self):
+        mes = consulta("SELECT substr(fecha_inicio, 1, 7) FROM propuestas_evento WHERE titulo='Torneo relámpago de ajedrez'")[0][0]
+        r = self.cliente(SOFIA).get(f"/eventos?mes={mes}")
+        self.assertIn('class="calendario-rejilla"', r.cuerpo)
+        self.assertIn("Torneo relámpago de ajedrez", r.cuerpo)
+        self.assertEqual(self.cliente(SOFIA).get("/eventos?mes=2026-99").estado, 200)   # mes inválido: usa el actual
+        perfil = self.cliente(SOFIA).get(f"/perfil/{ANA}").cuerpo
+        self.assertIn("puntos de participación", perfil)
+        self.assertIn("Más participativos", self.cliente(SOFIA).get("/").cuerpo)
+
+    def test_sin_buscador_en_la_cabecera(self):
+        inicio = self.cliente(ANA).get("/").cuerpo
+        self.assertNotIn('class="buscador"', inicio)
+        self.assertNotIn('name="q"', inicio)
+        self.assertIn("Sé parte de un club", inicio)
+        self.assertIn("Universidad Americana (UAM)", inicio)
 
 
 if __name__ == "__main__":

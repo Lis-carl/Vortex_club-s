@@ -2,11 +2,11 @@
 import secrets
 
 from .. import config, formularios as frm
-from ..acceso import (requiere_sesion, club_o_404, contexto_club, exigir_miembro, es_admin, es_responsable,
+from ..acceso import (requiere_sesion, club_o_404, contexto_club, exigir_miembro, es_responsable_en,
                       destino_seguro)
 from ..enrutador import ruta
 from ..nucleo import ErrorHttp, Respuesta
-from ..repositorios import clubes, foro
+from ..repositorios import clubes, foro, notificaciones
 from ..vistas import render
 from .inicio import marcar_permisos
 
@@ -19,7 +19,8 @@ def _publicacion_o_404(p, id):
 
 
 def _puede_moderar(p, club_id, autor_id):
-    return autor_id == p.usuario.id or es_admin(p) or es_responsable(clubes.membresia(p.bd, p.usuario.id, club_id))
+    """Un estudiante solo modera lo suyo; líder/capitán en su club y la administración en todos."""
+    return autor_id == p.usuario.id or es_responsable_en(p, club_id)
 
 
 @ruta("GET", "/clubes/<slug>")
@@ -71,7 +72,7 @@ def hilo(p, id):
     ctx = contexto_club(p, club, "foro")
     pub["puede_eliminar"] = _puede_moderar(p, pub.club_id, pub.autor_id)
     lista = foro.comentarios(p.bd, id, p.usuario.id)
-    roles_mod = ctx["es_responsable"] or es_admin(p)
+    roles_mod = ctx["es_responsable"]
     for c in lista:
         c["puede_eliminar"] = (not c.eliminado) and (c.autor_id == p.usuario.id or roles_mod)
     return render(p, "hilo.html", pub=pub, comentarios=lista, errores=frm.Errores(), **ctx)
@@ -86,15 +87,20 @@ def comentar(p, id):
     errores = frm.Errores()
     contenido = frm.texto(p.formulario, errores, "contenido", "El comentario", 1, 5000, una_linea=False)
     padre_txt = p.formulario.get("padre_id") or ""
-    padre = None
+    padre, autor_padre = None, None
     if padre_txt.isdigit():
         candidato = foro.comentario(p.bd, int(padre_txt))
         if not candidato or candidato.publicacion_id != id:
             raise ErrorHttp(400, "El comentario al que respondes no existe.")
-        padre = candidato.id
+        padre, autor_padre = candidato.id, candidato.autor_id
     if errores:
         return Respuesta.redirigir(f"/publicaciones/{id}").con_aviso("error", errores["contenido"])
     foro.crear_comentario(p.bd, id, p.usuario.id, padre, contenido)
+    enlace = f"/publicaciones/{id}#comentarios"
+    if pub.autor_id != p.usuario.id:
+        notificaciones.crear(p.bd, pub.autor_id, f"{p.usuario.nombre} comentó tu publicación «{pub.titulo}».", enlace)
+    if autor_padre and autor_padre not in (p.usuario.id, pub.autor_id):
+        notificaciones.crear(p.bd, autor_padre, f"{p.usuario.nombre} respondió tu comentario en «{pub.titulo}».", enlace)
     return Respuesta.redirigir(f"/publicaciones/{id}#comentarios").con_aviso("ok", "Comentario publicado.")
 
 

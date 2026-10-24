@@ -1,17 +1,24 @@
 # Manual de usuario
 
-Vortex Club's es la plataforma web de los clubes de la universidad. Funciona en cualquier
-navegador, en computadora o en celular, y no necesita JavaScript.
+Vortex Club's es la plataforma de los clubes estudiantiles de la **Universidad Americana (UAM)**.
+Funciona en cualquier navegador, en computadora o en celular, y no necesita JavaScript.
 
 ## 1. Crear tu cuenta e iniciar sesión
 
-1. Abre la dirección que te dé la administración (por ejemplo `http://127.0.0.1:8000`).
+1. Abre la dirección que te dé la Dirección de Vida Estudiantil (por ejemplo `http://127.0.0.1:8000`).
 2. Pulsa **Crea una cuenta** y llena: CIF (8 dígitos), nombre completo, correo, carrera (opcional)
    y contraseña (mínimo 6 caracteres).
 3. Entrarás directamente al catálogo de clubes.
 
-Para entrar otro día escribe tu **CIF** y tu **contraseña** y pulsa **Acceder**. Si fallas 5 veces
-seguidas, el acceso se bloquea unos minutos.
+Para entrar otro día:
+
+1. Elige **con qué rol ingresas**: *Estudiante*, *Capitán*, *Líder* o *Administración*.
+2. Escribe tu **CIF** y tu **contraseña** y pulsa **Acceder**.
+
+El rol debe corresponder a tu cuenta (por ejemplo, solo puedes entrar como Líder si eres líder de
+algún club). Con el rol **Estudiante** usas la plataforma como cualquier miembro; para administrar
+tu club entra como **Líder** o **Capitán**. Si fallas la contraseña 5 veces seguidas, el acceso se
+bloquea unos minutos.
 
 Para salir: pulsa tu nombre (arriba a la derecha) → **Cerrar sesión**.
 
@@ -19,113 +26,119 @@ Para salir: pulsa tu nombre (arriba a la derecha) → **Cerrar sesión**.
 
 | Zona | Qué hay |
 |------|---------|
-| Barra superior | Logotipo VC, buscador de clubes y tu menú de cuenta (Mi perfil, Cerrar sesión) |
-| Menú izquierdo | **General:** Inicio, Explorar clubes, Anuncios, Eventos · **Gestión:** Crear un club (y Administración, si te corresponde) · **Mis clubes** |
+| Barra superior | Logotipo VC, el lema «Sé parte de un club», la **campana de notificaciones** (con el número de avisos sin leer) y tu menú de cuenta con el rol con que ingresaste |
+| Menú izquierdo | **General:** Inicio, Explorar clubes, Anuncios, Calendario, Notificaciones · **Gestión:** Clubes a mi cargo (líder/capitán), Crear un club, Administración (si te corresponde) · **Mis clubes** |
 | Centro | El contenido de la página |
-| Columna derecha | Anuncios generales recientes, próximos eventos o la ficha del club (en pantallas grandes) |
+| Columna derecha | Próximos eventos, anuncios generales y los estudiantes más participativos (en pantallas grandes) |
 
 En el celular el menú aparece como una franja horizontal que puedes desplazar.
 
-## 3. Encontrar y unirte a un club
+## 3. Tu inicio
 
-1. Entra a **Explorar clubes**. Usa el buscador o el filtro de categoría.
+- **Bienvenida:** saludo, fecha, cuántos clubes tienes, cuántos eventos confirmaste, tus puntos y tu nivel.
+- **Recordatorio:** si confirmaste un evento que empieza en las próximas 48 horas, aparece una banda amarilla.
+- **Cómo unirte a un club:** si aún no tienes clubes, verás los 3 pasos para empezar.
+- **Publicaciones:** de tus clubes o de toda la UAM, ordenadas por *Recientes* o *Populares*.
+
+## 4. Encontrar y unirte a un club
+
+1. Entra a **Explorar clubes**. Usa el filtro por nombre o por categoría.
 2. Cada club muestra su categoría, su descripción, el número de miembros y un botón:
    - **Unirme**: el club es abierto, entras de inmediato.
-   - **Solicitar ingreso**: el club requiere aprobación; tu solicitud queda *pendiente* hasta que
-     el líder o un capitán la acepte.
+   - **Solicitar ingreso**: el club requiere aprobación; el líder o un capitán te aceptará.
 3. Tus clubes aparecen en **Mis clubes** (menú izquierdo).
 
 Para salir de un club: entra al club, pulsa **Salir del club** y confirma. El líder debe antes
 **transferir el liderazgo**.
 
-## 4. Participar en un club
+## 5. Participar en un club
 
 Cada club tiene las pestañas **Foro · Anuncios · Eventos · Miembros · Chat** (y **Configuración**
-para el líder).
+para líder, capitanes y administración).
 
 ### Foro
-- **Crear publicación:** botón **Crear publicación**. Escribe un título, texto opcional y, si
-  quieres, una imagen (PNG, JPG, GIF o WEBP de hasta 2 MB).
+- **Crear publicación:** título, texto opcional e imagen opcional (PNG, JPG, GIF o WEBP de hasta 2 MB).
 - **Votar:** ▲ a favor, ▼ en contra. Pulsar de nuevo tu voto lo retira.
-- **Reaccionar:** pulsa **Reaccionar** y elige una de las seis reacciones (👍 ❤️ 😂 😮 😢 🔥). Pulsa una
-  reacción que ya tiene contador para sumarte o quitar la tuya. La página vuelve a la misma
-  publicación con el contador actualizado.
-- **Comentar:** abre la publicación (su título o «N comentarios»). Usa **Responder** bajo un
-  comentario para contestarle a esa persona (queda anidado).
-- **Ordenar:** *Recientes* o *Populares*.
-- **Eliminar:** pulsa **Eliminar** y confirma en el recuadro que se despliega. Solo aparece en tus
-  propias publicaciones o si eres líder o capitán del club.
-- Cualquier persona con sesión puede **leer, votar y reaccionar**; para **publicar y comentar** debes ser miembro.
+- **Reaccionar:** pulsa **Reaccionar** y elige una de las seis reacciones. La página vuelve a la misma publicación.
+- **Comentar:** abre la publicación y escribe; usa **Responder** para contestar a un comentario.
+- **Eliminar:** como estudiante solo puedes eliminar **lo que tú publicaste**. Líder, capitanes y
+  administración pueden eliminar publicaciones de otros en su club.
 
 ### Anuncios
-Los del club están en su pestaña **Anuncios**; los de toda la universidad, en **Anuncios** del
-menú. Los anuncios **fijados** aparecen primero.
+Los del club están en su pestaña **Anuncios**; los de toda la UAM, en **Anuncios** del menú.
+Cada anuncio nuevo te llega también como notificación.
 
-### Eventos
-1. Entra a la pestaña **Eventos** del club.
-2. Pulsa **Proponer un evento** y llena: nombre, descripción, fecha y hora (futura), lugar, cupo
-   (opcional) y recursos (opcional).
-3. Verás el estado en **Mis propuestas**: *pendiente*, *aprobada* o *rechazada* (con el comentario
-   del revisor).
-4. Los eventos aprobados aparecen en el club y en **Eventos** (calendario general).
+### Eventos, calendario y asistencia
+1. En la pestaña **Eventos** del club pulsa **Proponer un evento** y llena: nombre, descripción,
+   fecha y hora (futura), lugar, cupo (opcional) y recursos (opcional).
+2. Verás el estado en **Mis propuestas** y recibirás una notificación cuando lo revisen.
+3. Los eventos aprobados aparecen en el club y en el **Calendario** mensual (menú izquierdo). Usa
+   «Mis clubes y confirmados» para ver solo los tuyos.
+4. Pulsa **Confirmar asistencia** para apartar tu lugar (se respeta el cupo). Verás «Asistirás» y
+   podrás **Cancelar asistencia** cuando quieras. Te lo recordaremos 48 horas antes.
 
-### Miembros
-Tabla con el **líder**, los **capitanes** y los **miembros**, su carrera y desde cuándo están en el
-club. Pulsa un nombre para ver su perfil.
+### Miembros y chat
+**Miembros** muestra al líder, los capitanes y los miembros. El **chat** es solo para miembros y se
+actualiza solo cada 5 segundos.
 
-### Chat
-Solo para miembros. Escribe y pulsa **Enviar**. El recuadro de mensajes se actualiza solo cada
-5 segundos.
+### Solicitar ser capitán
+Si eres miembro, en la cabecera del club pulsa **Solicitar ser capitán**, escribe un motivo opcional
+y envía. La administración revisará tu solicitud y recibirás una notificación con la respuesta.
 
-## 5. Si eres capitán
+## 6. Notificaciones y puntos de participación
+
+- **Notificaciones:** la campana muestra cuántos avisos tienes sin leer (anuncios, eventos aprobados,
+  respuestas a tus propuestas y solicitudes, comentarios a tus publicaciones, asignaciones de rol).
+  Al abrir la bandeja quedan marcados como leídos.
+- **Puntos:** ganas puntos al participar: publicación 5, comentario 2, asistencia confirmada 3,
+  reacción recibida de otra persona 1. Según tus puntos tienes un nivel: *Nuevo* (0), *Participante*
+  (10), *Activo* (30) o *Destacado* (60). Los más participativos aparecen en el inicio.
+
+## 7. Si eres capitán (entra con el rol Capitán)
 
 | Tarea | Dónde |
 |-------|-------|
-| Aceptar o rechazar solicitudes de ingreso | Pestaña **Miembros** → *Solicitudes de ingreso* (el número rojo de la pestaña indica cuántas hay) |
-| Publicar un anuncio del club | Pestaña **Anuncios** → formulario superior |
-| Aprobar o rechazar propuestas de evento | Pestaña **Eventos** → *Propuestas por revisar* (puedes dejar un comentario) |
-| Eliminar publicaciones, comentarios o anuncios inadecuados | **Eliminar** y confirmar |
+| Ver tus clubes y lo pendiente | **Clubes a mi cargo** |
+| Aceptar o rechazar solicitudes de ingreso | Pestaña **Miembros** (el número rojo de la pestaña indica cuántas hay) |
+| Publicar un anuncio del club | Pestaña **Anuncios** |
+| Aprobar o rechazar propuestas de evento y ver asistentes | Pestaña **Eventos** |
+| Editar descripción, categoría y modo de ingreso | Pestaña **Configuración** |
+| Eliminar contenido inadecuado | **Eliminar** y confirmar |
 
-## 6. Si eres líder
+## 8. Si eres líder (entra con el rol Líder)
 
 Además de lo del capitán:
 
 | Tarea | Dónde |
 |-------|-------|
-| Nombrar o quitar capitanes | **Miembros** → *Nombrar capitán* / *Quitar capitán* |
+| Nombrar o quitar capitanes directamente | **Miembros** → *Nombrar capitán* / *Quitar capitán* |
 | Expulsar a un miembro | **Miembros** → *Expulsar* y confirmar |
-| Transferir el liderazgo | **Miembros** → *Transferir liderazgo* y confirmar (tú pasas a ser capitán) |
-| Cambiar descripción, categoría o si el ingreso requiere aprobación | Pestaña **Configuración** |
+| Transferir el liderazgo | **Miembros** → *Transferir liderazgo* (tú pasas a ser capitán) |
 
 ### Crear un club nuevo
-1. Menú → **Crear un club**.
-2. Llena nombre, categoría, descripción y, si quieres, la justificación. Marca la casilla si los
-   nuevos miembros deben ser aprobados.
-3. La administración revisa la solicitud. Si se aprueba, el club se crea y **tú quedas como líder**.
-   El estado aparece en la misma página y en tu perfil.
+Menú → **Crear un club**. La administración revisa la solicitud; si se aprueba, quedas como líder.
 
-## 7. Si eres administración
+## 9. Si eres administración (entra con el rol Administración)
 
-Menú → **Administración**:
+La administración tiene **permiso sobre todo**: puede publicar, moderar, editar y gestionar los
+miembros de cualquier club. En el menú → **Administración**:
 
 - **Estadísticas:** usuarios, clubes activos, publicaciones y eventos aprobados.
-- **Solicitudes de club pendientes:** *Aprobar* (crea el club y deja al solicitante como líder) o
-  *Rechazar*, con un comentario opcional.
-- **Clubes:** escribe el **CIF** de un estudiante y pulsa **Asignar** para nombrarlo líder del
-  club (el líder anterior, si lo había, pasa a miembro). También puedes desactivar o reactivar un club.
-- **Usuarios:** desactivar o reactivar cuentas (la persona pierde su sesión de inmediato).
-- **Anuncios generales:** en **Anuncios** aparece el formulario solo para la administración.
+- **Solicitudes de club:** aprobar (crea el club y deja al solicitante como líder) o rechazar.
+- **Solicitudes para ser capitán:** aprobar (el miembro pasa a capitán) o rechazar, con comentario.
+- **Clubes:** escribe el **CIF** de un estudiante y pulsa **Asignar** para nombrarlo líder; también
+  puedes desactivar o reactivar clubes.
+- **Usuarios:** desactivar o reactivar cuentas.
+- **Anuncios generales:** en **Anuncios** aparece el formulario; se notifica a todos los estudiantes.
 
-Los 14 clubes oficiales vienen cargados sin líder: asigna el líder de cada uno cuando cree su cuenta.
+## 10. Preguntas frecuentes
 
-## 8. Preguntas frecuentes
+**No puedo editar mi club aunque soy capitán.** Cierra sesión y vuelve a entrar con el rol **Capitán**.
 
 **No puedo publicar en un club.** Debes ser miembro. Si el club requiere aprobación, espera a que te acepten.
 
-**La pestaña Chat aparece en gris.** El chat es solo para miembros activos del club.
+**No puedo confirmar asistencia.** El evento ya alcanzó su cupo o ya ocurrió.
 
-**Olvidé mi contraseña.** Pide ayuda a la administración (la versión 1 no envía correos de recuperación).
-
-**Mi imagen no se sube.** Debe ser PNG, JPG, GIF o WEBP y pesar menos de 2 MB.
+**Olvidé mi contraseña.** Solicítala en la Dirección de Vida Estudiantil.
 
 **Me dice «El token de seguridad no es válido».** La página estuvo abierta mucho tiempo o se cerró tu sesión. Recarga e intenta de nuevo.

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block titulo %}Clubes a mi cargo{% endblock %}
+{% block contenido %}
+<header class="encabezado-pagina">
+  <div>
+    <p class="antetitulo">Gestión · {{ rol_acceso_nombre }}</p>
+    <h1>Clubes a mi cargo</h1>
+    <p class="descripcion">Como líder o capitán puedes publicar anuncios, revisar propuestas de eventos, aceptar miembros y editar la configuración de tu club.</p>
+  </div>
+</header>
+{% if a_cargo %}
+<div class="rejilla-clubes">
+  {% for c in a_cargo %}
+  <article class="panel club-tarjeta">
+    <div class="club-tarjeta-cabecera">
+      <span class="avatar avatar-club" style="background:{{ c.nombre | color }}">{{ c.nombre | iniciales }}</span>
+      <div><p class="antetitulo">{% if c.rol == 'lider' %}Líder{% else %}Capitán{% endif %}</p><h2><a href="/clubes/{{ c.slug }}">{{ c.nombre }}</a></h2></div>
+    </div>
+    <ul class="datos-club">
+      <li><span>Miembros</span><span>{{ c.n_miembros }}</span></li>
+      <li><span>Solicitudes de ingreso</span><span>{{ c.pend_miembros }}</span></li>
+      <li><span>Propuestas por revisar</span><span>{{ c.pend_eventos }}</span></li>
+    </ul>
+    <div class="club-tarjeta-pie">
+      <a href="/clubes/{{ c.slug }}/anuncios">Anuncios</a>
+      <a href="/clubes/{{ c.slug }}/eventos">Eventos</a>
+      <a href="/clubes/{{ c.slug }}/miembros">Miembros</a>
+      <a href="/clubes/{{ c.slug }}/editar">Configuración</a>
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% else %}
+<section class="panel vacio"><h3>No tienes clubes a tu cargo</h3><p>La administración asigna a los líderes y aprueba las solicitudes para ser capitán.</p></section>
+{% endif %}
+{% endblock %}

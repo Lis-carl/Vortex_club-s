@@ -8,6 +8,11 @@
     <h1>{{ persona.nombre }}</h1>
     <p class="tenue">CIF {{ persona.cif }}{% if persona.carrera %} · {{ persona.carrera }}{% endif %} · Registrado desde {{ persona.creado_en | fecha_corta }}</p>
   </div>
+  <div class="perfil-puntos">
+    <span class="insignia insignia-{{ participacion.insignia.lower() }}">{{ participacion.insignia }}</span>
+    <b>{{ participacion.puntos }}</b><span class="tenue">puntos de participación</span>
+    {% if participacion.siguiente %}<span class="tenue">Faltan {{ participacion.faltan }} para el siguiente nivel</span>{% endif %}
+  </div>
 </section>
 <section class="panel">
   <div class="panel-cabecera"><h2>Clubes</h2></div>

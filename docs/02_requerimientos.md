@@ -43,6 +43,39 @@ Escala de Likert 1 (muy en desacuerdo) a 5 (muy de acuerdo), más preguntas abie
 
 Preguntas abiertas: ¿Qué te impide unirte a un club? ¿Qué función te parecería más útil?
 
+### Resultados de la encuesta aplicada (octubre de 2026)
+
+Se aplicó un cuestionario en Google Forms a la comunidad de la UAM. Se recibieron **15 respuestas**
+(13 estudiantes y 4 líderes o capitanes; algunas personas marcaron ambos roles). Las respuestas
+completas están en [`encuesta/respuestas_encuesta.csv`](encuesta/respuestas_encuesta.csv).
+
+| Pregunta | Resultado principal |
+|----------|--------------------|
+| ¿Qué tan fácil es encontrar información de los clubes y cómo unirte? | **Regular 8 · Difícil 4 · Muy difícil 3** (nadie respondió «fácil») |
+| ¿Por qué medio te enteraste de los clubes? | Amigos o compañeros 11 · Redes sociales 5 · Ferias 3 · Web oficial 1 |
+| ¿Por dónde te informas de las actividades de tu club? | WhatsApp 8 · Instagram 4 · Presencial 2 |
+| ¿Te has perdido actividades por no enterarte a tiempo? | **Sí, algunas veces 6 · Sí, frecuentemente 2** · Rara vez 3 · Nunca 4 |
+| Principal dificultad al participar | **Información dispersa 6 · Horarios mal coordinados 6** · Demasiados mensajes en chats 3 · Avisos llegan tarde 2 · No sé qué clubs existen 1 · No sé cómo inscribirme 1 |
+| ¿Usarías una aplicación que reúna todo? | **Definitivamente sí 8 · Probablemente sí 6** · No estoy seguro 1 |
+| Función más útil | **Inscripción en línea 5** · Catálogo y buscador 3 · Confirmación de asistencia 2 · Notificaciones y recordatorios 2 · Calendario de actividades 2 · Tablón de anuncios por club 1 |
+| Dispositivo principal | **Celular 13** · Ambos 2 |
+| Frecuencia de uso | Varias veces por semana 8 · Diariamente 3 · Una vez por semana 2 · Solo con eventos 2 |
+| Sugerencias | «Algo que incentive el uso de la web» · «Notificaciones y que sea fácil de usar» |
+
+**Cómo se tradujeron las respuestas en funciones:**
+
+| Hallazgo | Función de la plataforma |
+|----------|-------------------------|
+| Inscripción en línea (función más votada) | Botón «Unirme» / «Solicitar ingreso» en el catálogo y en cada club (RF-06) |
+| Catálogo y buscador | Catálogo con filtro por nombre y categoría (RF-04) |
+| Confirmación de asistencia | Botón «Confirmar asistencia» con cupo y lista de asistentes (RF-32) |
+| Notificaciones, avisos que llegan tarde, eventos perdidos | Bandeja de notificaciones con contador (RF-33) y recordatorios de eventos confirmados en las próximas 48 h (RF-34) |
+| Calendario y horarios mal coordinados | Calendario mensual de actividades de todos los clubes (RF-35) |
+| Información dispersa, demasiados mensajes en chats | Tablón de anuncios por club y general, foro ordenado y chat por club, todo en un solo lugar |
+| «Algo que incentive el uso» | Puntos de participación, niveles y ranking de los más participativos (RF-36) |
+| No sé cómo inscribirme | Guía «Cómo unirte a un club» en 3 pasos en el inicio de quien aún no tiene clubes |
+| 13 de 15 usarían el celular | Diseño adaptable a pantallas de 360 px (RNF-05) |
+
 ### Métodos discretos
 - **Muestreo de documentos:** carteles, publicaciones de Instagram y conversaciones de WhatsApp
   de tres clubes, para identificar qué datos se comunican (fecha, lugar, cupo, responsable).
@@ -58,7 +91,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | ID | Requerimiento | Prioridad |
 |----|---------------|-----------|
 | RF-01 | El sistema debe permitir registrarse con CIF, nombre completo, correo, carrera y contraseña. | A |
-| RF-02 | El sistema debe permitir iniciar sesión con CIF y contraseña, y cerrar sesión. | A |
+| RF-02 | El sistema debe permitir iniciar sesión con CIF, contraseña y **rol de acceso** (Estudiante, Capitán, Líder o Administración), y cerrar sesión. El rol elegido debe corresponder a la cuenta. | A |
 | RF-03 | El sistema debe mostrar un perfil con los clubes y publicaciones del usuario. | M |
 
 ### Clubes y membresías
@@ -71,7 +104,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | RF-08 | Un miembro debe poder salir de un club (el líder no puede salir sin transferir el liderazgo). | M |
 | RF-09 | El sistema debe mostrar los integrantes del club agrupados en **líder, capitanes y miembros**. | A |
 | RF-10 | El líder debe poder nombrar o quitar capitanes, expulsar miembros y transferir el liderazgo. | A |
-| RF-11 | El líder debe poder editar la descripción, categoría y modo de ingreso del club. | M |
+| RF-11 | El líder **y los capitanes** deben poder editar la descripción, categoría y modo de ingreso de su club. | M |
 
 ### Anuncios
 | ID | Requerimiento | Prioridad |
@@ -112,6 +145,17 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | RF-29 | El administrador debe poder desactivar o reactivar cuentas de usuario. | M |
 | RF-30 | El administrador debe poder desactivar un club. | B |
 | RF-31 | El administrador debe poder asignar o cambiar el líder de un club escribiendo el CIF del estudiante. | A |
+| RF-37 | Un miembro debe poder **solicitar ser capitán** de su club; la administración aprueba o rechaza la petición. Los líderes también pueden nombrar capitanes directamente. | A |
+| RF-38 | La administración debe tener permiso sobre **todo**: publicar y moderar en cualquier club, editarlo, revisar propuestas y gestionar sus miembros. | A |
+
+### Funciones surgidas de la encuesta
+| ID | Requerimiento | Prioridad |
+|----|---------------|-----------|
+| RF-32 | Un usuario debe poder **confirmar o cancelar su asistencia** a un evento aprobado y futuro, respetando el cupo. Líder y capitanes ven la lista de asistentes. | A |
+| RF-33 | El sistema debe generar **notificaciones** (anuncio nuevo, evento aprobado, propuesta revisada, solicitud aceptada o rechazada, comentario o respuesta, asignación de rol) y mostrar el número de no leídas. | A |
+| RF-34 | El sistema debe mostrar **recordatorios** de los eventos confirmados que empiezan en las próximas 48 horas. | M |
+| RF-35 | El sistema debe ofrecer un **calendario mensual** de actividades, con filtro «mis clubes y confirmados». | A |
+| RF-36 | El sistema debe calcular **puntos de participación** (publicación 5, comentario 2, asistencia 3, reacción recibida 1), un nivel (Nuevo, Participante, Activo, Destacado) y un ranking de los más participativos. | B |
 
 ## 2.4 Requerimientos no funcionales
 
@@ -147,6 +191,10 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | RN-07 | La fecha de una propuesta de evento debe ser posterior al momento en que se envía. |
 | RN-08 | El nombre de un club es único. |
 | RN-09 | Una cuenta desactivada no puede iniciar sesión. |
+| RN-10 | Los permisos de líder o capitán solo están activos si la persona inicia sesión con ese rol; con el rol Estudiante actúa como miembro común. La administración tiene permiso total solo si entra como Administración. |
+| RN-11 | Un estudiante solo puede eliminar sus propias publicaciones y comentarios. |
+| RN-12 | No se puede confirmar asistencia a un evento lleno o que ya ocurrió. |
+| RN-13 | Un miembro puede tener como máximo una solicitud de capitán pendiente por club. |
 
 ## 2.6 Matriz de permisos por rol
 
@@ -157,18 +205,25 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | Solicitar creación de club | | ✔ | ✔ | ✔ | ✔ | ✔ |
 | Unirse a un club | | ✔ | | | | ✔ |
 | Votar y reaccionar | | ✔ | ✔ | ✔ | ✔ | ✔ |
-| Publicar y comentar en el foro | | | ✔ | ✔ | ✔ | |
-| Usar el chat del club | | | ✔ | ✔ | ✔ | |
-| Proponer evento | | | ✔ | ✔ | ✔ | |
-| Publicar anuncio del club | | | | ✔ | ✔ | |
-| Aprobar ingresos y propuestas | | | | ✔ | ✔ | |
-| Eliminar contenido del club | | | | ✔ | ✔ | |
-| Nombrar capitanes, expulsar, editar club | | | | | ✔ | |
+| Publicar y comentar en el foro | | | ✔ | ✔ | ✔ | ✔ |
+| Usar el chat del club | | | ✔ | ✔ | ✔ | ✔ |
+| Confirmar asistencia a eventos | | ✔ | ✔ | ✔ | ✔ | ✔ |
+| Solicitar ser capitán | | | ✔ | | | |
+| Proponer evento | | | ✔ | ✔ | ✔ | ✔ |
+| Publicar anuncio del club | | | | ✔ | ✔ | ✔ |
+| Aprobar ingresos y propuestas | | | | ✔ | ✔ | ✔ |
+| Eliminar contenido de otros en el club | | | | ✔ | ✔ | ✔ |
+| Editar la configuración del club | | | | ✔ | ✔ | ✔ |
+| Nombrar capitanes directamente, expulsar, transferir liderazgo | | | | | ✔ | ✔ |
+| Aprobar solicitudes para ser capitán | | | | | | ✔ |
 | Aprobar clubes, anuncios generales, gestionar cuentas | | | | | | ✔ |
 | Asignar el líder de un club | | | | | | ✔ |
 
 > Votar y reaccionar se permite a cualquier usuario con sesión (no solo miembros), para que el
 > foro sea abierto a la lectura y la participación ligera, como en Reddit.
+>
+> Las columnas Capitán y Líder aplican cuando la persona inicia sesión con ese rol (RN-10); la
+> columna Admin, cuando la cuenta de administración entra como Administración.
 
 ## 2.7 Datos iniciales
 

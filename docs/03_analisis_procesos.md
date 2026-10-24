@@ -52,6 +52,7 @@ flowchart TB
     P5("5.0<br/>Gestionar foro")
     P6("6.0<br/>Gestionar chat")
     P7("7.0<br/>Gestionar eventos")
+    P8("8.0<br/>Notificar y<br/>recordar")
 
     D1[("D1 Usuarios")]
     D2[("D2 Sesiones")]
@@ -63,6 +64,9 @@ flowchart TB
     D8[("D8 Votos y reacciones")]
     D9[("D9 Mensajes de chat")]
     D10[("D10 Propuestas de evento")]
+    D11[("D11 Asistencias")]
+    D12[("D12 Notificaciones")]
+    D13[("D13 Solicitudes de capitán")]
 
     EST -- "registro, credenciales" --> P1
     P1 -- "usuario nuevo / estado" --> D1
@@ -120,6 +124,21 @@ flowchart TB
     P7 -- "pendientes" --> RES
     RES -- "decisión y comentario" --> P7
     P7 -- "estado, próximos eventos" --> EST
+    EST -- "confirmación de asistencia" --> P7
+    P7 -- "asistencia" --> D11
+    D11 -- "asistentes, cupo" --> P7
+    EST -- "solicitud de capitán" --> P3
+    P3 -- "solicitud" --> D13
+    D13 -- "solicitudes pendientes" --> P3
+    ADM -- "aprobación de capitán" --> P3
+    P3 -- "aviso" --> P8
+    P4 -- "aviso" --> P8
+    P5 -- "aviso" --> P8
+    P7 -- "aviso" --> P8
+    P8 -- "notificación" --> D12
+    D12 -- "no leídas" --> P8
+    D11 -- "eventos confirmados" --> P8
+    P8 -- "notificaciones y recordatorios" --> EST
 ```
 
 ## 3.4 Diagramas hijo (nivel 1)
@@ -202,6 +221,9 @@ flowchart TB
     RES[Responsable del club]
     D5[("D5 Membresías")]
     D10[("D10 Propuestas de evento")]
+    D11[("D11 Asistencias")]
+    D12[("D12 Notificaciones")]
+    D13[("D13 Solicitudes de capitán")]
 
     P71("7.1<br/>Validar formulario<br/>de propuesta")
     P72("7.2<br/>Registrar<br/>propuesta")
@@ -247,7 +269,7 @@ Notación de Kendall (cap. 8): `=` está compuesto de, `+` y, `{ }` repetición,
 | ID | Nombre | Descripción | Estructura | Tabla SQLite |
 |----|--------|-------------|-----------|--------------|
 | D1 | Usuarios | Cuentas registradas | Registro de usuario | `usuarios` |
-| D2 | Sesiones | Sesiones abiertas | `Token + ID usuario + Token CSRF + Expira en` | `sesiones` |
+| D2 | Sesiones | Sesiones abiertas | `Token + ID usuario + Token CSRF + Expira en + Rol de acceso` | `sesiones` |
 | D3 | Clubes | Clubes aprobados y su categoría | Club | `clubes`, `categorias` |
 | D4 | Solicitudes de club | Peticiones de nuevos clubes | Solicitud de club | `solicitudes_club` |
 | D5 | Membresías | Relación usuario-club con rol | Membresía | `membresias` |
@@ -256,6 +278,9 @@ Notación de Kendall (cap. 8): `=` está compuesto de, `+` y, `{ }` repetición,
 | D8 | Votos y reacciones | Interacciones sobre el contenido | Voto, Reacción | `votos_publicacion`, `votos_comentario`, `reacciones` |
 | D9 | Mensajes de chat | Mensajes por club | Mensaje de chat | `mensajes_chat` |
 | D10 | Propuestas de evento | Propuestas y su revisión | Propuesta de evento | `propuestas_evento` |
+| D11 | Asistencias | Confirmaciones de asistencia a eventos | `ID usuario + ID evento + Fecha` | `asistencias` |
+| D12 | Notificaciones | Avisos para cada usuario | `ID usuario + Texto + Enlace + Leída + Fecha` | `notificaciones` |
+| D13 | Solicitudes de capitán | Peticiones de miembros para ser capitán | `ID usuario + ID club + Motivo + Estado + (Revisor + Comentario)` | `solicitudes_capitan` |
 
 ### 3.5.3 Estructuras de datos
 

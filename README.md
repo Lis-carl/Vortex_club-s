@@ -1,6 +1,6 @@
 # Vortex Club's
 
-Plataforma web de **clubes universitarios**: únete a clubes, consulta anuncios generales y por club,
+Plataforma web de los **clubes estudiantiles de la Universidad Americana (UAM, Managua)**: únete a clubes, consulta anuncios generales y por club,
 conoce a líderes, capitanes y miembros, propón eventos, conversa en el chat del club y participa en
 un foro estilo Reddit con votos y reacciones. Interfaz sobria e institucional, inspirada en **UAM Virtual**.
 
@@ -43,22 +43,35 @@ Opciones: `--puerto 8080`, `--host 0.0.0.0` (visible en la red local).
 python -m unittest discover -s pruebas -t .
 ```
 
-58 pruebas (unidad + integración con un servidor real y SQLite temporal). No tocan tu base de datos.
+67 pruebas (unidad + integración con un servidor real y SQLite temporal). No tocan tu base de datos.
 
 ## Funciones
 
 | Función | Dónde |
 |---------|-------|
-| Registro e inicio de sesión con CIF | `/registro`, `/acceder` |
+| Registro e inicio de sesión con CIF y **rol de acceso** (Estudiante, Capitán, Líder, Administración) | `/registro`, `/acceder` |
 | Catálogo de clubes con búsqueda y categorías; unirse (abierto o con aprobación) | `/clubes` |
 | Anuncios **generales** (administración) y **por club** (líder/capitanes) | `/anuncios`, `/clubes/<club>/anuncios` |
 | Ver **líder, capitanes y miembros**; nombrar capitanes, expulsar, transferir liderazgo | `/clubes/<club>/miembros` |
 | Foro estilo Reddit: publicaciones con imagen, comentarios anidados, votos ▲▼ | `/clubes/<club>` |
 | **Reacciones** (👍 ❤️ 😂 😮 😢 🔥) en cada publicación | en cada publicación |
 | **Chat** por club, solo miembros, actualizado cada 5 segundos | `/clubes/<club>/chat` |
-| **Formulario de propuesta de evento** y flujo de aprobación; calendario de eventos | `/clubes/<club>/eventos`, `/eventos` |
+| **Formulario de propuesta de evento** y flujo de aprobación | `/clubes/<club>/eventos` |
+| **Calendario mensual** de actividades y **confirmación de asistencia** con cupo | `/eventos` |
+| **Notificaciones** con contador y **recordatorios** de eventos confirmados (48 h antes) | `/notificaciones` |
+| **Puntos de participación**, niveles y ranking de los más participativos | inicio y perfil |
+| **Solicitud para ser capitán**, aprobada por la administración (los líderes también nombran capitanes) | página del club, `/admin` |
+| Panel **Clubes a mi cargo** para líderes y capitanes (los capitanes también editan su club) | `/gestion` |
 | Solicitar la creación de un club | `/clubes/solicitar` |
-| Panel de administración: solicitudes, **asignación de líderes**, clubes, cuentas, estadísticas | `/admin` |
+| Administración con **permiso total**: solicitudes de club y de capitán, **asignación de líderes**, clubes, cuentas, estadísticas | `/admin` |
+
+## Basado en la encuesta a estudiantes
+
+Se encuestó a 15 personas de la UAM ([respuestas](docs/encuesta/respuestas_encuesta.csv)). Nadie
+encontró «fácil» informarse sobre los clubes, 8 de 15 se han perdido actividades por no enterarse a
+tiempo y 14 de 15 usarían la aplicación. Las funciones más pedidas (inscripción en línea, catálogo,
+confirmación de asistencia, notificaciones, calendario y algo que incentive el uso) están
+implementadas; el análisis completo está en [`docs/02_requerimientos.md`](docs/02_requerimientos.md).
 
 ## Documentación
 

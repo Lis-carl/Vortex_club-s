@@ -1,18 +1,46 @@
 {% extends "base.html" %}
 {% block titulo %}Inicio{% endblock %}
 {% block contenido %}
-<header class="encabezado-pagina">
-  <div>
-    <p class="antetitulo">Inicio</p>
-    <h1>Publicaciones</h1>
-    <p class="descripcion">{% if ver == 'mis' %}Lo más reciente de los clubes a los que perteneces.{% else %}Lo más reciente de todos los clubes de la universidad.{% endif %}</p>
+<section class="bienvenida">
+  <div class="bienvenida-texto">
+    <p class="antetitulo antetitulo-claro">{{ fecha_hoy }}</p>
+    <h1>{{ saludo }}, {{ usuario.nombre.split()[0] }}</h1>
+    <p>Esto es lo que pasa hoy en los clubes de la UAM.</p>
   </div>
+  <dl class="bienvenida-datos">
+    <div><dt>Mis clubes</dt><dd>{{ n_clubes }}</dd></div>
+    <div><dt>Eventos confirmados</dt><dd>{{ confirmados }}</dd></div>
+    <div><dt>Puntos</dt><dd>{{ participacion.puntos }}</dd></div>
+    <div><dt>Nivel</dt><dd class="nivel">{{ participacion.insignia }}</dd></div>
+  </dl>
+</section>
+
+{% if recordatorios %}
+<section class="recordatorio" role="status">
+  <strong>Recordatorio</strong>
+  {% for e in recordatorios %}
+    <span><a href="/clubes/{{ e.club_slug }}/eventos">{{ e.titulo }}</a> · {{ e.club_nombre }} · {{ e.fecha_inicio | fecha }} · {{ e.lugar }}</span>
+  {% endfor %}
+</section>
+{% endif %}
+
+{% if not tiene_clubes %}
+<section class="panel pasos">
+  <div class="panel-cabecera"><h2>Cómo unirte a un club</h2><span class="tenue">3 pasos</span></div>
+  <ol class="pasos-lista">
+    <li><b>Explora</b><span>Revisa los 14 clubes de la UAM en el catálogo y filtra por categoría.</span></li>
+    <li><b>Únete</b><span>Pulsa «Unirme». Si el club pide aprobación, el líder o un capitán te aceptará.</span></li>
+    <li><b>Participa</b><span>Publica, comenta, confirma tu asistencia a eventos y suma puntos.</span></li>
+  </ol>
+  <div class="panel-pie"><a class="boton boton-primario" href="/clubes">Explorar clubes</a></div>
+</section>
+{% endif %}
+
+<div class="barra-herramientas">
   <nav class="segmentos" aria-label="Origen de las publicaciones">
     <a class="{% if ver == 'mis' %}activo{% endif %}" href="/?ver=mis&amp;orden={{ orden }}">Mis clubes</a>
-    <a class="{% if ver == 'todos' %}activo{% endif %}" href="/?ver=todos&amp;orden={{ orden }}">Toda la universidad</a>
+    <a class="{% if ver == 'todos' %}activo{% endif %}" href="/?ver=todos&amp;orden={{ orden }}">Toda la UAM</a>
   </nav>
-</header>
-<div class="barra-herramientas">
   <nav class="segmentos" aria-label="Orden">
     <a class="{% if orden == 'nuevos' %}activo{% endif %}" href="/?ver={{ ver }}&amp;orden=nuevos">Recientes</a>
     <a class="{% if orden == 'populares' %}activo{% endif %}" href="/?ver={{ ver }}&amp;orden=populares">Populares</a>
@@ -23,15 +51,27 @@
   {% set vacio_texto = "Cuando alguien publique en tus clubes, lo verás aquí." %}
   {% set vacio_url = None %}
 {% else %}
-  {% set vacio_titulo = "Aún no perteneces a ningún club" %}
-  {% set vacio_texto = "Explora el catálogo y únete a los clubes que te interesen para ver sus publicaciones." %}
-  {% set vacio_url = "/clubes" %}
-  {% set vacio_boton = "Explorar clubes" %}
+  {% set vacio_titulo = "Aún no hay publicaciones" %}
+  {% set vacio_texto = "Las publicaciones de los clubes de la UAM aparecerán aquí." %}
+  {% set vacio_url = None %}
 {% endif %}
 {% set base_consulta = "ver=" + ver + "&orden=" + orden + "&" %}
 {% include "parciales/lista_publicaciones.html" %}
 {% endblock %}
 {% block lateral %}
+<section class="panel">
+  <div class="panel-cabecera"><h2>Próximos eventos</h2></div>
+  {% for e in proximos %}
+    <div class="evento-lateral">
+      <div class="fecha fecha-pequena"><b>{{ e.fecha_inicio | dia }}</b><span>{{ e.fecha_inicio | mes }}</span></div>
+      <div><a href="/clubes/{{ e.club_slug }}/eventos">{{ e.titulo }}</a>
+        <span class="tenue">{{ e.club_nombre }} · {{ e.fecha_inicio | hora }}{% if e.mi_asistencia %} · Asistirás{% endif %}</span></div>
+    </div>
+  {% else %}
+    <p class="vacio-corto">No hay eventos programados.</p>
+  {% endfor %}
+  <div class="panel-pie"><a href="/eventos">Ver calendario</a></div>
+</section>
 <section class="panel">
   <div class="panel-cabecera"><h2>Anuncios generales</h2></div>
   <ul class="lista-simple">
@@ -44,15 +84,15 @@
   <div class="panel-pie"><a href="/anuncios">Ver todos los anuncios</a></div>
 </section>
 <section class="panel">
-  <div class="panel-cabecera"><h2>Próximos eventos</h2></div>
-  {% for e in proximos %}
-    <div class="evento-lateral">
-      <div class="fecha fecha-pequena"><b>{{ e.fecha_inicio | dia }}</b><span>{{ e.fecha_inicio | mes }}</span></div>
-      <div><a href="/clubes/{{ e.club_slug }}/eventos">{{ e.titulo }}</a><span class="tenue">{{ e.club_nombre }} · {{ e.fecha_inicio | hora }}</span></div>
-    </div>
-  {% else %}
-    <p class="vacio-corto">No hay eventos programados.</p>
-  {% endfor %}
-  <div class="panel-pie"><a href="/eventos">Ver calendario</a></div>
+  <div class="panel-cabecera"><h2>Más participativos</h2></div>
+  {% if ranking %}
+  <ol class="ranking">
+    {% for r in ranking %}
+      <li><span class="ranking-pos">{{ bucle.indice }}</span><a href="/perfil/{{ r.cif }}">{{ r.nombre }}</a>
+        <span class="insignia insignia-{{ r.insignia.lower() }}">{{ r.puntos }} pts</span></li>
+    {% endfor %}
+  </ol>
+  {% else %}<p class="vacio-corto">Publica, comenta o confirma tu asistencia a un evento para aparecer aquí.</p>{% endif %}
+  <div class="panel-pie tenue">Publicación 5 · comentario 2 · asistencia 3 · reacción recibida 1</div>
 </section>
 {% endblock %}

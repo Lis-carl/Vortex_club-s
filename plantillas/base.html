@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block titulo %}Inicio{% endblock %} | Vortex Club's</title>
   <link rel="icon" type="image/svg+xml" href="/estatico/img/logo.svg">
-  <link rel="stylesheet" href="/estatico/css/estilo.css?v=2">
+  <link rel="stylesheet" href="/estatico/css/estilo.css?v=3">
 </head>
 <body>
 {% if usuario %}
@@ -13,20 +13,21 @@
     <div class="cabecera-interior">
       <a class="marca" href="/">
         <img src="/estatico/img/logo.svg" alt="" width="34" height="34">
-        <span class="marca-texto">Vortex Club's<small>Clubes estudiantiles</small></span>
+        <span class="marca-texto">Vortex Club's<small>UAM · Vida Estudiantil</small></span>
       </a>
-      <form class="buscador" action="/clubes" method="get" role="search">
-        <label for="buscar-clubes" class="oculto">Buscar clubes</label>
-        <input id="buscar-clubes" type="search" name="q" placeholder="Buscar clubes" maxlength="60">
-        <button>Buscar</button>
-      </form>
+      <span class="lema-cabecera">Sé parte de un club</span>
+      <a class="campana {% if n_notificaciones %}con-pendientes{% endif %} {% if ruta == '/notificaciones' %}activa{% endif %}" href="/notificaciones"
+         aria-label="Notificaciones{% if n_notificaciones %}: {{ n_notificaciones }} sin leer{% endif %}" title="Notificaciones">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M12 3a6 6 0 0 0-6 6v3.6L4.3 15.4A1 1 0 0 0 5.2 17h13.6a1 1 0 0 0 .9-1.6L18 12.6V9a6 6 0 0 0-6-6Zm-2.5 15.5a2.5 2.5 0 0 0 5 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        {% if n_notificaciones %}<span class="campana-numero">{{ n_notificaciones }}</span>{% endif %}
+      </a>
       <details class="cuenta">
         <summary>
           <span class="avatar" style="background:{{ usuario.nombre | color }}">{{ usuario.nombre | iniciales }}</span>
-          <span class="cuenta-nombre">{{ usuario.nombre }}</span>
+          <span class="cuenta-nombre">{{ usuario.nombre }}<small>{{ rol_acceso_nombre }}</small></span>
         </summary>
         <div class="cuenta-menu">
-          <div class="cuenta-datos"><strong>{{ usuario.nombre }}</strong><span class="tenue">CIF {{ usuario.cif }}</span></div>
+          <div class="cuenta-datos"><strong>{{ usuario.nombre }}</strong><span class="tenue">CIF {{ usuario.cif }} · Ingresó como {{ rol_acceso_nombre }}</span></div>
           <a href="/perfil/{{ usuario.cif }}">Mi perfil</a>
           <form method="post" action="/salir">
             <input type="hidden" name="csrf" value="{{ csrf }}">
@@ -42,8 +43,10 @@
       <a class="nav-enlace {% if ruta == '/' %}activo{% endif %}" href="/">Inicio</a>
       <a class="nav-enlace {% if ruta == '/clubes' %}activo{% endif %}" href="/clubes">Explorar clubes</a>
       <a class="nav-enlace {% if ruta == '/anuncios' %}activo{% endif %}" href="/anuncios">Anuncios</a>
-      <a class="nav-enlace {% if ruta == '/eventos' %}activo{% endif %}" href="/eventos">Eventos</a>
+      <a class="nav-enlace {% if ruta == '/eventos' %}activo{% endif %}" href="/eventos">Calendario</a>
+      <a class="nav-enlace {% if ruta == '/notificaciones' %}activo{% endif %}" href="/notificaciones">Notificaciones{% if n_notificaciones %}<span class="contador">{{ n_notificaciones }}</span>{% endif %}</a>
       <p class="nav-titulo">Gestión</p>
+      {% if rol_acceso in ('capitan', 'lider') %}<a class="nav-enlace {% if ruta == '/gestion' %}activo{% endif %}" href="/gestion">Clubes a mi cargo</a>{% endif %}
       <a class="nav-enlace {% if ruta == '/clubes/solicitar' %}activo{% endif %}" href="/clubes/solicitar">Crear un club</a>
       {% if es_admin %}<a class="nav-enlace {% if ruta == '/admin' %}activo{% endif %}" href="/admin">Administración</a>{% endif %}
       <p class="nav-titulo">Mis clubes</p>
@@ -60,7 +63,9 @@
     </main>
     <aside class="complementario">{% block lateral %}{% endblock %}</aside>
   </div>
-  <footer class="pie">Vortex Club's · Plataforma de clubes estudiantiles</footer>
+  <footer class="pie">
+    <span>Vortex Club's</span><span>Universidad Americana (UAM) · Managua, Nicaragua</span><span>Dirección de Vida Estudiantil · I Semestre 2026</span>
+  </footer>
 {% else %}
   <main class="acceso">
     {% include "parciales/acceso_marca.html" %}

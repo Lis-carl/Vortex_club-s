@@ -27,6 +27,21 @@
         {% include "parciales/confirmar.html" %}
       {% else %}
         <span class="etiqueta etiqueta-marca">{% if mi.rol == 'lider' %}Líder{% elif mi.rol == 'capitan' %}Capitán{% else %}Miembro{% endif %}</span>
+        {% if capitan_pendiente %}<span class="etiqueta etiqueta-pendiente">Solicitud de capitán en revisión</span>
+        {% elif puede_pedir_capitan %}
+        <details class="confirmar">
+          <summary class="accion">Solicitar ser capitán</summary>
+          <div class="confirmar-caja">
+            <p>La administración revisará tu solicitud para ser capitán de {{ club.nombre }}.</p>
+            <form method="post" action="/clubes/{{ club.slug }}/solicitar-capitan" class="formulario">
+              <input type="hidden" name="csrf" value="{{ csrf }}">
+              <label for="motivo-capitan" class="oculto">Motivo</label>
+              <textarea id="motivo-capitan" name="motivo" rows="2" maxlength="500" placeholder="¿Por qué quieres ser capitán? (opcional)"></textarea>
+              <button class="boton boton-primario boton-pequeno">Enviar solicitud</button>
+            </form>
+          </div>
+        </details>
+        {% endif %}
         {% if mi.rol != 'lider' %}
           {% set c_url = "/clubes/" + club.slug + "/salir" %}
           {% set c_etiqueta = "Salir del club" %}
@@ -46,6 +61,6 @@
     <a class="{% if pestana == 'miembros' %}activa{% endif %}" href="/clubes/{{ club.slug }}/miembros">Miembros{% if pend_miembros %}<span class="contador">{{ pend_miembros }}</span>{% endif %}</a>
     {% if es_miembro %}<a class="{% if pestana == 'chat' %}activa{% endif %}" href="/clubes/{{ club.slug }}/chat">Chat</a>
     {% else %}<span class="pestana-bloqueada" title="Disponible solo para miembros">Chat</span>{% endif %}
-    {% if es_lider %}<a class="{% if pestana == 'editar' %}activa{% endif %}" href="/clubes/{{ club.slug }}/editar">Configuración</a>{% endif %}
+    {% if es_responsable %}<a class="{% if pestana == 'editar' %}activa{% endif %}" href="/clubes/{{ club.slug }}/editar">Configuración</a>{% endif %}
   </nav>
 </section>
