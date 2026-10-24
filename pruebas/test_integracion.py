@@ -663,6 +663,10 @@ class PruebasRolesYFuncionesEncuesta(PruebaServidor):
         inicio = maria.get("/").cuerpo
         self.assertIn('class="recordatorio"', inicio)
         self.assertIn("Hackatón de robots", inicio.split('class="recordatorio"')[1][:600])
+        # queda guardado una sola vez en Notificaciones; al leerlo, la franja del inicio desaparece
+        self.assertIn("Recordatorio: «Hackatón de robots»", maria.get("/notificaciones").cuerpo)
+        self.assertNotIn('class="recordatorio"', maria.get("/").cuerpo)
+        self.assertEqual(consulta("SELECT COUNT(*) FROM notificaciones WHERE texto LIKE 'Recordatorio: «Hackatón%'"), [(1,)])
 
     def test_notificaciones(self):
         maria = self.cliente(MARIA)

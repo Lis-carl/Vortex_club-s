@@ -26,6 +26,21 @@ def crear_para_admins(bd, texto, enlace="/admin"):
     crear_para_varios(bd, [f.id for f in filas], texto, enlace)
 
 
+def recordar_eventos(bd, usuario_id, eventos, describir):
+    """Guarda un recordatorio (una sola vez por evento) de cada evento confirmado que se acerca."""
+    for e in eventos:
+        enlace = f"/clubes/{e.club_slug}/eventos#evento-{e.id}"
+        ya_existe = bd.execute("SELECT 1 FROM notificaciones WHERE usuario_id = ? AND enlace = ? AND texto LIKE 'Recordatorio:%'",
+                               (usuario_id, enlace)).fetchone()
+        if not ya_existe:
+            crear(bd, usuario_id, f"Recordatorio: «{e.titulo}» es el {describir(e.fecha_inicio)} en {e.lugar}.", enlace)
+
+
+def recordatorios_sin_leer(bd, usuario_id):
+    return bd.execute("SELECT texto, enlace FROM notificaciones WHERE usuario_id = ? AND leida = 0 "
+                      "AND texto LIKE 'Recordatorio:%' ORDER BY id", (usuario_id,)).fetchall()
+
+
 def listar(bd, usuario_id, limite=60):
     return bd.execute("SELECT * FROM notificaciones WHERE usuario_id = ? ORDER BY id DESC LIMIT ?",
                       (usuario_id, limite)).fetchall()

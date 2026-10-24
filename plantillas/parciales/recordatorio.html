@@ -1,13 +1,11 @@
+{# Aviso breve: se ve en el inicio mientras el recordatorio no se ha leído y se oculta solo a los pocos
+   segundos (animación CSS). El recordatorio queda guardado en Notificaciones. #}
 <section class="recordatorio" role="status" aria-label="Recordatorio de asistencia">
-  <div class="recordatorio-icono" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
-  <div class="recordatorio-cuerpo">
-    <p class="recordatorio-titulo">Recordatorio de asistencia</p>
-    <ul class="recordatorio-lista">
-      {% for e in recordatorios %}
-      <li><a href="/clubes/{{ e.club_slug }}/eventos#evento-{{ e.id }}">{{ e.titulo }}</a>
-        <span>{{ e.club_nombre }} · {{ e.fecha_inicio | fecha }} · {{ e.lugar }}</span></li>
-      {% endfor %}
-    </ul>
-    <p class="recordatorio-nota">Confirmaste tu asistencia {% if len(recordatorios) == 1 %}a este evento{% else %}a estos eventos{% endif %}, que se realiza{% if len(recordatorios) != 1 %}n{% endif %} en las próximas 48 horas.</p>
-  </div>
+  {% for r in recordatorios %}
+  <a class="recordatorio-fila" href="{{ r.enlace }}">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span>{{ r.texto }}</span>
+  </a>
+  {% endfor %}
+  <a class="recordatorio-mas" href="/notificaciones">Ver en notificaciones</a>
 </section>

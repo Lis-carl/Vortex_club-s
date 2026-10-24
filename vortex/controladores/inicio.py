@@ -7,7 +7,7 @@ from ..enrutador import ruta
 from ..nucleo import ErrorHttp, Respuesta
 from ..repositorios import anuncios, clubes, eventos, foro, notificaciones
 from ..utilidades import MESES_LARGOS
-from ..vistas import render
+from ..vistas import avisar_eventos_proximos, render
 
 
 def marcar_permisos(p, publicaciones):
@@ -34,11 +34,12 @@ def feed(p):
     pubs = foro.listar(p.bd, p.usuario.id, solo_mis_clubes=(ver == "mis"), orden=orden, limite=21, pagina=pagina)
     hay_mas = len(pubs) > 20
     hoy = datetime.now()
+    avisar_eventos_proximos(p)
     return render(p, "inicio.html", publicaciones=marcar_permisos(p, pubs[:20]), ver=ver, orden=orden, pagina=pagina,
                   hay_mas=hay_mas, tiene_clubes=tiene_clubes, n_clubes=len(mis),
                   fecha_hoy=f"{hoy.day} de {MESES_LARGOS[hoy.month - 1]} de {hoy.year}",
                   confirmados=eventos.confirmados_futuros(p.bd, p.usuario.id),
-                  recordatorios=eventos.recordatorios(p.bd, p.usuario.id),
+                  recordatorios=notificaciones.recordatorios_sin_leer(p.bd, p.usuario.id),
                   anuncios_generales=anuncios.listar(p.bd, None, 3), proximos=eventos.proximos(p.bd, p.usuario.id, 3),
                   slides=eventos.proximos(p.bd, p.usuario.id, 5))
 
@@ -86,8 +87,7 @@ def eliminar_anuncio(p, id):
 def ver_notificaciones(p):
     lista = notificaciones.listar(p.bd, p.usuario.id)
     notificaciones.marcar_leidas(p.bd, p.usuario.id)   # al abrir la bandeja quedan leídas
-    return render(p, "notificaciones.html", lista=lista, recordatorios=eventos.recordatorios(p.bd, p.usuario.id),
-                  n_notificaciones=0)
+    return render(p, "notificaciones.html", lista=lista, n_notificaciones=0)
 
 
 # --- Panel de gestión (líderes y capitanes) ----------------------------------------------------

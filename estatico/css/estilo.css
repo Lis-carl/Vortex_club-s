@@ -964,3 +964,16 @@ body { background:
   .nav-titulo:first-child { margin-top: 0; min-width: 100%; }
   .nav-enlace, .nav-vacio { margin-left: 10px; }
 }
+
+/* Recordatorio breve: una franja pequeña que se oculta sola; queda guardado en Notificaciones */
+.recordatorio { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; padding: 9px 16px; border: 1px solid var(--linea);
+  border-left: 3px solid var(--marca); border-radius: 10px; background: #FFFFFF; box-shadow: var(--sombra-tarjeta); font-size: .85rem;
+  overflow: hidden; max-height: 200px; animation: recordatorio-salida .6s ease-in-out 12s forwards; }
+.recordatorio:hover { animation-play-state: paused; }
+.recordatorio-fila { display: inline-flex; align-items: center; gap: 8px; min-width: 0; color: var(--texto); }
+.recordatorio-fila svg { flex: 0 0 auto; color: var(--marca-profundo); }
+.recordatorio-fila:hover { color: var(--marca-profundo); text-decoration: none; }
+.recordatorio-mas { margin-left: auto; font-size: .8rem; font-weight: 600; color: var(--marca-profundo); white-space: nowrap; }
+@keyframes recordatorio-salida {
+  to { opacity: 0; max-height: 0; padding-top: 0; padding-bottom: 0; border-width: 0; margin-bottom: -20px; visibility: hidden; }
+}

@@ -2,10 +2,19 @@
 from .nucleo import Fila, Respuesta
 from .plantillas import motor
 from .acceso import es_admin, ROLES_ACCESO
-from .repositorios import clubes as repo_clubes, notificaciones as repo_notificaciones, privados as repo_privados
+from .repositorios import (clubes as repo_clubes, eventos as repo_eventos, notificaciones as repo_notificaciones,
+                           privados as repo_privados)
+from .utilidades import fecha_larga
+
+
+def avisar_eventos_proximos(p):
+    """Los eventos confirmados de las próximas 48 horas quedan como recordatorio en Notificaciones."""
+    if p.usuario and p.bd:
+        repo_notificaciones.recordar_eventos(p.bd, p.usuario.id, repo_eventos.recordatorios(p.bd, p.usuario.id), fecha_larga)
 
 
 def render(p, nombre, estado=200, **contexto):
+    avisar_eventos_proximos(p)
     base = {
         "usuario": p.usuario,
         "es_admin": es_admin(p),
