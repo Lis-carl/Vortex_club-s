@@ -1406,3 +1406,90 @@ body:has(.feed) .marco-app { flex: 1; width: 100%; padding-bottom: 0; }
 .slide-asistentes { color: rgba(255, 255, 255, .9); text-decoration: underline; text-underline-offset: 3px; }
 .slide-asistentes:hover { color: #FFFFFF; }
 .accion-salir { color: var(--peligro); }
+
+/* =====================================================================
+   Feedback y microanimaciones (solo CSS, sin JavaScript)
+   - Todo lo que se pulsa se hunde un poco y deja una onda.
+   - Tras votar, reaccionar o unirse, la página vuelve al elemento (#ancla):
+     ese elemento se ilumina y lanza un estallido de partículas.
+   - Los avisos de éxito entran con un rebote y confeti.
+   ===================================================================== */
+
+/* 1. Presión: se hunde al pulsar */
+button, .boton, .accion, .voto, .ficha, .emoji, summary, .nav-enlace, .lateral-item, .conversaciones a, .contactos a,
+.feed-origen a, .segmentos a, .pestanas a, .slide-boton, .slide-boton-secundario, .carrusel-flecha, .carrusel-puntos label {
+  transition-property: transform, background, color, border-color, box-shadow, opacity;
+  transition-duration: .16s; transition-timing-function: cubic-bezier(.3, .7, .4, 1.4);
+}
+button:active, .boton:active, .accion:active, .voto:active, .ficha:active, .emoji:active, summary:active,
+.slide-boton:active, .slide-boton-secundario:active, .carrusel-flecha:active { transform: scale(.92); transition-duration: .06s; }
+.nav-enlace:active, .lateral-item:active, .conversaciones a:active, .contactos a:active, .feed-origen a:active { transform: scale(.98); }
+.boton:hover:not(:active), .slide-boton:hover:not(:active) { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0, 112, 124, .22); }
+
+/* 2. Onda al soltar el clic en botones */
+.boton, .slide-boton, .slide-boton-secundario, .redactor-boton, .chat-rapido button { position: relative; overflow: hidden; }
+.boton::after, .slide-boton::after, .slide-boton-secundario::after, .chat-rapido button::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+  background: radial-gradient(circle, rgba(255, 255, 255, .55) 0 10%, transparent 10.5%) center / 1500% 1500% no-repeat;
+  opacity: 0; transition: background-size .7s ease-out, opacity .9s ease-out;
+}
+.boton:active::after, .slide-boton:active::after, .slide-boton-secundario:active::after, .chat-rapido button:active::after {
+  background-size: 0% 0%; opacity: 1; transition: 0s;
+}
+
+/* 3. Foco visible para teclado */
+:focus-visible { outline: 3px solid rgba(0, 154, 169, .55); outline-offset: 2px; border-radius: 6px; }
+
+/* 4. Menús desplegables con entrada suave */
+details[open] > .reaccionar-menu, details[open] > .filtro-panel, details[open] > .cuenta-menu, .responder-r[open] > form,
+details[open] > form.formulario { animation: desplegar .22s cubic-bezier(.3, .7, .4, 1.2) both; }
+
+/* 5. Lo que acabas de tocar: se ilumina y lanza partículas */
+.publicacion:target, .evento:target, .comentario-r:target, .evento-detalle:target { animation: destello 1.4s ease-out both; }
+@keyframes destello { 0% { background-color: rgba(0, 154, 169, .16); } 100% { background-color: transparent; } }
+
+.voto, .ficha { position: relative; overflow: visible; }
+:target .voto-arriba, :target .voto-abajo, :target .ficha-activa, :target .etiqueta-aprobada { animation: pop .5s cubic-bezier(.3, .7, .4, 1.6) both; }
+@keyframes pop { 0% { transform: scale(.6); } 60% { transform: scale(1.18); } 100% { transform: scale(1); } }
+
+:target .voto-arriba::after, :target .ficha-activa::after, :target .etiqueta-aprobada::after, :target .voto-abajo::after {
+  content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%;
+  pointer-events: none; animation: particulas .75s ease-out .05s both;
+}
+:target .voto-abajo::after { animation-name: particulas-rojas; }
+@keyframes particulas {
+  0% { opacity: 1; box-shadow: 0 0 0 0 #009AA9, 0 0 0 0 #F5A623, 0 0 0 0 #22B5C1, 0 0 0 0 #F5A623,
+       0 0 0 0 #009AA9, 0 0 0 0 #22B5C1, 0 0 0 0 #F5A623, 0 0 0 0 #009AA9; }
+  100% { opacity: 0; box-shadow: 0 -30px 0 -1px #009AA9, 22px -22px 0 -1px #F5A623, 30px 0 0 -1px #22B5C1, 22px 22px 0 -1px #F5A623,
+         0 30px 0 -1px #009AA9, -22px 22px 0 -1px #22B5C1, -30px 0 0 -1px #F5A623, -22px -22px 0 -1px #009AA9; }
+}
+@keyframes particulas-rojas {
+  0% { opacity: 1; box-shadow: 0 0 0 0 #D9534F, 0 0 0 0 #F08A87, 0 0 0 0 #D9534F, 0 0 0 0 #F08A87; }
+  100% { opacity: 0; box-shadow: 0 26px 0 -1px #D9534F, 20px 16px 0 -1px #F08A87, -20px 16px 0 -1px #D9534F, 0 -18px 0 -1px #F08A87; }
+}
+
+/* 6. Avisos: entran con rebote; los de éxito traen confeti */
+.aviso { position: relative; overflow: visible; animation: aviso-entra .55s cubic-bezier(.3, .7, .4, 1.5) both; }
+@keyframes aviso-entra { 0% { opacity: 0; transform: translateY(-14px) scale(.96); } 100% { opacity: 1; transform: none; } }
+.aviso:not(.aviso-error)::before { content: "\2713"; display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px;
+  margin-right: 10px; border-radius: 50%; background: var(--ok); color: #FFFFFF; font-size: .8rem; font-weight: 800; vertical-align: middle;
+  animation: pop .5s cubic-bezier(.3, .7, .4, 1.6) .15s both; }
+.aviso:not(.aviso-error)::after { content: ""; position: absolute; left: 28px; top: 50%; width: 6px; height: 6px; margin-top: -3px; border-radius: 2px;
+  pointer-events: none; animation: confeti .9s ease-out .2s both; }
+@keyframes confeti {
+  0% { opacity: 1; box-shadow: 0 0 0 0 #009AA9, 0 0 0 0 #F5A623, 0 0 0 0 #22B5C1, 0 0 0 0 #F5A623, 0 0 0 0 #2E9E5B, 0 0 0 0 #009AA9; }
+  100% { opacity: 0; box-shadow: -18px -34px 0 -1px #009AA9, 26px -30px 0 -1px #F5A623, 44px -8px 0 -1px #22B5C1,
+         38px 26px 0 -1px #F5A623, -12px 32px 0 -1px #2E9E5B, -34px -6px 0 -1px #009AA9; }
+}
+.aviso-error { animation-name: aviso-error; }
+@keyframes aviso-error { 0%, 100% { transform: none; } 20% { transform: translateX(-6px); } 40% { transform: translateX(5px); } 60% { transform: translateX(-3px); } 80% { transform: translateX(2px); } }
+
+/* 7. Íconos de la cabecera y del menú con vida */
+.campana:hover svg { animation: campaneo 1.2s ease-in-out; }
+.nav-enlace:hover { padding-left: 16px; }
+.carrusel-puntos label:hover { transform: scale(1.3); }
+
+/* 8. Quien prefiere menos movimiento lo desactiva en su sistema */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
