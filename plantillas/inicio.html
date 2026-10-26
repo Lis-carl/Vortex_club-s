@@ -22,6 +22,7 @@
       <label for="feed-todos" class="pestana-todos">Toda la UAM</label>
       {% endif %}
       <a class="solo-movil {% if ver == 'agenda' %}activo{% endif %}" href="/?ver=agenda">Agenda</a>
+      <span class="feed-indicador {% if ver == 'agenda' %}en-agenda{% endif %}" aria-hidden="true"></span>
     </nav>
     {% if ver != 'agenda' %}
     <details class="feed-filtro" {% if n_filtros %}data-activo{% endif %}>

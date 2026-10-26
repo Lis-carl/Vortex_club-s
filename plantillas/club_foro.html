@@ -4,8 +4,8 @@
 {% include "parciales/club_cabecera.html" %}
 <div class="barra-herramientas">
   <nav class="segmentos" aria-label="Orden">
-    <a class="{% if orden == 'nuevos' %}activo{% endif %}" href="/clubes/{{ club.slug }}?orden=nuevos">Recientes</a>
-    <a class="{% if orden == 'populares' %}activo{% endif %}" href="/clubes/{{ club.slug }}?orden=populares">Populares</a>
+    <a class="{% if orden == 'nuevos' %}activo{% endif %}" href="/clubes/{{ club.slug }}?orden=nuevos">Recientes{% if orden == 'nuevos' %}<i class="segmento-fondo" style="view-transition-name: segmento-foro" aria-hidden="true"></i>{% endif %}</a>
+    <a class="{% if orden == 'populares' %}activo{% endif %}" href="/clubes/{{ club.slug }}?orden=populares">Populares{% if orden == 'populares' %}<i class="segmento-fondo" style="view-transition-name: segmento-foro" aria-hidden="true"></i>{% endif %}</a>
   </nav>
   {% if es_miembro %}<a class="boton boton-primario" href="/clubes/{{ club.slug }}/publicar">Crear publicación</a>{% endif %}
 </div>

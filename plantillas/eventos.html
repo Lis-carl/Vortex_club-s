@@ -8,8 +8,8 @@
     <p class="descripcion">Eventos aprobados por los clubes de la UAM. Confirma tu asistencia y te lo recordaremos.</p>
   </div>
   <nav class="segmentos" aria-label="Qué eventos mostrar">
-    <a class="{% if vista == 'todos' %}activo{% endif %}" href="/eventos?mes={{ mes_actual }}">Todos</a>
-    <a class="{% if vista == 'mios' %}activo{% endif %}" href="/eventos?mes={{ mes_actual }}&amp;vista=mios">Mis clubes y confirmados</a>
+    <a class="{% if vista == 'todos' %}activo{% endif %}" href="/eventos?mes={{ mes_actual }}">Todos{% if vista == 'todos' %}<i class="segmento-fondo" style="view-transition-name: segmento-vista" aria-hidden="true"></i>{% endif %}</a>
+    <a class="{% if vista == 'mios' %}activo{% endif %}" href="/eventos?mes={{ mes_actual }}&amp;vista=mios">Mis clubes y confirmados{% if vista == 'mios' %}<i class="segmento-fondo" style="view-transition-name: segmento-vista" aria-hidden="true"></i>{% endif %}</a>
   </nav>
 </header>
 
@@ -47,8 +47,8 @@
 <section class="panel">
   <div class="panel-cabecera"><h2>Eventos de {{ titulo_mes }}</h2>
     <nav class="segmentos" aria-label="Orden de los eventos">
-      <a class="{% if orden == 'fecha' %}activo{% endif %}" href="/eventos?mes={{ mes_actual }}&amp;vista={{ vista }}&amp;orden=fecha">Por fecha</a>
-      <a class="{% if orden == 'votos' %}activo{% endif %}" href="/eventos?mes={{ mes_actual }}&amp;vista={{ vista }}&amp;orden=votos">Más votados</a>
+      <a class="{% if orden == 'fecha' %}activo{% endif %}" href="/eventos?mes={{ mes_actual }}&amp;vista={{ vista }}&amp;orden=fecha">Por fecha{% if orden == 'fecha' %}<i class="segmento-fondo" style="view-transition-name: segmento-orden" aria-hidden="true"></i>{% endif %}</a>
+      <a class="{% if orden == 'votos' %}activo{% endif %}" href="/eventos?mes={{ mes_actual }}&amp;vista={{ vista }}&amp;orden=votos">Más votados{% if orden == 'votos' %}<i class="segmento-fondo" style="view-transition-name: segmento-orden" aria-hidden="true"></i>{% endif %}</a>
     </nav></div>
   {% set mostrar_club = True %}
   {% for e in eventos_mes %}

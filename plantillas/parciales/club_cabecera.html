@@ -55,12 +55,12 @@
     </div>
   </div>
   <nav class="pestanas" aria-label="Secciones del club">
-    <a class="{% if pestana == 'foro' %}activa{% endif %}" href="/clubes/{{ club.slug }}">Foro</a>
-    <a class="{% if pestana == 'anuncios' %}activa{% endif %}" href="/clubes/{{ club.slug }}/anuncios">Anuncios</a>
-    <a class="{% if pestana == 'eventos' %}activa{% endif %}" href="/clubes/{{ club.slug }}/eventos">Eventos{% if pend_eventos %}<span class="contador">{{ pend_eventos }}</span>{% endif %}</a>
-    <a class="{% if pestana == 'miembros' %}activa{% endif %}" href="/clubes/{{ club.slug }}/miembros">Miembros{% if pend_miembros %}<span class="contador">{{ pend_miembros }}</span>{% endif %}</a>
-    {% if es_miembro %}<a class="{% if pestana == 'chat' %}activa{% endif %}" href="/clubes/{{ club.slug }}/chat">Chat</a>
+    <a class="{% if pestana == 'foro' %}activa{% endif %}" href="/clubes/{{ club.slug }}">Foro{% if pestana == 'foro' %}<i class="barra-activa" aria-hidden="true"></i>{% endif %}</a>
+    <a class="{% if pestana == 'anuncios' %}activa{% endif %}" href="/clubes/{{ club.slug }}/anuncios">Anuncios{% if pestana == 'anuncios' %}<i class="barra-activa" aria-hidden="true"></i>{% endif %}</a>
+    <a class="{% if pestana == 'eventos' %}activa{% endif %}" href="/clubes/{{ club.slug }}/eventos">Eventos{% if pend_eventos %}<span class="contador">{{ pend_eventos }}</span>{% endif %}{% if pestana == 'eventos' %}<i class="barra-activa" aria-hidden="true"></i>{% endif %}</a>
+    <a class="{% if pestana == 'miembros' %}activa{% endif %}" href="/clubes/{{ club.slug }}/miembros">Miembros{% if pend_miembros %}<span class="contador">{{ pend_miembros }}</span>{% endif %}{% if pestana == 'miembros' %}<i class="barra-activa" aria-hidden="true"></i>{% endif %}</a>
+    {% if es_miembro %}<a class="{% if pestana == 'chat' %}activa{% endif %}" href="/clubes/{{ club.slug }}/chat">Chat{% if pestana == 'chat' %}<i class="barra-activa" aria-hidden="true"></i>{% endif %}</a>
     {% else %}<span class="pestana-bloqueada" title="Disponible solo para miembros">Chat</span>{% endif %}
-    {% if es_responsable %}<a class="{% if pestana == 'editar' %}activa{% endif %}" href="/clubes/{{ club.slug }}/editar">Configuración</a>{% endif %}
+    {% if es_responsable %}<a class="{% if pestana == 'editar' %}activa{% endif %}" href="/clubes/{{ club.slug }}/editar">Configuración{% if pestana == 'editar' %}<i class="barra-activa" aria-hidden="true"></i>{% endif %}</a>{% endif %}
   </nav>
 </section>
