@@ -1,8 +1,3 @@
-/* =====================================================================
-   Vortex Clubs (UAM, Managua) — hoja de estilos
-   Estilo sobrio e institucional: líneas rectas, bordes finos, una sola
-   familia tipográfica y un color de marca (verde petróleo). Sin JavaScript.
-   ===================================================================== */
 :root {
   --tinta: #14212B; --texto: #27343E; --gris: #5E6C78; --gris-claro: #8A97A3;
   --linea: #D7DDE3; --linea-suave: #E8ECF0; --fondo: #F2F4F6; --panel: #FFFFFF;
