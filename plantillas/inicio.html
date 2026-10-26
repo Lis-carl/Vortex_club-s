@@ -7,10 +7,20 @@
 
 {# Feed en una sola columna continua: pestañas, cuadro para publicar y publicaciones. #}
 <section class="feed" aria-label="Publicaciones">
+  {% if ver != 'agenda' %}
+  {# Las pestañas cambian de lista sin recargar la página (botones de radio + CSS); también le dicen al filtro qué lista usar. #}
+  <input type="radio" name="ver" value="mis" id="feed-mis" class="feed-radio" form="filtro-form" {% if ver == 'mis' %}checked{% endif %}>
+  <input type="radio" name="ver" value="todos" id="feed-todos" class="feed-radio" form="filtro-form" {% if ver == 'todos' %}checked{% endif %}>
+  {% endif %}
   <div class="feed-pestanas">
     <nav class="feed-origen" aria-label="Origen de las publicaciones">
-      <a class="{% if ver == 'mis' %}activo{% endif %}" href="/?ver=mis&amp;orden={{ orden }}&amp;fecha={{ fecha }}">Mis clubes</a>
-      <a class="{% if ver == 'todos' %}activo{% endif %}" href="/?ver=todos&amp;orden={{ orden }}&amp;fecha={{ fecha }}">Toda la UAM</a>
+      {% if ver == 'agenda' %}
+      <a href="/?ver=mis">Mis clubes</a>
+      <a href="/?ver=todos">Toda la UAM</a>
+      {% else %}
+      <label for="feed-mis" class="pestana-mis">Mis clubes</label>
+      <label for="feed-todos" class="pestana-todos">Toda la UAM</label>
+      {% endif %}
       <a class="solo-movil {% if ver == 'agenda' %}activo{% endif %}" href="/?ver=agenda">Agenda</a>
     </nav>
     {% if ver != 'agenda' %}
@@ -19,8 +29,7 @@
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 5h16l-6 7.5V19l-4-2v-4.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
         <span>Filtrar</span>{% if n_filtros %}<span class="filtro-numero">{{ n_filtros }}</span>{% endif %}
       </summary>
-      <form method="get" action="/" class="filtro-panel">
-        <input type="hidden" name="ver" value="{{ ver }}">
+      <form method="get" action="/" class="filtro-panel" id="filtro-form">
         <label>Club
           <select name="club">
             <option value="">Todos los clubes</option>
@@ -92,20 +101,26 @@
   </div>
   {% endif %}
 
-  {% if tiene_clubes %}
-    {% set vacio_titulo = "Todavía no hay publicaciones" %}
-    {% set vacio_texto = "Cuando alguien publique en tus clubes, lo verás aquí." %}
-    {% set vacio_url = None %}
-  {% else %}
-    {% set vacio_titulo = "Aún no hay publicaciones" %}
-    {% set vacio_texto = "Las publicaciones de los clubes de la UAM aparecerán aquí." %}
-    {% set vacio_url = None %}
-  {% endif %}
-  {% set base_consulta = "ver=" + ver + "&orden=" + orden + "&fecha=" + fecha + "&club=" + (club_filtro.slug if club_filtro else "") + "&" %}
   {% if recordatorios %}
   {% include "parciales/recordatorio.html" %}
   {% endif %}
-  {% include "parciales/lista_publicaciones.html" %}
+  {% set filtros_consulta = "&orden=" + orden + "&fecha=" + fecha + "&club=" + (club_filtro.slug if club_filtro else "") + "&" %}
+  {% set vacio_url = None %}
+  {% for clave in (["mis", "todos"] if ver == "mis" else ["todos", "mis"]) %}
+  <div class="feed-lista lista-{{ clave }}">
+    {% if clave == "mis" %}
+      {% set publicaciones = publicaciones_mis %}{% set hay_mas = hay_mas_mis %}
+      {% set vacio_titulo = "Todavía no hay publicaciones" if tiene_clubes else "Aún no perteneces a ningún club" %}
+      {% set vacio_texto = "Cuando alguien publique en tus clubes, lo verás aquí." if tiene_clubes else "Únete a un club para ver aquí sus publicaciones." %}
+    {% else %}
+      {% set publicaciones = publicaciones_todos %}{% set hay_mas = hay_mas_todos %}
+      {% set vacio_titulo = "Aún no hay publicaciones" %}
+      {% set vacio_texto = "Las publicaciones de los clubes de la UAM aparecerán aquí." %}
+    {% endif %}
+    {% set base_consulta = "ver=" + clave + filtros_consulta %}
+    {% include "parciales/lista_publicaciones.html" %}
+  </div>
+  {% endfor %}
   {% endif %}
 </section>
 {% endblock %}

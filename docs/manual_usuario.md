@@ -40,7 +40,7 @@ aparecen debajo del contenido.
 - **Carrusel:** la primera diapositiva invita a unirte a un club con un texto e imágenes; las siguientes muestran los próximos eventos con los botones **Unirme al evento** y **Ver completo**. Cambia de diapositiva con las flechas o los puntos.
 - **Recordatorio:** si confirmaste un evento que empieza en las próximas 48 horas, se guarda un recordatorio en **Notificaciones** y en tu inicio aparece unos segundos una franja pequeña con el evento, la fecha y el lugar (se deja de mostrar cuando abres tus notificaciones).
 - **Cómo unirte a un club:** si aún no tienes clubes, verás los 3 pasos para empezar.
-- **Publicaciones:** de tus clubes o de toda la UAM. Con el botón **Filtrar** (embudo) eliges un club, un periodo (hoy, última semana, último mes) y el orden (más recientes o más populares).
+- **Publicaciones:** de tus clubes o de toda la UAM (cambiar entre «Mis clubes» y «Toda la UAM» es instantáneo, sin recargar). Con el botón **Filtrar** (embudo) eliges un club, un periodo (hoy, última semana, último mes) y el orden (más recientes o más populares).
 
 ## 4. Encontrar y unirte a un club
 
@@ -60,7 +60,7 @@ para líder, capitanes y administración).
 
 ### Foro
 - **Crear publicación:** título, texto opcional e imagen opcional (PNG, JPG, GIF o WEBP de hasta 5 MB). También puedes publicar desde el cuadro «¿Qué está pasando en tus clubes?» de tu inicio, eligiendo el club.
-- **Votar:** pulsa **Útil** si la publicación te sirvió (sube en *Populares*) o la flecha hacia abajo si es poco útil (baja). Pulsar de nuevo tu voto lo retira.
+- **Votar:** pulsa **Útil** si la publicación te sirvió (sube en *Populares*) o la flecha hacia abajo si es poco útil (baja). Pulsar de nuevo tu voto lo retira. En el inicio y el foro, votar no recarga la página: solo se actualiza el voto.
 - **Reaccionar:** pulsa **Reaccionar** y elige *Apoyo*, *Me encanta*, *Me divierte*, *Me sorprende*, *Me entristece* o *Increíble*. Cada una tiene su color; pulsa una ficha ya contada para sumarte o quitar la tuya.
 - **Comentar:** en el inicio o el foro pulsa el botón de comentarios de una publicación: se despliegan los primeros comentarios en hilo y el campo «Únete a la conversación». Con «Ver la conversación completa» vas a la publicación con todos los comentarios, donde puedes usar **Responder**.
 - **Eliminar:** como estudiante solo puedes eliminar **lo que tú publicaste**. Líder, capitanes y

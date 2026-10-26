@@ -39,21 +39,27 @@ def feed(p):
     orden = "populares" if p.consulta.get("orden") == "populares" else "nuevos"
     pagina = int(p.consulta["pagina"]) if (p.consulta.get("pagina") or "").isdigit() else 1
     # Filtros del ícono de embudo: club, fecha y orden
-    opciones_club = mis if ver == "mis" else [c for c in clubes.todos(p.bd) if c.estado == "activo"]
+    opciones_club = [c for c in clubes.todos(p.bd) if c.estado == "activo"]
     club_filtro = next((c for c in opciones_club if c.slug == p.consulta.get("club")), None)
     fecha = p.consulta.get("fecha") if p.consulta.get("fecha") in _PERIODOS else "todo"
     desde = (datetime.now() - _PERIODOS[fecha]).strftime("%Y-%m-%d %H:%M:%S") if _PERIODOS[fecha] else None
     if fecha == "hoy":
         desde = datetime.now().strftime("%Y-%m-%d 00:00:00")
-    pubs = [] if ver == "agenda" else foro.listar(  # «Agenda» (celular) muestra eventos y anuncios en lugar del feed
-        p.bd, p.usuario.id, solo_mis_clubes=(ver == "mis"), club_id=club_filtro.id if club_filtro else None,
-        orden=orden, limite=21, pagina=pagina, desde=desde)
-    hay_mas = len(pubs) > 20
+    # Se preparan las dos listas («Mis clubes» y «Toda la UAM») para cambiar de pestaña sin recargar.
+    # «Agenda» (celular) muestra eventos y anuncios en lugar del feed.
+    listas = {}
+    for clave in ("mis", "todos"):
+        pubs = [] if ver == "agenda" else foro.listar(
+            p.bd, p.usuario.id, solo_mis_clubes=(clave == "mis"), club_id=club_filtro.id if club_filtro else None,
+            orden=orden, limite=21, pagina=pagina, desde=desde)
+        listas[clave] = (marcar_permisos(p, pubs[:20]), len(pubs) > 20)
     avisar_eventos_proximos(p)
-    return render(p, "inicio.html", publicaciones=marcar_permisos(p, pubs[:20]), ver=ver, orden=orden, pagina=pagina,
+    return render(p, "inicio.html", publicaciones_mis=listas["mis"][0], hay_mas_mis=listas["mis"][1],
+                  publicaciones_todos=listas["todos"][0], hay_mas_todos=listas["todos"][1],
+                  ver=ver, orden=orden, pagina=pagina,
                   opciones_club=opciones_club, club_filtro=club_filtro, fecha=fecha, nombres_periodo=_NOMBRES_PERIODO,
                   n_filtros=(1 if club_filtro else 0) + (fecha != "todo") + (orden != "nuevos"),
-                  hay_mas=hay_mas, tiene_clubes=tiene_clubes,
+                  tiene_clubes=tiene_clubes,
                   recordatorios=notificaciones.recordatorios_sin_leer(p.bd, p.usuario.id),
                   anuncios_generales=anuncios.listar(p.bd, None, 3), proximos=eventos.proximos(p.bd, p.usuario.id, 3),
                   slides=eventos.proximos(p.bd, p.usuario.id, 5))

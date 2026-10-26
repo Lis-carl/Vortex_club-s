@@ -1449,14 +1449,15 @@ details[open] > form.formulario { animation: desplegar .22s cubic-bezier(.3, .7,
 @keyframes destello { 0% { background-color: rgba(0, 154, 169, .16); } 100% { background-color: transparent; } }
 
 .voto, .ficha { position: relative; overflow: visible; }
-:target .voto-arriba, :target .voto-abajo, :target .ficha-activa, :target .etiqueta-aprobada { animation: pop .5s cubic-bezier(.3, .7, .4, 1.6) both; }
+:target .voto-arriba, :target .voto-abajo, :target .ficha-activa, :target .etiqueta-aprobada, .votado .voto-arriba, .votado .voto-abajo { animation: pop .5s cubic-bezier(.3, .7, .4, 1.6) both; }
 @keyframes pop { 0% { transform: scale(.6); } 60% { transform: scale(1.18); } 100% { transform: scale(1); } }
 
-:target .voto-arriba::after, :target .ficha-activa::after, :target .etiqueta-aprobada::after, :target .voto-abajo::after {
+:target .voto-arriba::after, :target .ficha-activa::after, :target .etiqueta-aprobada::after, :target .voto-abajo::after,
+.votado .voto-arriba::after, .votado .voto-abajo::after {
   content: ""; position: absolute; left: 50%; top: 50%; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%;
   pointer-events: none; animation: particulas .75s ease-out .05s both;
 }
-:target .voto-abajo::after { animation-name: particulas-rojas; }
+:target .voto-abajo::after, .votado .voto-abajo::after { animation-name: particulas-rojas; }
 @keyframes particulas {
   0% { opacity: 1; box-shadow: 0 0 0 0 #009AA9, 0 0 0 0 #F5A623, 0 0 0 0 #22B5C1, 0 0 0 0 #F5A623,
        0 0 0 0 #009AA9, 0 0 0 0 #22B5C1, 0 0 0 0 #F5A623, 0 0 0 0 #009AA9; }
@@ -1502,3 +1503,21 @@ details[open] > form.formulario { animation: desplegar .22s cubic-bezier(.3, .7,
   .lateral-nav::-webkit-scrollbar-thumb { background: #C9DCDD; border-radius: 3px; }
   .lateral-nav::-webkit-scrollbar-thumb:hover { background: #9CC9CD; }
 }
+
+/* Sin recargar: pestañas del inicio con CSS y votos en un marco propio */
+.feed-radio { position: absolute; opacity: 0; pointer-events: none; }
+.feed-lista { display: none; }
+#feed-mis:checked ~ .lista-mis, #feed-todos:checked ~ .lista-todos { display: block; }
+.feed-origen label { position: relative; flex: 1; padding: 16px 10px; text-align: center; font-weight: 600; color: var(--gris);
+  cursor: pointer; transition: background var(--transicion), color var(--transicion), transform .16s; }
+.feed-origen label:hover { background: rgba(15, 23, 42, .04); color: var(--tinta); }
+.feed-origen label:active { transform: scale(.98); }
+#feed-mis:checked ~ .feed-pestanas .pestana-mis, #feed-todos:checked ~ .feed-pestanas .pestana-todos { color: var(--tinta); font-weight: 700; }
+#feed-mis:checked ~ .feed-pestanas .pestana-mis::after, #feed-todos:checked ~ .feed-pestanas .pestana-todos::after {
+  content: ""; position: absolute; left: 50%; bottom: 0; width: 64px; height: 4px; margin-left: -32px; border-radius: 4px;
+  background: var(--marca); animation: subrayar .25s cubic-bezier(.3, .7, .4, 1.3) both; }
+@keyframes subrayar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+#feed-mis:checked ~ .lista-mis, #feed-todos:checked ~ .lista-todos { animation: aparecer .25s ease both; }
+.votos-marco { width: 140px; height: 40px; border: 0; background: transparent; vertical-align: middle; overflow: hidden; }
+body.cuerpo-votos { margin: 0; padding: 4px 6px; background: transparent; overflow: visible; }
+body.cuerpo-votos .votos { display: inline-flex; }

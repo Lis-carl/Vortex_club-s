@@ -22,7 +22,8 @@
       {% set v_ancla = "pub-" + str(pub.id) %}
       {% set v_texto = None %}
       {% set v_ayuda = None %}
-      {% include "parciales/votos.html" %}
+      {% if completa %}{% include "parciales/votos.html" %}
+      {% else %}<iframe class="votos-marco" src="/publicaciones/{{ pub.id }}/votos" title="Votos de la publicación" loading="lazy" scrolling="no"></iframe>{% endif %}
       {% if completa %}<a class="accion accion-comentarios" href="#comentarios"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>{{ pub.n_comentarios }}<span class="voto-texto">&nbsp;comentario{% if pub.n_comentarios != 1 %}s{% endif %}</span></a>
       {% else %}{% include "parciales/comentarios_vista.html" %}{% endif %}
       {% include "parciales/reacciones.html" %}

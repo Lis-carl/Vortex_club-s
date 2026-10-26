@@ -7,6 +7,7 @@ from ..acceso import (requiere_sesion, club_o_404, contexto_club, exigir_miembro
 from ..enrutador import ruta
 from ..nucleo import ErrorHttp, Respuesta
 from ..repositorios import clubes, foro, notificaciones
+from ..plantillas import motor
 from ..vistas import render
 from .inicio import marcar_permisos
 
@@ -125,6 +126,18 @@ def comentar(p, id):
     if autor_padre and autor_padre not in (p.usuario.id, pub.autor_id):
         notificaciones.crear(p.bd, autor_padre, f"{p.usuario.nombre} respondió tu comentario en «{pub.titulo}».", enlace)
     return Respuesta.redirigir(siguiente or f"/publicaciones/{id}#comentarios").con_aviso("ok", "Comentario publicado.")
+
+
+@ruta("GET", "/publicaciones/<id>/votos")
+@requiere_sesion
+def votos_marco(p, id):
+    """Marco con los votos de una publicación del feed: votar recarga solo este marco, no toda la página."""
+    pub = _publicacion_o_404(p, id)
+    return Respuesta.html(motor.renderizar("votos_marco.html", {
+        # Sin #ancla al volver: así el navegador no desplaza la página de afuera; «votado» lanza la animación.
+        "csrf": p.token_csrf(), "ruta_completa": f"/publicaciones/{id}/votos?votado=1", "votado": "votado" in p.consulta,
+        "v_url": f"/publicaciones/{id}/votar", "v_id": "v", "v_ancla": "",
+        "v_puntaje": pub.puntaje, "v_mio": pub.mi_voto, "v_texto": None, "v_ayuda": None}))
 
 
 @ruta("POST", "/publicaciones/<id>/votar")

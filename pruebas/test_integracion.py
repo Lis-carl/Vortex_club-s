@@ -347,10 +347,27 @@ class PruebasForoYAnuncios(PruebaServidor):
 
     def test_feed_inicio(self):
         r = self.cliente(ANA).get("/")
-        self.assertIn("Taller de Arduino", r.cuerpo)
-        self.assertNotIn("Apertura recomendada", r.cuerpo)        # publicación de un club al que Ana no pertenece
+        # Las dos pestañas vienen en la misma página para cambiar sin recargar
+        mis = r.cuerpo.split('class="feed-lista lista-mis"')[1].split('class="feed-lista lista-todos"')[0]
+        todos = r.cuerpo.split('class="feed-lista lista-todos"')[1]
+        self.assertIn('id="feed-mis" class="feed-radio" form="filtro-form" checked', r.cuerpo)
+        self.assertIn("Taller de Arduino", mis)
+        self.assertNotIn("Apertura recomendada", mis)        # publicación de un club al que Ana no pertenece
+        self.assertIn("Apertura recomendada", todos)
         r = self.cliente(ANA).get("/?ver=todos&orden=populares")
+        self.assertIn('id="feed-todos" class="feed-radio" form="filtro-form" checked', r.cuerpo)
         self.assertIn("Apertura recomendada", r.cuerpo)
+
+    def test_votar_sin_recargar(self):
+        ana = self.cliente(ANA)
+        pid = consulta("SELECT id FROM publicaciones WHERE titulo LIKE 'Taller de Arduino%'")[0][0]
+        self.assertIn(f'<iframe class="votos-marco" src="/publicaciones/{pid}/votos"', ana.get("/").cuerpo)
+        marco = ana.get(f"/publicaciones/{pid}/votos").cuerpo
+        self.assertIn('class="cuerpo-votos"', marco)
+        r = ana.post(f"/publicaciones/{pid}/votar", {"valor": "1", "siguiente": f"/publicaciones/{pid}/votos?votado=1#"},
+                     desde=f"/publicaciones/{pid}/votos")
+        self.assertIn("cuerpo-votos votado", r.cuerpo)        # vuelve al marco, no a toda la página
+        self.assertIn("voto voto-arriba voto-mas", r.cuerpo)
 
 
 class PruebasChatYEventos(PruebaServidor):
