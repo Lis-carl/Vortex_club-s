@@ -358,6 +358,13 @@ class PruebasForoYAnuncios(PruebaServidor):
         self.assertIn('id="feed-todos" class="feed-radio" form="filtro-form" checked', r.cuerpo)
         self.assertIn("Apertura recomendada", r.cuerpo)
 
+    def test_inicio_mas_votadas_arriba(self):
+        cuerpo = self.cliente(ANA).get("/?ver=todos").cuerpo.split('class="feed-lista lista-todos"')[1].split('class="feed-lista lista-mis"')[0]
+        ids = [int(x.split('"')[0]) for x in cuerpo.split('id="pub-')[1:]]
+        puntajes = [consulta("SELECT COALESCE(SUM(valor), 0) FROM votos_publicacion WHERE publicacion_id=?", i)[0][0] for i in ids]
+        self.assertGreater(len(ids), 1)
+        self.assertEqual(puntajes, sorted(puntajes, reverse=True))
+
     def test_votar_sin_recargar(self):
         ana = self.cliente(ANA)
         pid = consulta("SELECT id FROM publicaciones WHERE titulo LIKE 'Taller de Arduino%'")[0][0]

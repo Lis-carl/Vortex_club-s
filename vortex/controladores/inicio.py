@@ -36,7 +36,7 @@ def feed(p):
     mis = clubes.mis_clubes(p.bd, p.usuario.id)
     tiene_clubes = bool(mis)
     ver = p.consulta.get("ver") if p.consulta.get("ver") in ("mis", "todos", "agenda") else ("mis" if tiene_clubes else "todos")
-    orden = "populares" if p.consulta.get("orden") == "populares" else "nuevos"
+    orden = "nuevos" if p.consulta.get("orden") == "nuevos" else "populares"   # por omisión, las más votadas arriba
     pagina = int(p.consulta["pagina"]) if (p.consulta.get("pagina") or "").isdigit() else 1
     # Filtros del ícono de embudo: club, fecha y orden
     opciones_club = [c for c in clubes.todos(p.bd) if c.estado == "activo"]
@@ -58,7 +58,7 @@ def feed(p):
                   publicaciones_todos=listas["todos"][0], hay_mas_todos=listas["todos"][1],
                   ver=ver, orden=orden, pagina=pagina,
                   opciones_club=opciones_club, club_filtro=club_filtro, fecha=fecha, nombres_periodo=_NOMBRES_PERIODO,
-                  n_filtros=(1 if club_filtro else 0) + (fecha != "todo") + (orden != "nuevos"),
+                  n_filtros=(1 if club_filtro else 0) + (fecha != "todo") + (orden != "populares"),
                   tiene_clubes=tiene_clubes,
                   recordatorios=notificaciones.recordatorios_sin_leer(p.bd, p.usuario.id),
                   anuncios_generales=anuncios.listar(p.bd, None, 3), proximos=eventos.proximos(p.bd, p.usuario.id, 3),

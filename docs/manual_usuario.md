@@ -40,7 +40,7 @@ aparecen debajo del contenido.
 - **Carrusel:** la primera diapositiva invita a unirte a un club con un texto e imágenes; las siguientes muestran los próximos eventos con los botones **Unirme al evento** y **Ver completo**. Cambia de diapositiva con las flechas o los puntos.
 - **Recordatorio:** si confirmaste un evento que empieza en las próximas 48 horas, se guarda un recordatorio en **Notificaciones** y en tu inicio aparece unos segundos una franja pequeña con el evento, la fecha y el lugar (se deja de mostrar cuando abres tus notificaciones).
 - **Cómo unirte a un club:** si aún no tienes clubes, verás los 3 pasos para empezar.
-- **Publicaciones:** de tus clubes o de toda la UAM (cambiar entre «Mis clubes» y «Toda la UAM» es instantáneo, sin recargar). Con el botón **Filtrar** (embudo) eliges un club, un periodo (hoy, última semana, último mes) y el orden (más recientes o más populares).
+- **Publicaciones:** de tus clubes o de toda la UAM (cambiar entre «Mis clubes» y «Toda la UAM» es instantáneo, sin recargar). Con el botón **Filtrar** (embudo) eliges un club, un periodo (hoy, última semana, último mes) y el orden. Por omisión las publicaciones más votadas aparecen arriba; también puedes verlas por más recientes.
 
 ## 4. Encontrar y unirte a un club
 

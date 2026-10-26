@@ -44,8 +44,8 @@
         </label>
         <label>Ordenar por
           <select name="orden">
+            <option value="populares" {% if orden == 'populares' %}selected{% endif %}>Más votadas</option>
             <option value="nuevos" {% if orden == 'nuevos' %}selected{% endif %}>Más recientes</option>
-            <option value="populares" {% if orden == 'populares' %}selected{% endif %}>Más populares</option>
           </select>
         </label>
         <div class="filtro-acciones">
@@ -63,7 +63,7 @@
   <p class="filtros-activos">Filtrando:
     {% if club_filtro %}<span>{{ club_filtro.nombre }}</span>{% endif %}
     {% if fecha != 'todo' %}<span>{{ nombres_periodo[fecha] }}</span>{% endif %}
-    {% if orden != 'nuevos' %}<span>Más populares</span>{% endif %}
+    {% if orden != 'populares' %}<span>Más recientes</span>{% endif %}
     <a href="/?ver={{ ver }}">Quitar</a></p>
   {% endif %}
 

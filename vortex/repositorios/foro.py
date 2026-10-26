@@ -61,7 +61,8 @@ def listar(bd, usuario_id, club_id=None, solo_mis_clubes=False, autor_id=None, o
     if desde:
         sql += " AND p.creado_en >= :desde"
         params["desde"] = desde
-    sql += (" ORDER BY (puntaje + n_reacciones + n_comentarios) DESC, p.id DESC" if orden == "populares"
+    # «Populares»: primero las más votadas; a igual puntaje, las que tienen más reacciones y comentarios.
+    sql += (" ORDER BY puntaje DESC, (n_reacciones + n_comentarios) DESC, p.id DESC" if orden == "populares"
             else " ORDER BY p.id DESC")
     sql += " LIMIT :limite OFFSET :desp"
     return _con_reacciones(bd, bd.execute(sql, params).fetchall(), usuario_id)
