@@ -1493,3 +1493,12 @@ details[open] > form.formulario { animation: desplegar .22s cubic-bezier(.3, .7,
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* Menú izquierdo con su propio desplazamiento (computadora) */
+@media (min-width: 1025px) {
+  .lateral-nav { position: sticky; top: 86px; max-height: calc(100vh - 106px); overflow-y: auto; overscroll-behavior: contain;
+    padding-right: 6px; padding-bottom: 12px; scrollbar-width: thin; scrollbar-color: #C9DCDD transparent; }
+  .lateral-nav::-webkit-scrollbar { width: 6px; }
+  .lateral-nav::-webkit-scrollbar-thumb { background: #C9DCDD; border-radius: 3px; }
+  .lateral-nav::-webkit-scrollbar-thumb:hover { background: #9CC9CD; }
+}
