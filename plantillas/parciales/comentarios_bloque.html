@@ -19,7 +19,18 @@
       {% else %}<p class="comentario-r-texto">{{ c.contenido }}</p>{% endif %}
       <div class="comentario-r-acciones">
         <span class="comentario-r-puntos"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M12 4l7 8h-4.5v8h-5v-8H5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>{{ c.puntaje }}</span>
-        <a href="/publicaciones/{{ pub.id }}#comentario-{{ c.id }}"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Responder</a>
+        {% if pub.puede_comentar and not c.eliminado %}
+        <details class="responder-r"><summary><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Responder</summary>
+          <form method="post" action="/publicaciones/{{ pub.id }}/comentar" class="conversacion-nueva">
+            <input type="hidden" name="csrf" value="{{ csrf }}">
+            <input type="hidden" name="padre_id" value="{{ c.id }}">
+            <input type="hidden" name="siguiente" value="{{ ruta_completa }}#pub-{{ pub.id }}">
+            <label for="responder-{{ c.id }}" class="oculto">Responder a {{ c.autor_nombre }}</label>
+            <input id="responder-{{ c.id }}" name="contenido" maxlength="5000" placeholder="Responder a {{ c.autor_nombre.split()[0] }}…" autocomplete="off" required>
+            <button class="boton boton-primario boton-pequeno">Responder</button>
+          </form>
+        </details>
+        {% endif %}
       </div>
     </div>
   </div>

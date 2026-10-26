@@ -30,7 +30,7 @@
         <input type="hidden" name="siguiente" value="/eventos/{{ e.id }}">
         {% if e.mi_asistencia %}
           <span class="etiqueta etiqueta-aprobada">Asistirás</span>
-          <button class="accion">Cancelar asistencia</button>
+          <button class="accion accion-salir">Salir del evento</button>
         {% elif e.cupo and e.n_asistentes >= e.cupo %}
           <span class="etiqueta etiqueta-rechazada">Cupo lleno</span>
         {% else %}
@@ -60,7 +60,7 @@
       <p>{{ e.recursos | saltos }}</p>
     </section>
     {% endif %}
-    <section class="evento-seccion">
+    <section class="evento-seccion" id="asistentes">
       <h2>Quiénes asistirán ({{ len(asistentes) }})</h2>
       {% if asistentes %}
       <ul class="evento-asistentes">

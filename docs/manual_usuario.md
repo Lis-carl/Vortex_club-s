@@ -93,7 +93,7 @@ Cada anuncio nuevo te llega también como notificación.
    cupo, quién lo propuso, descripción, lo que se necesita y quiénes asistirán. Quien lo propuso, el
    líder o un capitán pueden subir o cambiar la imagen de portada desde ahí.
 7. Pulsa **Confirmar asistencia** (o **Unirme al evento**) para apartar tu lugar (se respeta el cupo). Verás «Asistirás» y
-   podrás **Cancelar asistencia** cuando quieras. Te lo recordaremos 48 horas antes.
+   podrás **Salir del evento** cuando quieras. Te lo recordaremos 48 horas antes.
 
 ### Miembros y chat
 **Miembros** muestra al líder, los capitanes y los miembros. El **chat** es solo para miembros y se

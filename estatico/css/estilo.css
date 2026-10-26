@@ -1385,3 +1385,24 @@ body:has(.feed) .marco-app { flex: 1; width: 100%; padding-bottom: 0; }
 .marca-v2::after { content: ""; position: absolute; left: 0; top: 37.5px; width: calc(100% + 8px); height: 2.5px;
   background: linear-gradient(90deg, var(--marca-oscuro) 0%, var(--marca) 60%, rgba(0, 154, 169, 0) 100%); pointer-events: none; }
 @media (max-width: 760px) { .marca-v2::after { top: 31.5px; } }
+
+/* Responder ahí mismo (feed y página de la publicación) */
+.responder-r { display: inline-flex; flex-direction: column; }
+.responder-r > summary { list-style: none; display: inline-flex; align-items: center; gap: 5px; cursor: pointer; color: var(--gris);
+  transition: color var(--transicion); }
+.responder-r > summary::-webkit-details-marker { display: none; }
+.responder-r > summary:hover, .responder-r[open] > summary { color: var(--marca-profundo); }
+.comentario-r-acciones { flex-wrap: wrap; }
+.comentario-r-acciones:has(.responder-r[open]) .responder-r[open] { flex: 1 1 100%; }
+.responder-r .conversacion-nueva { margin-top: 8px; }
+.comentario-r.nivel-4, .comentario-r.nivel-5 { margin-left: 45px; padding-left: 22px; border-left: 2px solid var(--linea); }
+.comentario-r.nivel-5 { margin-left: 60px; }
+.comentario-r-acciones .votos { height: 28px; }
+.comentario-r-acciones .voto { height: 22px; font-size: .78rem; }
+/* Página de la publicación */
+.hilo-navegacion { display: flex; flex-wrap: wrap; gap: 10px; }
+.hilo-navegacion .boton { border-radius: 999px; }
+.hilo-comentarios .hilo-completo { display: flex; padding: 16px 24px 20px; margin: 0; }
+.slide-asistentes { color: rgba(255, 255, 255, .9); text-decoration: underline; text-underline-offset: 3px; }
+.slide-asistentes:hover { color: #FFFFFF; }
+.accion-salir { color: var(--peligro); }

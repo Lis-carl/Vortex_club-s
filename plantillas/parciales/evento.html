@@ -28,7 +28,7 @@
         <input type="hidden" name="siguiente" value="{{ ruta_completa }}#evento-{{ e.id }}">
         {% if e.mi_asistencia %}
           <span class="etiqueta etiqueta-aprobada">Asistirás</span>
-          <button class="accion">Cancelar asistencia</button>
+          <button class="accion accion-salir">Salir del evento</button>
         {% elif e.cupo and e.n_asistentes >= e.cupo %}
           <span class="etiqueta etiqueta-rechazada">Cupo lleno</span>
         {% else %}

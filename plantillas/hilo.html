@@ -1,34 +1,34 @@
 {% extends "base.html" %}
 {% block titulo %}{{ pub.titulo }}{% endblock %}
 {% block contenido %}
-<p><a href="/clubes/{{ club.slug }}">Volver al foro de {{ club.nombre }}</a></p>
+<nav class="hilo-navegacion" aria-label="Volver">
+  <a class="boton boton-secundario boton-pequeno" href="/clubes/{{ club.slug }}">← Foro de {{ club.nombre }}</a>
+  <a class="boton boton-secundario boton-pequeno" href="/">Ir al inicio</a>
+</nav>
 {% set completa = True %}
 {% include "parciales/publicacion.html" %}
 
-<section class="panel" id="comentarios">
+<section class="panel hilo-comentarios" id="comentarios">
   <div class="panel-cabecera"><h2>Comentarios ({{ pub.n_comentarios }})</h2></div>
+  <div class="hilo-vista hilo-completo">
   {% if es_miembro %}
-  <form method="post" action="/publicaciones/{{ pub.id }}/comentar" class="comentario-nuevo conversacion-nueva">
+  <form method="post" action="/publicaciones/{{ pub.id }}/comentar" class="conversacion-nueva">
     <input type="hidden" name="csrf" value="{{ csrf }}">
     <label for="comentario-nuevo" class="oculto">Escribe un comentario</label>
-    <textarea id="comentario-nuevo" name="contenido" rows="1" maxlength="5000" placeholder="Únete a la conversación" required></textarea>
+    <input id="comentario-nuevo" name="contenido" maxlength="5000" placeholder="Únete a la conversación" autocomplete="off" required>
     <button class="boton boton-primario boton-pequeno">Comentar</button>
   </form>
   {% else %}
-  <p class="vacio-corto">Únete al club para comentar en esta publicación.</p>
+  <p class="hilo-vacio">Únete al club para comentar en esta publicación.</p>
   {% endif %}
-
-  <div class="comentarios">
   {% for c in comentarios %}
-    <div class="comentario nivel-{{ c.nivel }}" id="comentario-{{ c.id }}">
-      <p class="pub-meta">
-        {{ avatar(c.autor_nombre, c.autor_foto, "avatar-mini") }}
-        <a href="/perfil/{{ c.autor_cif }}"><strong>{{ c.autor_nombre }}</strong></a>
-        <span class="separador">·</span><time>{{ c.creado_en | rel }}</time>{% if c.editado_en and not c.eliminado %}<span class="editado">· editado</span>{% endif %}
-      </p>
-      {% if c.eliminado %}<p class="comentario-texto eliminado">Comentario eliminado</p>
-      {% else %}<div class="comentario-texto">{{ c.contenido | saltos }}</div>{% endif %}
-      <div class="comentario-acciones">
+  <div class="comentario-r nivel-{{ c.nivel }}" id="comentario-{{ c.id }}">
+    {{ avatar(c.autor_nombre, c.autor_foto) }}
+    <div class="comentario-r-cuerpo">
+      <p class="comentario-r-meta"><a href="/perfil/{{ c.autor_cif }}">{{ c.autor_nombre }}</a><span>·</span><time>{{ c.creado_en | rel }}</time>{% if c.editado_en and not c.eliminado %}<span class="editado">· editado</span>{% endif %}</p>
+      {% if c.eliminado %}<p class="comentario-r-texto eliminado">Comentario eliminado</p>
+      {% else %}<div class="comentario-r-texto">{{ c.contenido | saltos }}</div>{% endif %}
+      <div class="comentario-r-acciones">
         {% if not c.eliminado %}
           {% set v_url = "/comentarios/" + str(c.id) + "/votar" %}
           {% set v_id = "votos-c-" + str(c.id) %}
@@ -40,22 +40,22 @@
           {% include "parciales/votos.html" %}
         {% endif %}
         {% if es_miembro and not c.eliminado %}
-        <details class="responder"><summary class="accion">Responder</summary>
-          <form method="post" action="/publicaciones/{{ pub.id }}/comentar" class="formulario">
+        <details class="responder-r"><summary><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>Responder</summary>
+          <form method="post" action="/publicaciones/{{ pub.id }}/comentar" class="conversacion-nueva">
             <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="padre_id" value="{{ c.id }}">
             <label for="respuesta-{{ c.id }}" class="oculto">Tu respuesta</label>
-            <textarea id="respuesta-{{ c.id }}" name="contenido" rows="2" maxlength="5000" required></textarea>
-            <div><button class="boton boton-secundario boton-pequeno">Publicar respuesta</button></div>
+            <input id="respuesta-{{ c.id }}" name="contenido" maxlength="5000" placeholder="Responder a {{ c.autor_nombre.split()[0] }}…" autocomplete="off" required>
+            <button class="boton boton-primario boton-pequeno">Responder</button>
           </form>
         </details>
         {% endif %}
         {% if c.autor_id == usuario.id and not c.eliminado %}
-        <details class="responder"><summary class="accion">Editar</summary>
-          <form method="post" action="/comentarios/{{ c.id }}/editar" class="formulario">
+        <details class="responder-r"><summary>Editar</summary>
+          <form method="post" action="/comentarios/{{ c.id }}/editar" class="conversacion-nueva">
             <input type="hidden" name="csrf" value="{{ csrf }}">
             <label for="editar-{{ c.id }}" class="oculto">Editar comentario</label>
-            <textarea id="editar-{{ c.id }}" name="contenido" rows="2" maxlength="5000" required>{{ c.contenido }}</textarea>
-            <div><button class="boton boton-secundario boton-pequeno">Guardar cambios</button></div>
+            <input id="editar-{{ c.id }}" name="contenido" maxlength="5000" value="{{ c.contenido }}" autocomplete="off" required>
+            <button class="boton boton-primario boton-pequeno">Guardar</button>
           </form>
         </details>
         {% endif %}
@@ -70,8 +70,9 @@
         {% endif %}
       </div>
     </div>
+  </div>
   {% else %}
-    <p class="vacio-corto">Todavía no hay comentarios.</p>
+  <p class="hilo-vacio">Todavía no hay comentarios. ¡Sé el primero!</p>
   {% endfor %}
   </div>
 </section>

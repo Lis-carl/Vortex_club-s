@@ -283,7 +283,7 @@ class PruebasForoYAnuncios(PruebaServidor):
         # eliminar: el autor sí; un miembro ajeno no
         self.assertEqual(self.cliente(MARIA).post(f"/comentarios/{raiz}/eliminar", desde=pag).estado, 403)
         self.assertIn("Comentario eliminado", ana.post(f"/comentarios/{raiz}/eliminar", desde=pag).cuerpo)
-        self.assertIn('class="comentario-texto eliminado"', ana.get(pag).cuerpo)
+        self.assertIn('class="comentario-r-texto eliminado"', ana.get(pag).cuerpo)
 
     def test_votos(self):
         luis = self.cliente(LUIS)
@@ -480,6 +480,27 @@ class PruebasChatYEventos(PruebaServidor):
         r = maria.post(f"/publicaciones/{pid}/comentar", {"contenido": "Desde el feed", "siguiente": f"/#pub-{pid}"}, desde="/")
         self.assertIn("Comentario publicado", r.cuerpo)
         self.assertIn("Desde el feed", r.cuerpo.split(f'id="pub-{pid}"')[1].split('</article>')[0])
+
+    def test_responder_y_asistentes(self):
+        maria, luis = self.cliente(MARIA), self.cliente(LUIS)
+        pid = consulta("SELECT id FROM publicaciones WHERE titulo LIKE 'Taller de Arduino%'")[0][0]
+        cid = consulta("SELECT id FROM comentarios WHERE publicacion_id=? AND padre_id IS NULL", pid)[0][0]
+        # responder un comentario desde el feed sin cambiar de página
+        bloque = maria.get("/").cuerpo.split(f'id="pub-{pid}"')[1].split('</article>')[0]
+        self.assertIn(f'name="padre_id" value="{cid}"', bloque)
+        r = maria.post(f"/publicaciones/{pid}/comentar", {"contenido": "Respondo desde el inicio", "padre_id": str(cid),
+                                                          "siguiente": f"/#pub-{pid}"}, desde="/")
+        self.assertTrue(r.url.endswith("/") or "#pub-" in r.url)
+        hilo = maria.get(f"/publicaciones/{pid}").cuerpo
+        self.assertIn("Respondo desde el inicio", hilo)
+        self.assertIn('href="/">Ir al inicio</a>', hilo)
+        self.assertIn('class="comentario-r nivel-1"', hilo)
+        # todos ven quiénes se unieron a un evento y pueden salirse
+        eid = consulta("SELECT id FROM propuestas_evento WHERE titulo='Hackatón de robots'")[0][0]
+        maria.post(f"/eventos/{eid}/asistencia", {}, desde="/")
+        self.assertIn("Ver asistentes (1)", luis.get("/clubes/robotica/eventos").cuerpo)
+        self.assertIn("Salir del evento", maria.get(f"/eventos/{eid}").cuerpo)
+        self.assertIn("Saliste del evento", maria.post(f"/eventos/{eid}/asistencia", {}, desde="/").cuerpo)
 
     def test_pagina_de_evento(self):
         eid = consulta("SELECT id FROM propuestas_evento WHERE titulo='Hackatón de robots'")[0][0]
@@ -760,7 +781,7 @@ class PruebasRolesYFuncionesEncuesta(PruebaServidor):
         self.assertIn("Cupo lleno", luis.get("/clubes/ajedrez/eventos").cuerpo)
         lider = self.cliente(CARLOS)
         self.assertIn("Ver asistentes (1)", lider.get("/clubes/ajedrez/eventos").cuerpo)   # el líder ve la lista
-        self.assertIn("Cancelaste tu asistencia", sofia.post(f"/eventos/{eid}/asistencia", {}, desde="/").cuerpo)
+        self.assertIn("Saliste del evento", sofia.post(f"/eventos/{eid}/asistencia", {}, desde="/").cuerpo)
         self.assertEqual(consulta("SELECT COUNT(*) FROM asistencias WHERE evento_id=?", eid), [(0,)])
         self.assertEqual(sofia.post("/eventos/99999/asistencia", {}, desde="/").estado, 404)
 

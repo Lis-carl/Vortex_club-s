@@ -30,6 +30,8 @@ def proximos(p):
     solo_mios = p.consulta.get("vista") == "mios"
     orden = "votos" if p.consulta.get("orden") == "votos" else "fecha"
     del_mes = eventos.del_mes(p.bd, p.usuario.id, anio, mes, solo_mios, orden)
+    for e in del_mes:
+        e["asistentes"] = eventos.asistentes(p.bd, e.id)
     por_dia = {}
     for e in del_mes:
         por_dia.setdefault(int(e.fecha_inicio[8:10]), []).append(e)
@@ -101,7 +103,7 @@ def asistencia(p, id):
     except ValueError as error:
         return volver.con_aviso("error", str(error))
     return volver.con_aviso("ok", f"Asistencia confirmada a «{e.titulo}». Te lo recordaremos en tu inicio."
-                            if confirmado else f"Cancelaste tu asistencia a «{e.titulo}».")
+                            if confirmado else f"Saliste del evento «{e.titulo}».")
 
 
 @ruta("GET", "/clubes/<slug>/eventos")
@@ -110,9 +112,8 @@ def eventos_club(p, slug):
     club = club_o_404(p, slug)
     ctx = contexto_club(p, club, "eventos")
     proximos_club, pasados = eventos.del_club(p.bd, club.id, p.usuario.id)
-    if ctx["es_responsable"]:
-        for e in proximos_club:
-            e["asistentes"] = eventos.asistentes(p.bd, e.id)
+    for e in proximos_club:   # cualquiera ve quiénes se unieron
+        e["asistentes"] = eventos.asistentes(p.bd, e.id)
     return render(p, "club_eventos.html", proximos=proximos_club, pasados=pasados,
                   pendientes=eventos.pendientes(p.bd, club.id, p.usuario.id) if ctx["es_miembro"] else [],
                   mias=eventos.mias(p.bd, club.id, p.usuario.id) if ctx["es_miembro"] else [], **ctx)
