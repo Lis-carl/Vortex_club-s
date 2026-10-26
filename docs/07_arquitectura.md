@@ -205,7 +205,7 @@ Un estudiante (o un líder en un club que no es el suyo) solo puede eliminar lo 
 
 | Amenaza | Medida |
 |---------|--------|
-| Robo de contraseñas | PBKDF2-HMAC-SHA256, sal de 16 bytes, 200 000 iteraciones; comparación con `hmac.compare_digest` |
+| Robo de contraseñas | PBKDF2-HMAC-SHA256, sal de 16 bytes, 600 000 iteraciones; comparación con `hmac.compare_digest` |
 | Secuestro de sesión | Token de 32 bytes (`secrets.token_urlsafe`), cookie `HttpOnly; SameSite=Lax`, expiración de 7 días, borrado al salir |
 | CSRF | Token por sesión en el campo oculto `csrf` de cada formulario `POST` |
 | Ejecución de scripts | No hay JavaScript; además la cabecera `Content-Security-Policy` usa `script-src 'none'`, así ningún script inyectado podría ejecutarse |

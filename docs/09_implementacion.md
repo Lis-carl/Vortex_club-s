@@ -69,7 +69,7 @@ $env:VORTEX_ADMIN_CLAVE = 'una-clave-larga'; python app.py
 | `VORTEX_BD` | Ruta alternativa del archivo SQLite |
 | `VORTEX_SUBIDAS` | Carpeta alternativa para las imágenes |
 | `VORTEX_ADMIN_CLAVE` | Contraseña inicial de la administración |
-| `VORTEX_ITERACIONES` | Iteraciones de PBKDF2 (**solo pruebas**; por omisión 200 000) |
+| `VORTEX_ITERACIONES` | Iteraciones de PBKDF2 (**solo pruebas**; por omisión 600 000) |
 
 ## 9.3 Estrategia de conversión
 

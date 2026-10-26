@@ -44,6 +44,23 @@ def leer_multipart(tipo_contenido, cuerpo):
 
 
 # --- Validación ------------------------------------------------------------------------------
+_CONTRASENAS_COMUNES = {
+    "12345678", "123456789", "1234567890", "87654321", "11111111", "00000000", "password", "password1",
+    "contraseña", "contrasena", "qwerty123", "qwertyui", "abc12345", "abcd1234", "iloveyou", "admin123",
+    "uam12345", "uam2026", "vortex123", "clubes123", "123456abc", "a1234567", "1q2w3e4r", "asdf1234"}
+
+
+def contrasena_segura(contrasena, confirmar, errores, cif=""):
+    """Reglas de contraseña: 8 a 128 caracteres, con letras y números, sin el CIF y que no sea de las más comunes."""
+    if not 8 <= len(contrasena) <= 128:
+        errores["contrasena"] = "La contraseña debe tener entre 8 y 128 caracteres."
+    elif not (any(c.isalpha() for c in contrasena) and any(c.isdigit() for c in contrasena)):
+        errores["contrasena"] = "La contraseña debe combinar letras y números."
+    elif contrasena.lower() in _CONTRASENAS_COMUNES or (cif and cif in contrasena):
+        errores["contrasena"] = "Esa contraseña es muy fácil de adivinar: evita tu CIF y las claves comunes."
+    elif contrasena != confirmar:
+        errores["confirmar"] = "Las contraseñas no coinciden."
+
 def texto(campos, errores, clave, etiqueta, minimo=1, maximo=200, obligatorio=True, una_linea=True):
     valor = (campos.get(clave) or "").replace("\r\n", "\n").replace("\r", "\n").strip()
     if una_linea:

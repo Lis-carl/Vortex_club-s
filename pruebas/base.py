@@ -17,7 +17,7 @@ os.environ["VORTEX_BD"] = os.path.join(_TEMPORAL, "prueba.db")
 os.environ["VORTEX_SUBIDAS"] = os.path.join(_TEMPORAL, "subidas")
 os.environ["VORTEX_ITERACIONES"] = "1000"   # solo para pruebas: acelera PBKDF2
 
-from vortex import bd, servidor  # noqa: E402
+from vortex import bd, seguridad, servidor  # noqa: E402
 from pruebas import datos_prueba  # noqa: E402
 
 servidor.Manejador.log_message = lambda *a, **k: None   # sin ruido en la consola de pruebas
@@ -97,6 +97,8 @@ class PruebaServidor(unittest.TestCase):
             if os.path.exists(ruta_bd + sufijo):
                 os.remove(ruta_bd + sufijo)
         bd.inicializar()
+        for limite in (seguridad.limite_acceso, seguridad.limite_ip, seguridad.limite_registro):
+            limite.limpiar()   # cada clase empieza sin intentos fallidos acumulados
         if cls.con_datos_prueba:
             con = bd.conectar()
             datos_prueba.cargar(con)

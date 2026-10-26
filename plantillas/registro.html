@@ -21,7 +21,7 @@
   <div class="dos-columnas">
     <div class="campo {% if errores.contrasena %}con-error{% endif %}"><label for="contrasena">Contraseña</label>
       <input id="contrasena" type="password" name="contrasena" autocomplete="new-password" required>
-      {% if errores.contrasena %}<p class="error-campo">{{ errores.contrasena }}</p>{% else %}<p class="ayuda-campo">Mínimo 6 caracteres.</p>{% endif %}</div>
+      {% if errores.contrasena %}<p class="error-campo">{{ errores.contrasena }}</p>{% else %}<p class="ayuda-campo">Mínimo 8 caracteres, con letras y números.</p>{% endif %}</div>
     <div class="campo {% if errores.confirmar %}con-error{% endif %}"><label for="confirmar">Confirmar</label>
       <input id="confirmar" type="password" name="confirmar" autocomplete="new-password" required>
       {% if errores.confirmar %}<p class="error-campo">{{ errores.confirmar }}</p>{% endif %}</div>

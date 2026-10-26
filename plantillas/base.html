@@ -33,6 +33,7 @@
         <div class="cuenta-menu">
           <div class="cuenta-datos"><strong>{{ usuario.nombre }}</strong><span class="tenue">CIF {{ usuario.cif }} · Ingresó como {{ rol_acceso_nombre }}</span></div>
           <a href="/perfil/{{ usuario.cif }}">Mi perfil y foto</a>
+          <a href="/perfil/contrasena">Cambiar contraseña</a>
           <form method="post" action="/salir">
             <input type="hidden" name="csrf" value="{{ csrf }}">
             <button>Cerrar sesión</button>
@@ -71,6 +72,7 @@
     </nav>
     <main class="principal">
       {% if aviso %}<div class="aviso aviso-{{ aviso.nivel }}" role="status">{{ aviso.texto }}</div>{% endif %}
+      {% if usuario.clave_temporal %}<div class="aviso aviso-error aviso-clave" role="alert">Sigues usando la contraseña inicial de la cuenta. <a href="/perfil/contrasena">Cámbiala ahora</a> para protegerla.</div>{% endif %}
       {% block contenido %}{% endblock %}
     </main>
     <aside class="complementario">{% block lateral %}{% endblock %}</aside>

@@ -169,7 +169,7 @@ Prioridad según MoSCoW: **A** = indispensable, **M** = importante, **B** = dese
 | RNF-03 | Restricción tecnológica | **Sin JavaScript.** Todas las páginas se generan en el servidor con Python; el navegador solo recibe HTML y CSS propios (sin frameworks ni CDN). La política de seguridad de contenido bloquea cualquier script (`script-src 'none'`). |
 | RNF-04 | Usabilidad | La interfaz debe ser sobria, profesional y similar a UAM Virtual: color verde petróleo institucional, paneles blancos con bordes finos y esquinas casi rectas, una sola tipografía y **sin emojis en títulos ni menús**. Un usuario nuevo debe poder unirse a un club en menos de 3 clics desde el inicio. |
 | RNF-05 | Usabilidad | El diseño debe adaptarse a pantallas de celular (ancho ≥ 360 px). |
-| RNF-06 | Seguridad | Las contraseñas se guardan con **PBKDF2-HMAC-SHA256** con sal aleatoria y 200 000 iteraciones; nunca en texto plano. |
+| RNF-06 | Seguridad | Las contraseñas se guardan con **PBKDF2-HMAC-SHA256** con sal aleatoria y 600 000 iteraciones; nunca en texto plano (ver documento 10). |
 | RNF-07 | Seguridad | Todo formulario que modifique datos debe llevar un **token CSRF** ligado a la sesión. |
 | RNF-08 | Seguridad | Todo texto escrito por usuarios se **escapa** al mostrarse (prevención de XSS) y todas las consultas SQL usan **parámetros** (prevención de inyección SQL). |
 | RNF-09 | Seguridad | La cookie de sesión debe ser `HttpOnly` y `SameSite=Lax`; la sesión expira a los 7 días. |

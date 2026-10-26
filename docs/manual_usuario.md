@@ -7,13 +7,17 @@ Funciona en cualquier navegador, en computadora o en celular, y no necesita Java
 
 1. Abre la dirección que te dé la Dirección de Vida Estudiantil (por ejemplo `http://127.0.0.1:8000`).
 2. Pulsa **Crea una cuenta** y llena: CIF (8 dígitos), nombre completo, correo, carrera (opcional)
-   y contraseña (mínimo 6 caracteres).
+   y contraseña (mínimo 8 caracteres, con letras y números; no uses tu CIF ni claves comunes como `12345678`).
 3. Entrarás directamente al catálogo de clubes.
 
 Para entrar otro día escribe tu **CIF** y tu **contraseña** y pulsa **Acceder**. No tienes que
 elegir nada más: la plataforma sabe qué tipo de usuario eres por tu cuenta. Si la administración o
 el líder te nombra capitán, o te asignan como líder, verás de inmediato las herramientas de tu club.
 Si fallas la contraseña 5 veces seguidas, el acceso se bloquea unos minutos.
+
+### Cambiar tu contraseña
+Pulsa tu nombre (arriba a la derecha) → **Cambiar contraseña**, escribe la actual y la nueva dos veces y
+pulsa **Guardar contraseña**. Por seguridad, se cerrará tu sesión en los demás dispositivos.
 
 Para salir: pulsa tu nombre (arriba a la derecha) → **Cerrar sesión**.
 

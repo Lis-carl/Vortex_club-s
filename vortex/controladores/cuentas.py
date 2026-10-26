@@ -33,14 +33,14 @@ def acceder_formulario(p):
 @ruta("POST", "/acceder")
 def acceder(p):
     cif = (p.formulario.get("cif") or "").strip()
-    contrasena = p.formulario.get("contrasena") or ""
+    contrasena = (p.formulario.get("contrasena") or "")[:1024]
     siguiente = destino_seguro(p.formulario.get("siguiente"), "")
     clave = f"{p.ip}|{cif}"
 
     def fallo(mensaje):
         return render(p, "acceder.html", 401, cif=cif, error=mensaje, siguiente=siguiente)
 
-    if seguridad.limite_acceso.bloqueado(clave):
+    if seguridad.limite_acceso.bloqueado(clave) or seguridad.limite_ip.bloqueado(p.ip):
         return fallo("Demasiados intentos fallidos. Espera unos minutos e inténtalo de nuevo.")
     usuario = usuarios.por_cif(p.bd, cif) if frm.RE_CIF.match(cif) else None
     if usuario:
@@ -50,10 +50,13 @@ def acceder(p):
         correcta = False
     if not correcta:
         seguridad.limite_acceso.fallo(clave)
+        seguridad.limite_ip.fallo(p.ip)
         return fallo("CIF o contraseña incorrectos.")
     if not usuario.activo:
         return fallo("Tu cuenta está desactivada. Comunícate con Vida Estudiantil.")
     seguridad.limite_acceso.reiniciar(clave)
+    if seguridad.necesita_actualizar(usuario.hash_contrasena):   # contraseñas antiguas pasan al cifrado actual
+        usuarios.actualizar_hash(p.bd, usuario.id, contrasena)
     # El tipo de usuario lo determina la cuenta (administración, líder, capitán o estudiante).
     rol = seguridad.rol_de_cuenta(p.bd, usuario.id, usuario.rol_global)
     return _iniciar_sesion(p, usuario.id, siguiente or _INICIO_POR_ROL[rol], rol)
@@ -69,6 +72,8 @@ def registro_formulario(p):
 @ruta("POST", "/registro")
 def registro(p):
     f, errores = p.formulario, frm.Errores()
+    if seguridad.limite_registro.bloqueado(p.ip):
+        raise ErrorHttp(429, "Se crearon demasiadas cuentas desde este equipo. Inténtalo más tarde.")
     cif = (f.get("cif") or "").strip()
     if not frm.RE_CIF.match(cif):
         errores["cif"] = "El CIF debe tener exactamente 8 dígitos."
@@ -83,22 +88,49 @@ def registro(p):
             errores["correo"] = "Ese correo ya está registrado."
     carrera = frm.texto(f, errores, "carrera", "La carrera", 2, 80, obligatorio=False)
     contrasena = f.get("contrasena") or ""
-    if len(contrasena) < 6 or len(contrasena) > 128:
-        errores["contrasena"] = "La contraseña debe tener entre 6 y 128 caracteres."
-    elif contrasena != (f.get("confirmar") or ""):
-        errores["confirmar"] = "Las contraseñas no coinciden."
+    frm.contrasena_segura(contrasena, f.get("confirmar") or "", errores, cif)
     if errores:
         return render(p, "registro.html", 400, valores={"cif": cif, "nombre": nombre, "correo": correo,
                                                          "carrera": carrera}, errores=errores, carreras=CARRERAS)
     usuario_id = usuarios.crear(p.bd, cif, nombre, correo, carrera, contrasena)
+    seguridad.limite_registro.fallo(p.ip)   # cuenta las cuentas creadas desde esta IP
     return _iniciar_sesion(p, usuario_id, "/clubes").con_aviso("ok", f"¡Bienvenido/a, {nombre}! Explora los clubes y únete.")
 
 
 @ruta("POST", "/salir")
 def salir(p):
-    if p.sesion:
-        seguridad.cerrar_sesion(p.bd, p.sesion.token)
+    seguridad.cerrar_sesion(p.bd, p.cookies.get("sesion"))
     return Respuesta.redirigir("/acceder").borrar_cookie("sesion")
+
+
+@ruta("GET", "/perfil/contrasena")
+@requiere_sesion
+def contrasena_formulario(p):
+    return render(p, "cambiar_contrasena.html", errores=frm.Errores())
+
+
+@ruta("POST", "/perfil/contrasena")
+@requiere_sesion
+def cambiar_contrasena(p):
+    """Pide la contraseña actual, valida la nueva y cierra la sesión en los demás dispositivos."""
+    f, errores = p.formulario, frm.Errores()
+    yo = usuarios.por_id(p.bd, p.usuario.id)
+    clave = f"{p.ip}|{yo.cif}"
+    nueva = f.get("contrasena") or ""
+    if seguridad.limite_acceso.bloqueado(clave):
+        errores["actual"] = "Demasiados intentos fallidos. Espera unos minutos e inténtalo de nuevo."
+    elif not seguridad.verificar_contrasena((f.get("actual") or "")[:1024], yo.hash_contrasena, yo.sal):
+        seguridad.limite_acceso.fallo(clave)
+        errores["actual"] = "La contraseña actual no es correcta."
+    frm.contrasena_segura(nueva, f.get("confirmar") or "", errores, yo.cif)
+    if not errores and seguridad.verificar_contrasena(nueva, yo.hash_contrasena, yo.sal):
+        errores["contrasena"] = "La nueva contraseña debe ser distinta de la actual."
+    if errores:
+        return render(p, "cambiar_contrasena.html", 400, errores=errores)
+    usuarios.cambiar_contrasena(p.bd, yo.id, nueva)
+    seguridad.cerrar_todas(p.bd, yo.id)
+    return _iniciar_sesion(p, yo.id, f"/perfil/{yo.cif}", p.usuario.rol_acceso).con_aviso(
+        "ok", "Contraseña actualizada. Cerramos tu sesión en los demás dispositivos.")
 
 
 @ruta("GET", "/perfil/<cif>")

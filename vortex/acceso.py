@@ -48,8 +48,10 @@ def modo_gestion(p):
 
 def destino_seguro(valor, defecto="/"):
     """Solo se aceptan rutas internas (evita redirecciones abiertas)."""
-    if (valor and valor.startswith("/") and not valor.startswith("//")
-            and "\\" not in valor and "\n" not in valor and "\r" not in valor):
+    # Se rechazan «//sitio», barras invertidas y cualquier espacio o carácter de control: los navegadores
+    # ignoran tabulaciones y saltos de línea, así que «/\t/sitio-malo» terminaría en «//sitio-malo».
+    if (valor and valor.startswith("/") and not valor.startswith("//") and "\\" not in valor
+            and all(32 < ord(c) != 127 for c in valor)):
         return valor
     return defecto
 

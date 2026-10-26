@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     chats_limpiados_hasta INTEGER NOT NULL DEFAULT 0,
     hash_contrasena TEXT    NOT NULL,
     sal             TEXT    NOT NULL,
+    clave_temporal  INTEGER NOT NULL DEFAULT 0 CHECK (clave_temporal IN (0, 1)),   -- 1: aún usa la contraseña inicial
     rol_global      TEXT    NOT NULL DEFAULT 'estudiante' CHECK (rol_global IN ('estudiante', 'admin')),
     activo          INTEGER NOT NULL DEFAULT 1 CHECK (activo IN (0, 1)),
     creado_en       TEXT    NOT NULL DEFAULT (datetime('now', 'localtime'))

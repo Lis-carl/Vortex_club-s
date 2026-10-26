@@ -78,7 +78,7 @@ class PruebasAcceso(PruebaServidor):
         malo = c.post("/registro", {"cif": "12", "nombre": "A", "correo": "abcdef", "contrasena": "1", "confirmar": "2"},
                       desde="/registro")
         self.assertEqual(malo.estado, 400)
-        for esperado in ("8 dígitos", "al menos 3", "correo válido", "entre 6 y 128"):
+        for esperado in ("8 dígitos", "al menos 3", "correo válido", "entre 8 y 128"):
             self.assertIn(esperado, malo.cuerpo)
         ok = c.post("/registro", {"cif": "27000001", "nombre": "Nuevo Usuario", "correo": "NUEVO@vortex.local",
                                   "carrera": "Derecho", "contrasena": "clave123", "confirmar": "clave123"},

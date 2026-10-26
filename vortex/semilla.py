@@ -28,8 +28,10 @@ CLUBES = [
 
 
 def datos_base(bd):
-    usuarios.crear(bd, config.ADMIN_CIF, "Administración Vortex", "admin@vortex.local", "Vida Estudiantil",
-                   config.ADMIN_CLAVE, rol="admin")
+    admin = usuarios.crear(bd, config.ADMIN_CIF, "Administración Vortex", "admin@vortex.local", "Vida Estudiantil",
+                           config.ADMIN_CLAVE, rol="admin")
+    if config.ADMIN_CLAVE == config.ADMIN_CLAVE_INICIAL:   # se le pedirá cambiarla al entrar
+        bd.execute("UPDATE usuarios SET clave_temporal = 1 WHERE id = ?", (admin,))
     asegurar_catalogo(bd)
 
 

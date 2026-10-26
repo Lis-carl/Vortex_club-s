@@ -45,6 +45,14 @@ def _migrar(bd):
         bd.execute("ALTER TABLE usuarios ADD COLUMN foto TEXT NOT NULL DEFAULT ''")
     if "chats_limpiados_hasta" not in columnas:
         bd.execute("ALTER TABLE usuarios ADD COLUMN chats_limpiados_hasta INTEGER NOT NULL DEFAULT 0")
+    if "clave_temporal" not in columnas:
+        bd.execute("ALTER TABLE usuarios ADD COLUMN clave_temporal INTEGER NOT NULL DEFAULT 0")
+        from .seguridad import verificar_contrasena
+        admin = bd.execute("SELECT id, hash_contrasena, sal FROM usuarios WHERE cif = ?", (config.ADMIN_CIF,)).fetchone()
+        if admin and verificar_contrasena(config.ADMIN_CLAVE_INICIAL, admin.hash_contrasena, admin.sal):
+            bd.execute("UPDATE usuarios SET clave_temporal = 1 WHERE id = ?", (admin.id,))
+    # Las sesiones ahora se guardan como huella SHA-256 (64 caracteres); las antiguas se descartan.
+    bd.execute("DELETE FROM sesiones WHERE length(token) <> 64")
     columnas = {c.name for c in bd.execute("PRAGMA table_info(clubes)").fetchall()}
     recrear_vistas = False
     if "foto" not in columnas:

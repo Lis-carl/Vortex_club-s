@@ -10,6 +10,17 @@ def crear(bd, cif, nombre, correo, carrera, contrasena, rol="estudiante", hash_p
     return cur.lastrowid
 
 
+def cambiar_contrasena(bd, usuario_id, contrasena):
+    h, sal = hash_contrasena(contrasena)
+    bd.execute("UPDATE usuarios SET hash_contrasena = ?, sal = ?, clave_temporal = 0 WHERE id = ?", (h, sal, usuario_id))
+
+
+def actualizar_hash(bd, usuario_id, contrasena):
+    """Vuelve a guardar la contraseña con el formato y las iteraciones actuales (sin tocar nada más)."""
+    h, sal = hash_contrasena(contrasena)
+    bd.execute("UPDATE usuarios SET hash_contrasena = ?, sal = ? WHERE id = ?", (h, sal, usuario_id))
+
+
 def por_cif(bd, cif):
     return bd.execute("SELECT * FROM usuarios WHERE cif = ?", (cif,)).fetchone()
 

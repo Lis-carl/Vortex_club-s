@@ -314,7 +314,7 @@ Propuesta de evento = ID club + ID proponente + Título + Descripción + Fecha i
 | Nombre completo | Texto | 3–80 | Letras y espacios | — |
 | Correo | Texto | ≤ 120 | Contiene `@` y un punto en el dominio; único | — |
 | Carrera | Texto | ≤ 80 | Lista sugerida | — |
-| Contraseña | Texto | 6–128 | Mínimo 6 caracteres; se guarda solo su hash | — |
+| Contraseña | Texto | 8–128 | Letras y números, sin el CIF ni claves comunes; se guarda solo su hash | — |
 | Rol global | Texto | — | `estudiante` \| `admin` | `estudiante` |
 | Nombre club | Texto | 3–60 | Único | — |
 | Slug | Texto | ≤ 70 | Minúsculas, dígitos y guiones, derivado del nombre | — |

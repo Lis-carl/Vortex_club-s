@@ -2,6 +2,8 @@
 import secrets
 from urllib.parse import quote
 
+from . import config
+
 
 class Fila(dict):
     """Diccionario con acceso por atributo (fila.nombre o fila['nombre']).
@@ -48,6 +50,8 @@ class Respuesta:
 
     def cookie(self, nombre, valor, max_age=None):
         texto = f"{nombre}={valor}; Path=/; HttpOnly; SameSite=Lax"
+        if config.HTTPS:
+            texto += "; Secure"
         if max_age is not None:
             texto += f"; Max-Age={max_age}"
         self.cabeceras.append(("Set-Cookie", texto))

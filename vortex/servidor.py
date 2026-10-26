@@ -23,8 +23,14 @@ _CABECERAS_SEGURIDAD = [
     ("Referrer-Policy", "same-origin"),
     ("Content-Security-Policy",
      "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'none'; "
+     "object-src 'none'; base-uri 'none'; form-action 'self'; "
      "frame-src 'self'; frame-ancestors 'self'"),   # sin JavaScript: ningún script puede ejecutarse
+    ("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=(), usb=()"),
+    ("Cross-Origin-Opener-Policy", "same-origin"),
+    ("Cross-Origin-Resource-Policy", "same-origin"),
 ]
+if config.HTTPS:   # el navegador recordará usar siempre HTTPS
+    _CABECERAS_SEGURIDAD.append(("Strict-Transport-Security", "max-age=31536000; includeSubDomains"))
 
 
 def _leer_cookies(cabecera):
@@ -37,7 +43,9 @@ def _leer_cookies(cabecera):
 
 
 class Manejador(BaseHTTPRequestHandler):
-    server_version = "VortexClub/1.0"
+    server_version = "VortexClubs"   # sin versión de Python: no se revela qué software exacto corre
+    sys_version = ""
+    timeout = 30                     # corta conexiones que se quedan colgadas (ataques de conexión lenta)
 
     def do_GET(self):
         self._atender("GET")
@@ -64,7 +72,12 @@ class Manejador(BaseHTTPRequestHandler):
         p = Peticion(metodo, unquote(partes.path), consulta, _leer_cookies(self.headers.get("Cookie")),
                      self.client_address[0], encabezados)
         if metodo == "POST":
-            largo = int(self.headers.get("Content-Length") or 0)
+            try:
+                largo = int(self.headers.get("Content-Length") or 0)
+            except ValueError:
+                raise ErrorHttp(400, "La petición no es válida.")
+            if largo < 0:
+                raise ErrorHttp(400, "La petición no es válida.")
             if largo > config.LIMITE_CUERPO:
                 raise ErrorHttp(413, "El archivo es demasiado grande. Las imágenes pueden pesar hasta 5 MB.")
             cuerpo = self.rfile.read(largo) if largo else b""
@@ -140,7 +153,10 @@ class Manejador(BaseHTTPRequestHandler):
     def _enviar(self, r):
         try:
             self.send_response(r.estado)
-            for nombre, valor in r.cabeceras + _CABECERAS_SEGURIDAD:
+            cabeceras = r.cabeceras + _CABECERAS_SEGURIDAD
+            if not any(n.lower() == "cache-control" for n, _ in r.cabeceras):
+                cabeceras.append(("Cache-Control", "no-store"))   # páginas con datos personales: no se guardan en caché
+            for nombre, valor in cabeceras:
                 self.send_header(nombre, valor)
             self.send_header("Content-Length", str(len(r.cuerpo)))
             self.end_headers()

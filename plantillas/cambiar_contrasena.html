@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block titulo %}Cambiar contraseña{% endblock %}
+{% block contenido %}
+<header class="encabezado-pagina">
+  <div>
+    <p class="antetitulo">Seguridad de la cuenta</p>
+    <h1>Cambiar contraseña</h1>
+    <p class="descripcion">Al guardarla cerraremos tu sesión en los demás dispositivos.</p>
+  </div>
+</header>
+<section class="panel">
+  <div class="panel-cabecera"><h2>Nueva contraseña</h2></div>
+  <form method="post" action="/perfil/contrasena" class="panel-cuerpo formulario" novalidate>
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <div class="campo {% if errores.actual %}con-error{% endif %}"><label for="actual">Contraseña actual</label>
+      <input id="actual" type="password" name="actual" autocomplete="current-password" required>
+      {% if errores.actual %}<p class="error-campo">{{ errores.actual }}</p>{% endif %}</div>
+    <div class="dos-columnas">
+      <div class="campo {% if errores.contrasena %}con-error{% endif %}"><label for="contrasena">Nueva contraseña</label>
+        <input id="contrasena" type="password" name="contrasena" autocomplete="new-password" required>
+        {% if errores.contrasena %}<p class="error-campo">{{ errores.contrasena }}</p>{% else %}<p class="ayuda-campo">Mínimo 8 caracteres, con letras y números. Evita tu CIF y claves comunes.</p>{% endif %}</div>
+      <div class="campo {% if errores.confirmar %}con-error{% endif %}"><label for="confirmar">Confirmar</label>
+        <input id="confirmar" type="password" name="confirmar" autocomplete="new-password" required>
+        {% if errores.confirmar %}<p class="error-campo">{{ errores.confirmar }}</p>{% endif %}</div>
+    </div>
+    <div><button class="boton boton-primario">Guardar contraseña</button></div>
+  </form>
+</section>
+{% endblock %}
